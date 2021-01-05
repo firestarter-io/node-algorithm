@@ -1,7 +1,8 @@
 import { Canvas, createCanvas, Image, loadImage } from 'canvas';
-import { tiles } from './data';
 import type { LatLngBounds, LatLngLiteral } from 'leaflet';
 import * as xyz from 'xyz-affair';
+
+import { saveTile, tileCache } from '../config';
 
 /**
  * Map tile coordinate object
@@ -90,7 +91,7 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { x, y, z } = coord;
 		const name = `X${x}Y${y}Z${z}`;
-		if (Object.keys(tiles).includes(name)) {
+		if (Object.keys(tileCache).includes(name)) {
 			return false;
 		} else {
 			return true;
@@ -110,14 +111,13 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 			})
 		)
 			.then((images: CanvasImageSource[]): void => {
-				console.log(images);
 				images.forEach((image: CanvasImageSource, index: number) => {
 					const canvas: Canvas = createCanvas(256, 256);
 					const ctx: RenderingContext = canvas.getContext('2d');
 					ctx.drawImage(image, 0, 0, 256, 256);
 					const { x, y, z } = tileCoords[index];
 					const name = `X${x}Y${y}Z${z}`;
-					tiles[name] = ctx.getImageData(0, 0, 256, 256).data;
+					saveTile(name, ctx.getImageData(0, 0, 256, 256).data);
 				});
 			})
 			.catch((e) => console.log(e));

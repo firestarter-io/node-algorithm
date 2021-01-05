@@ -1,2 +1,3 @@
-// Initialize empty object to hold tile rgba data
+// In memory data for a given user session
+
 export const tiles: { [key: string]: Uint8ClampedArray } = {};
