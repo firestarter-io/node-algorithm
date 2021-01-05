@@ -10,9 +10,9 @@ import type { LatLngLiteral } from 'leaflet';
  * Map tile coordinate object
  */
 export interface TileCoord {
-	x: number;
-	y: number;
-	z: number;
+	X: number;
+	Y: number;
+	Z: number;
 }
 
 /**

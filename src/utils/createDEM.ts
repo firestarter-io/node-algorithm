@@ -16,9 +16,9 @@ import { TileCoord, MapBounds, PointLiteral } from '../types/leaflet.types';
  * @param {Object} coords | Map tile coordinates
  * @param {String} token | Mapbox token
  */
-const createMapboxRgbUrl = (coords: TileCoord, token: string): string => {
-	const { x, y, z } = coords;
-	return `https://api.mapbox.com/v4/mapbox.terrain-rgb/${z}/${y}/${x}.pngraw?access_token=${token}`;
+const createMapboxRgbUrl = (coord: TileCoord, token: string): string => {
+	const { X, Y, Z } = coord;
+	return `https://api.mapbox.com/v4/mapbox.terrain-rgb/${Z}/${Y}/${X}.pngraw?access_token=${token}`;
 };
 
 /**
@@ -62,7 +62,7 @@ function getTileCoords(
 			}) === index
 	);
 
-	return filteredTileCoords;
+	return filteredTileCoords.map((c) => ({ X: c.x, Y: c.y, Z: c.z }));
 }
 
 /**
@@ -71,9 +71,9 @@ function getTileCoords(
  */
 export function getTileCoord(point: PointLiteral): TileCoord {
 	return {
-		x: Math.floor(point.x / 256),
-		y: Math.floor(point.y / 256),
-		z: scale,
+		X: Math.floor(point.x / 256),
+		Y: Math.floor(point.y / 256),
+		Z: scale,
 	};
 }
 
@@ -82,8 +82,8 @@ export function getTileCoord(point: PointLiteral): TileCoord {
  * @param {TileCoord} tileCoord | Maptile coordinate
  */
 export async function fetchDEMTile(coord: TileCoord): Promise<void> {
-	const { x, y, z } = coord;
-	const name = `X${x}Y${y}Z${z}`;
+	const { X, Y, Z } = coord;
+	const name = `X${X}Y${Y}Z${Z}`;
 
 	if (!tileCache[name]) {
 		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
@@ -93,7 +93,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 				const canvas: Canvas = createCanvas(256, 256);
 				const ctx: RenderingContext = canvas.getContext('2d');
 				ctx.drawImage(image, 0, 0, 256, 256);
-				saveTile(name, ctx.getImageData(0, 0, 256, 256).data);
+				saveTile(name, ctx.getImageData(0, 0, 256, 256));
 			})
 			.catch((e) => console.log(e));
 	}
@@ -113,8 +113,8 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 	let tileCoords: any = getTileCoords(bounds, scale); // why any??
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
-		const { x, y, z } = coord;
-		const name = `X${x}Y${y}Z${z}`;
+		const { X, Y, Z } = coord;
+		const name = `X${X}Y${Y}Z${Z}`;
 		if (Object.keys(tileCache).includes(name)) {
 			return false;
 		} else {
@@ -139,11 +139,12 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 					const canvas: Canvas = createCanvas(256, 256);
 					const ctx: RenderingContext = canvas.getContext('2d');
 					ctx.drawImage(image, 0, 0, 256, 256);
-					const { x, y, z } = tileCoords[index];
-					const name = `X${x}Y${y}Z${z}`;
-					saveTile(name, ctx.getImageData(0, 0, 256, 256).data);
+					const { X, Y, Z } = tileCoords[index];
+					const name = `X${X}Y${Y}Z${Z}`;
+					saveTile(name, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
+			.then(() => console.log(tileCache))
 			.catch((e) => console.log(e));
 	}
 }

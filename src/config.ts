@@ -3,14 +3,10 @@
 import { tiles } from './data';
 
 export const scale: number = 12;
-export const saveTile = (
-	tileName: string,
-	tileData: Uint8ClampedArray
-): void => {
+export const saveTile = (tileName: string, tileData: ImageData): void => {
 	tiles[tileName] = tileData;
 };
-export const retrieveTile = (tileName: string): Uint8ClampedArray =>
-	tiles[tileName];
+export const retrieveTile = (tileName: string): ImageData => tiles[tileName];
 export const tileCache = tiles;
 
 export default {
