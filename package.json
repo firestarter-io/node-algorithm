@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node -r ts-node/register ./src/server.ts",
-		"start:debug": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+		"start:debug": "node --inspect -r ts-node/register ./src/server.ts",
 		"dev": "nodemon",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -20,9 +20,19 @@
 		"watch": [
 			"src"
 		],
-		"exec": "npm start",
+		"exec": "npm run start:debug",
 		"ext": "ts"
 	},
+	"configurations": [
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "Node: Nodemon",
+			"processId": "${command:PickProcess}",
+			"restart": true,
+			"protocol": "inspector"
+		}
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/firestarter-io/node-algorithm.git"
