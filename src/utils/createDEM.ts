@@ -1,25 +1,15 @@
-import { Canvas, createCanvas, Image, loadImage } from 'canvas';
-import type { LatLngBounds, LatLngLiteral } from 'leaflet';
+/**
+ * Firestarter.io
+ *
+ * Utility functions for getting RGB DEM tile images
+ * and converting them to raw rgba pixel data
+ */
+
+import { Canvas, createCanvas, loadImage } from 'canvas';
 import * as xyz from 'xyz-affair';
 
-import { saveTile, tileCache } from '../config';
-
-/**
- * Map tile coordinate object
- */
-interface TileCoord {
-	x: number;
-	y: number;
-	z: number;
-}
-
-/**
- * Abridged map bounds object (just coordinates, no methods)
- */
-interface MapBounds {
-	_southWest: LatLngLiteral;
-	_northEast: LatLngLiteral;
-}
+import { saveTile, tileCache, scale } from '../config';
+import { TileCoord, MapBounds, PointLiteral } from '../types/leaflet.types';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -76,9 +66,43 @@ function getTileCoords(
 }
 
 /**
+ * Take in a projection point and return the tile coordinates { X, Y, Z } of that point
+ * @param {PointLiteral} point
+ */
+export function getTileCoord(point: PointLiteral): TileCoord {
+	return {
+		x: Math.floor(point.x / 256),
+		y: Math.floor(point.y / 256),
+		z: scale,
+	};
+}
+
+/**
+ * Fetch a single rgb tile and save rgb data to cache
+ * @param {TileCoord} tileCoord | Maptile coordinate
+ */
+export async function fetchDEMTile(coord: TileCoord): Promise<void> {
+	const { x, y, z } = coord;
+	const name = `X${x}Y${y}Z${z}`;
+
+	if (!tileCache[name]) {
+		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
+
+		loadImage(url)
+			.then((image: any) => {
+				const canvas: Canvas = createCanvas(256, 256);
+				const ctx: RenderingContext = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, 256, 256);
+				saveTile(name, ctx.getImageData(0, 0, 256, 256).data);
+			})
+			.catch((e) => console.log(e));
+	}
+}
+
+/**
  * Takes in an array of MapBounds and map zoom, finds all Mapbox RGB DEM tiles for those
  * parameters, fetches those tiles, transforms them into their raw RGBA data as Uint8ClampedArrays,
- * stores them in the tiles object
+ * stores them in the tiles cache
  *
  * TODO: store tile rgb data only for a given user session - wipe memory after that
  *
