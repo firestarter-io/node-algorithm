@@ -9,7 +9,7 @@ import { Canvas, createCanvas, loadImage } from 'canvas';
 import * as xyz from 'xyz-affair';
 
 import { saveTile, tileCache, scale } from '../config';
-import { TileCoord, MapBounds, PointLiteral } from '../types/leaflet.types';
+import { TileCoord, MapBounds, PointLiteral } from '../types/gis.types';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -144,7 +144,12 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 					saveTile(name, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
-			.then(() => console.log(tileCache))
+			.then(() =>
+				console.log(
+					'DEM Tiles Succesfully retrieved, decoded, and saved to tileCache'
+				)
+			)
+			// .then(() => console.log(tileCache))
 			.catch((e) => console.log(e));
 	}
 }

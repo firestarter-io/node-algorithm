@@ -6,7 +6,9 @@
 
 import { retrieveTile, tileCache } from '../config';
 import { getTileCoord, fetchDEMTile } from './createDEM';
-import { PointLiteral } from '../types/leaflet.types';
+import { PointLiteral, Topography } from '../types/gis.types';
+import { SphericalMercator } from './projections';
+import { LatLngLiteral, Point } from 'leaflet';
 
 /**
  * Takes in a projected point and returns an elevation
@@ -40,12 +42,47 @@ export async function getElevation(point: PointLiteral): Promise<number> {
  * Takes in ImageData object (created when saving a tile to the store), and xy coordinate
  * of point on tile, returns RGBA value of that pixel from that ImageData's Uint8ClampedArray
  * @param {Object} imgData
- * @param {Number} x
- * @param {Number} y
+ * @param {Number} x | x position of point on tile
+ * @param {Number} y | y position of point on tile
  */
 function getRGBfromImgData(imgData: ImageData, x: number, y: number) {
 	var index = y * imgData.width + x;
 	var i = index * 4;
 	var d = imgData.data;
 	return { R: d[i], G: d[i + 1], B: d[i + 2], A: d[i + 3] };
+}
+
+/**
+ * Takes in an L.LatLng and returns { elevation, slope, aspect }
+ * @param {Object} latlng | L.LatLng
+ * @param userOptions | user options
+ */
+export async function getTopography(latlng: LatLngLiteral, spread: number = 4) {
+	const point: PointLiteral = SphericalMercator.project(latlng);
+	console.log(point);
+	// const pixelDiff = spread;
+	// const projectedN = { ...point, y: point.y - pixelDiff },
+	// 	projectedS = { ...point, y: point.y + pixelDiff },
+	// 	projectedE = { ...point, x: point.x + pixelDiff },
+	// 	projectedW = { ...point, x: point.x - pixelDiff };
+	// const N = L.CRS.EPSG3857.unproject(projectedN as Point);
+	// const S = L.CRS.EPSG3857.unproject(projectedS as Point);
+	// const E = L.CRS.EPSG3857.unproject(projectedE as Point);
+	// const W = L.CRS.EPSG3857.unproject(projectedW as Point);
+	// const elevation = await getElevation({ x: point.x, y: point.y }),
+	// 	eleN = await getElevation(projectedN),
+	// 	eleS = await getElevation(projectedS),
+	// 	eleE = await getElevation(projectedE),
+	// 	eleW = await getElevation(projectedW);
+	// const dx = E.distanceTo(W),
+	// 	dy = N.distanceTo(S);
+	// const dzdx = (eleE - eleW) / dx,
+	// 	dzdy = (eleN - eleS) / dy;
+	// const resolution = (dx + dy) / 2;
+	// const slope = Math.atan(Math.sqrt(dzdx ** 2 + dzdy ** 2)) * (180 / Math.PI);
+	// const aspect =
+	// 	dx !== 0
+	// 		? (Math.atan2(dzdy, dzdx) * (180 / Math.PI) + 180) % 360
+	// 		: (90 * (dy > 0 ? 1 : -1) + 180) % 360;
+	// return { elevation, slope, aspect, resolution };
 }

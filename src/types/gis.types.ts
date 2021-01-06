@@ -30,3 +30,13 @@ export interface MapBounds {
 	_southWest: LatLngLiteral;
 	_northEast: LatLngLiteral;
 }
+
+/**
+ * Topography results object
+ */
+export interface Topography {
+	slope: number;
+	aspect: number;
+	elevation: number;
+	resolution: number;
+}
