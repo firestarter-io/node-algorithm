@@ -2,12 +2,13 @@
  * Firestarter.io
  *
  * Utility functions for Spherical Mercator projections
+ * Adapted from /leaflet/src/geo/projection/Projection.SphericalMercator.js
+ * https://github.com/Leaflet/Leaflet/blob/bc918d4bdc2ba189807bc207c77080fb41ecc196/src/geo/projection/Projection.SphericalMercator.js
  */
 
-// from node_modules/leaflet/src/geo/projection/Projection.SphericalMercator.js
 var earthRadius = 6378137;
 
-export var SphericalMercator = {
+const SphericalMercator = {
 	R: earthRadius,
 	MAX_LATITUDE: 85.0511287798,
 
@@ -37,3 +38,5 @@ export var SphericalMercator = {
 	// 	return new Bounds([-d, -d], [d, d]);
 	// })(),
 };
+
+export default SphericalMercator;

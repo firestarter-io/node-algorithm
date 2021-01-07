@@ -87,15 +87,17 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 
 	if (!tileCache[name]) {
 		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
+		console.log(url);
 
-		loadImage(url)
-			.then((image: any) => {
-				const canvas: Canvas = createCanvas(256, 256);
-				const ctx: RenderingContext = canvas.getContext('2d');
-				ctx.drawImage(image, 0, 0, 256, 256);
-				saveTile(name, ctx.getImageData(0, 0, 256, 256));
-			})
-			.catch((e) => console.log(e));
+		try {
+			const image: any = await loadImage(url);
+			const canvas: Canvas = createCanvas(256, 256);
+			const ctx: RenderingContext = canvas.getContext('2d');
+			ctx.drawImage(image, 0, 0, 256, 256);
+			saveTile(name, ctx.getImageData(0, 0, 256, 256));
+		} catch (e) {
+			console.log(e);
+		}
 	}
 }
 
