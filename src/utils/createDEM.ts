@@ -70,10 +70,17 @@ function getTileCoords(
  * @param {PointLiteral} point
  */
 export function getTileCoord(point: PointLiteral): TileCoord {
-	return {
+	const mod = Math.pow(2, scale);
+
+	const raw = {
 		X: Math.floor(point.x / 256),
 		Y: Math.floor(point.y / 256),
 		Z: scale,
+	};
+	return {
+		X: ((raw.X % mod) + mod) % mod,
+		Y: ((raw.Y % mod) + mod) % mod,
+		Z: raw.Z,
 	};
 }
 
@@ -95,6 +102,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 			const ctx: RenderingContext = canvas.getContext('2d');
 			ctx.drawImage(image, 0, 0, 256, 256);
 			saveTile(name, ctx.getImageData(0, 0, 256, 256));
+			console.log(`tile ${name} saved succesfully`);
 		} catch (e) {
 			console.log(e);
 		}

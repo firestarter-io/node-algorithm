@@ -18,6 +18,7 @@ import { Earth } from './geometry/CRS.Earth';
 export async function getElevation(point: PointLiteral): Promise<number> {
 	const { X, Y, Z } = getTileCoord(point);
 	const tileName = `X${X}Y${Y}Z${Z}`;
+	console.log(`trying to get tile ${tileName}`);
 
 	if (!tileCache[tileName]) {
 		console.log('Tile not yet fetched, fetching tile...');
