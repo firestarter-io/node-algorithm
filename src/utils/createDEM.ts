@@ -18,7 +18,7 @@ import { TileCoord, MapBounds, PointLiteral } from '../types/gis.types';
  */
 const createMapboxRgbUrl = (coord: TileCoord, token: string): string => {
 	const { X, Y, Z } = coord;
-	return `https://api.mapbox.com/v4/mapbox.terrain-rgb/${Z}/${Y}/${X}.pngraw?access_token=${token}`;
+	return `https://api.mapbox.com/v4/mapbox.terrain-rgb/${Z}/${X}/${Y}.pngraw?access_token=${token}`;
 };
 
 /**
@@ -90,11 +90,10 @@ export function getTileCoord(point: PointLiteral): TileCoord {
  */
 export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 	const { X, Y, Z } = coord;
-	const name = `X${X}Y${Y}Z${Z}`;
+	const name = `${Z}/${X}/${Y}`;
 
 	if (!tileCache[name]) {
 		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
-		console.log(url);
 
 		try {
 			const image: any = await loadImage(url);
@@ -124,7 +123,7 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
-		const name = `X${X}Y${Y}Z${Z}`;
+		const name = `${Z}/${X}/${Y}`;
 		if (Object.keys(tileCache).includes(name)) {
 			return false;
 		} else {
@@ -150,7 +149,7 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 					const ctx: RenderingContext = canvas.getContext('2d');
 					ctx.drawImage(image, 0, 0, 256, 256);
 					const { X, Y, Z } = tileCoords[index];
-					const name = `X${X}Y${Y}Z${Z}`;
+					const name = `${Z}/${X}/${Y}`;
 					saveTile(name, ctx.getImageData(0, 0, 256, 256));
 				});
 			})

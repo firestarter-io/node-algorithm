@@ -17,11 +17,10 @@ import { Earth } from './geometry/CRS.Earth';
  */
 export async function getElevation(point: PointLiteral): Promise<number> {
 	const { X, Y, Z } = getTileCoord(point);
-	const tileName = `X${X}Y${Y}Z${Z}`;
-	console.log(`trying to get tile ${tileName}`);
+	const tileName = `${Z}/${X}/${Y}`;
 
 	if (!tileCache[tileName]) {
-		console.log('Tile not yet fetched, fetching tile...');
+		console.log(`Fetching tile ${tileName}`);
 		await fetchDEMTile({ X, Y, Z });
 	}
 
@@ -31,7 +30,7 @@ export async function getElevation(point: PointLiteral): Promise<number> {
 	};
 
 	const RGBA = getRGBfromImgData(
-		retrieveTile[tileName],
+		retrieveTile(tileName),
 		xyPositionOnTile.x,
 		xyPositionOnTile.y
 	);
@@ -66,7 +65,7 @@ export async function getTopography(
 	spread: number = 4
 ) {
 	const point: PointLiteral = project(latlng, zoom);
-	console.log('point', point);
+
 	const pixelDiff = spread;
 
 	const projectedN = { ...point, y: point.y - pixelDiff },
