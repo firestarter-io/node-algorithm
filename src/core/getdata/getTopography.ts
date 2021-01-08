@@ -4,12 +4,12 @@
  * Utility functions for getting elevation, slope, and aspect at a given location
  */
 
-import { retrieveTile, tileCache, scale } from '../config';
+import { retrieveTile, tileCache, scale } from '../../config';
 import { getTileCoord, fetchDEMTile } from './createDEM';
-import { PointLiteral, Topography } from '../types/gis.types';
-import { project, unproject } from './geometry/projections';
+import { PointLiteral, Topography } from '../../types/gis.types';
+import { project, unproject } from '../utils/geometry/projections';
 import { LatLngLiteral, Point } from 'leaflet';
-import { Earth } from './geometry/CRS.Earth';
+import { Earth } from '../utils/geometry/CRS.Earth';
 
 /**
  * Takes in a projected point and returns an elevation
@@ -63,7 +63,7 @@ export async function getTopography(
 	latlng: LatLngLiteral,
 	zoom = scale,
 	spread: number = 4
-) {
+): Promise<Topography> {
 	const point: PointLiteral = project(latlng, zoom);
 
 	const pixelDiff = spread;

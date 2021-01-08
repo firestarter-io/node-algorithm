@@ -8,7 +8,7 @@
  */
 
 import { LatLngExpression, LatLngLiteral } from 'leaflet';
-import { PointLiteral } from '../../types/gis.types';
+import { PointLiteral } from '../../../types/gis.types';
 import { EPSG3857 } from './CRS.EPSG3857';
 import SphericalMercator from './SphericalMercator';
 import { Transformation } from './Transformation';

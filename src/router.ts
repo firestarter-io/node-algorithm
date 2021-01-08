@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { campaign } from './campaign';
+import { campaign } from './controllers/campaign';
 
 const router = express.Router();
 

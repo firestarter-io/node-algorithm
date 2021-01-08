@@ -7,7 +7,7 @@
  *
  */
 
-import { PointLiteral } from '../../types/gis.types';
+import { PointLiteral } from '../../../types/gis.types';
 
 /*
  * @class Transformation

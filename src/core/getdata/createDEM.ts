@@ -8,8 +8,8 @@
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import * as xyz from 'xyz-affair';
 
-import { saveTile, tileCache, scale } from '../config';
-import { TileCoord, MapBounds, PointLiteral } from '../types/gis.types';
+import { saveTile, tileCache, scale } from '../../config';
+import { TileCoord, MapBounds, PointLiteral } from '../../types/gis.types';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
