@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
+import './config';
 import router from './router';
 dotenv.config();
 

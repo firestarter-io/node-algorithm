@@ -1,3 +1,37 @@
+// Get leaflet working in node:
+
+// Create globals so leaflet can load
+global.window = {
+	screen: {
+		// @ts-ignore
+		devicePixelRatio: 1,
+	},
+};
+global.document = {
+	documentElement: {
+		// @ts-ignore
+
+		style: {},
+	},
+	// @ts-ignore
+
+	getElementsByTagName: function () {
+		return [];
+	},
+	// @ts-ignore
+
+	createElement: function () {
+		return {};
+	},
+};
+// @ts-ignore
+
+global.navigator = {
+	userAgent: 'nodejs',
+	platform: 'nodejs',
+};
+global.L = require('leaflet');
+
 // Configuration options for the algorithm
 
 import { tiles } from './data';
