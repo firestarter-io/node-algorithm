@@ -4,11 +4,12 @@
  * Utility functions for getting elevation, slope, and aspect at a given location
  */
 
+import * as L from 'leaflet';
+import { LatLngLiteral, Point } from 'leaflet';
 import { retrieveTile, tileCache, scale } from '../../config';
 import { getTileCoord, fetchDEMTile } from './createDEM';
 import { PointLiteral, Topography } from '../../types/gis.types';
 import { project, unproject } from '../utils/geometry/projections';
-import { LatLngLiteral, Point } from 'leaflet';
 import { Earth } from '../utils/geometry/CRS.Earth';
 
 /**
@@ -64,7 +65,7 @@ export async function getTopography(
 	zoom = scale,
 	spread: number = 4
 ): Promise<Topography> {
-	const point: PointLiteral = project(latlng, zoom);
+	const point: PointLiteral = L.CRS.EPSG3857.latLngToPoint(latlng, zoom);
 
 	const pixelDiff = spread;
 
@@ -73,10 +74,10 @@ export async function getTopography(
 		projectedE = { ...point, x: point.x + pixelDiff },
 		projectedW = { ...point, x: point.x - pixelDiff };
 
-	const N = unproject(projectedN as Point, zoom);
-	const S = unproject(projectedS as Point, zoom);
-	const E = unproject(projectedE as Point, zoom);
-	const W = unproject(projectedW as Point, zoom);
+	const N = L.CRS.EPSG3857.pointToLatLng(projectedN as Point, zoom);
+	const S = L.CRS.EPSG3857.pointToLatLng(projectedS as Point, zoom);
+	const E = L.CRS.EPSG3857.pointToLatLng(projectedE as Point, zoom);
+	const W = L.CRS.EPSG3857.pointToLatLng(projectedW as Point, zoom);
 
 	const elevation = await getElevation({ x: point.x, y: point.y }),
 		eleN = await getElevation(projectedN),

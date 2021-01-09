@@ -9,9 +9,11 @@ export const campaign = async (req, res) => {
 
 	// Get DEM tiles for map bounds
 	mapBounds && createDEM(mapBounds);
-	const topo = await getTopography(latlng);
+	if (latlng) {
+		const topo = await getTopography(latlng);
+		console.log(topo);
+	}
 	latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
-	latlng && zoom && console.log(topo);
 
 	// Pseudocode for new campaign logic flow
 	// process req.body
