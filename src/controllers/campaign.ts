@@ -7,7 +7,7 @@ import { getTopography } from '../core/getData/getTopography';
 import { EsriImageRequest } from '../core/utils/geometry/esri-utils';
 
 export const campaign = async (req, res) => {
-	const { mapBounds, latlng, zoom } = req.body;
+	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
 
 	// Get DEM tiles for map bounds
 	// mapBounds && createDEM(mapBounds);
@@ -31,7 +31,7 @@ export const campaign = async (req, res) => {
 		'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/?f=json'
 	);
 
-	satelliteRequest.fetchImage();
+	pixelBounds && satelliteRequest.fetchImage(pixelBounds);
 
 	res.send('good job ahole');
 };
