@@ -1,8 +1,8 @@
 import fetch from 'node-fetch';
-import { Bounds, latLng, latLngBounds, bounds, point } from 'leaflet';
+import * as L from 'leaflet';
 import { scale } from '../../../config';
+import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
 import { MapBounds } from '../../../types/gis.types';
-import { project, unproject } from './projections';
 
 // convert an extent (ArcGIS) to LatLngBounds (Leaflet)
 export function extentToBounds(extent) {
@@ -34,24 +34,22 @@ export function boundsToExtent(bounds: MapBounds) {
 	};
 }
 
-// https://github.com/Esri/esri-leaflet/blob/5569b703ed9ab2aeb83d57cb55cd1bc940fea38f/src/Layers/RasterLayer.js
-export function calculateBbox(pxBounds) {
-	const min = point(pxBounds.min);
-	const max = point(pxBounds.max);
+/**
+ * Calculates the bounding box of the desired image
+ * @param llBounds | LatLngBounds of desired image
+ * Adjusted from esri-leaflet/src/Layers/RasterLayer.js to not need an L.Map instance
+ */
+export function calculateBbox(llBounds: MapBounds): string {
+	const mapBounds: L.LatLngBounds = latLngBounds(
+		llBounds._southWest,
+		llBounds._northEast
+	);
 
-	console.log(min, max);
-
-	const pixelBounds = bounds(min, max);
-	console.log(pixelBounds);
-
-	var sw = unproject(pixelBounds.getBottomLeft(), scale);
-	var ne = unproject(pixelBounds.getTopRight(), scale);
-
-	var neProjected = project(ne, scale);
-	var swProjected = project(sw, scale);
+	var neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
+	var swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
 
 	// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
-	var boundsProjected = bounds(neProjected as any, swProjected as any);
+	var boundsProjected: Bounds = bounds(neProjected as any, swProjected as any);
 
 	return [
 		boundsProjected.getBottomLeft().x,
@@ -60,6 +58,27 @@ export function calculateBbox(pxBounds) {
 		boundsProjected.getTopRight().y,
 	].join(',');
 }
+
+/**
+ * Calculates size of desired image
+ * @param llBounds | LatLngBounds of desired image
+ */
+export function calculateImageSize(llBounds: MapBounds) {
+	const mapBounds: L.LatLngBounds = latLngBounds(
+		llBounds._southWest,
+		llBounds._northEast
+	);
+
+	const se = mapBounds.getSouthEast();
+	const nw = mapBounds.getNorthWest();
+
+	let topLeft = L.CRS.EPSG3857.latLngToPoint(nw, scale);
+	let bottomRight = L.CRS.EPSG3857.latLngToPoint(se, scale);
+
+	const pixelBounds = bounds(topLeft, bottomRight);
+	console.log(pixelBounds);
+}
+// https://github.com/Esri/esri-leaflet/blob/5569b703ed9ab2aeb83d57cb55cd1bc940fea38f/src/Layers/RasterLayer.js
 
 /**
  * Util class for creating esri image requests
@@ -82,11 +101,11 @@ export class EsriImageRequest {
 	}
 
 	// request image based on bounds
-	async fetchImage(pixelBounds) {
+	async fetchImage(llBounds: MapBounds) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
-		const hello = calculateBbox(pixelBounds);
-		console.log(hello);
+		const hello = calculateImageSize(llBounds);
+		// console.log(hello);
 	}
 }

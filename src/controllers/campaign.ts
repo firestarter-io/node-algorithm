@@ -31,7 +31,7 @@ export const campaign = async (req, res) => {
 		'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/?f=json'
 	);
 
-	pixelBounds && satelliteRequest.fetchImage(pixelBounds);
+	mapBounds && satelliteRequest.fetchImage(mapBounds[0]);
 
 	res.send('good job ahole');
 };
