@@ -61,6 +61,7 @@
 		"express": "^4.17.1",
 		"leaflet": "^1.7.1",
 		"leaflet-geometryutil": "^0.9.3",
+		"node-fetch": "^2.6.1",
 		"xyz-affair": "^0.9.1"
 	}
 }
