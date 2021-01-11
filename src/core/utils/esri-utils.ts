@@ -8,10 +8,40 @@
 
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
-import { scale } from '../../../config';
+import { scale } from '../../config';
 import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
-import { MapBounds } from '../../../types/gis.types';
-import { roundValues } from '../math';
+import { MapBounds } from '../../types/gis.types';
+import { ImageRequestOptions } from '../../types/esri.types';
+
+/**
+ * Token getter function for ESRI authenticated services
+ * @param client_id | Esri client ID
+ * @param client_secret | Esri Client Secret
+ * @param expiration | Token expiration time
+ */
+export async function getEsriToken(
+	client_id: string,
+	client_secret: string,
+	expiration: number = 3.6e6
+) {
+	const authservice = 'https://www.arcgis.com/sharing/rest/oauth2/token';
+	const url = `${authservice}?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials&expiration=${expiration}`;
+
+	let token: undefined | string;
+
+	await fetch(url, {
+		method: 'POST',
+	})
+		.then((res) => res.json())
+		.then((res) => {
+			token = res.access_token;
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+
+	return token;
+}
 
 // convert an extent (ArcGIS) to LatLngBounds (Leaflet)
 export function extentToBounds(extent) {
@@ -60,7 +90,7 @@ export class EsriImageRequest {
 	 * fetch layer JSON and store in instance
 	 */
 	async _fetchJson() {
-		const response = await fetch(this._url);
+		const response = await fetch(this._url + '?f=json');
 		const esriJSON = await response.json();
 		this._layerJSON = esriJSON;
 	}
@@ -69,12 +99,13 @@ export class EsriImageRequest {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	async fetchImage(llBounds: MapBounds) {
+	async fetchImage(llBounds: MapBounds, options?: ImageRequestOptions) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
-		const hello = this._calculateImageSize(llBounds);
-		// console.log(hello);
+		const params = this._buildExportParams(llBounds, options);
+		var fullUrl = this._url + 'exportImage' + L.Util.getParamString(params);
+		console.log(fullUrl);
 	}
 
 	/**
@@ -126,6 +157,37 @@ export class EsriImageRequest {
 			boundsProjected.getTopRight().x,
 			boundsProjected.getTopRight().y,
 		].join(',');
+	}
+
+	/**
+	 * Function to build export parameters for esri request of desired image
+	 * @param llBounds | Map bounds of desired image
+	 * @param options | Options
+	 */
+	_buildExportParams(llBounds: MapBounds, options?: ImageRequestOptions) {
+		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
+		const params: any = {
+			bbox: this._calculateBbox(llBounds),
+			size: this._calculateImageSize(llBounds),
+			format: options?.format || 'png',
+			bboxSR: sr,
+			imageSR: sr,
+			f: options?.format || 'image',
+		};
+
+		if (options?.token) {
+			params.token = options.token;
+		}
+
+		if (options?.renderingRule) {
+			params.renderingRule = JSON.stringify(options.renderingRule);
+		}
+
+		if (options?.mosaicRule) {
+			params.mosaicRule = JSON.stringify(options.mosaicRule);
+		}
+
+		return params;
 	}
 
 	/**

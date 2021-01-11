@@ -10,7 +10,7 @@ import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
-import { EsriImageRequest } from '../core/utils/geometry/esri-utils';
+import { EsriImageRequest } from '../core/utils/esri-utils';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
@@ -34,7 +34,7 @@ export const campaign = async (req, res) => {
 	// 	.then((r) => console.log(r));
 
 	const satelliteRequest = new EsriImageRequest(
-		'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/?f=json'
+		'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
 	);
 
 	mapBounds && satelliteRequest.fetchImage(mapBounds[0]);

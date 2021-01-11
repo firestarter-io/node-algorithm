@@ -10,7 +10,6 @@ import * as xyz from 'xyz-affair';
 
 import { saveTile, tileCache, scale } from '../../config';
 import { TileCoord, MapBounds, PointLiteral } from '../../types/gis.types';
-import { boundsToExtent } from '../utils/geometry/esri-utils';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -120,10 +119,6 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
  * @param {Number} scale | Zoom level of tiles
  */
 export function createDEM(bounds: MapBounds[], scale: number = 12) {
-	bounds.forEach((bound) => {
-		console.log('extent', boundsToExtent(bound));
-	});
-
 	let tileCoords: any = getTileCoords(bounds, scale); // why any??
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
