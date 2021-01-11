@@ -121,8 +121,8 @@ export class EsriImageRequest {
 		const se = mapBounds.getSouthEast();
 		const nw = mapBounds.getNorthWest();
 
-		let topLeft = L.CRS.EPSG3857.latLngToPoint(nw, scale);
-		let bottomRight = L.CRS.EPSG3857.latLngToPoint(se, scale);
+		const topLeft = L.CRS.EPSG3857.latLngToPoint(nw, scale);
+		const bottomRight = L.CRS.EPSG3857.latLngToPoint(se, scale);
 
 		const pixelBounds = bounds(topLeft, bottomRight);
 
@@ -142,8 +142,12 @@ export class EsriImageRequest {
 			llBounds._northEast
 		);
 
-		var neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
-		var swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
+		const neProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getNorthEast()
+		);
+		const swProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getSouthWest()
+		);
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(
