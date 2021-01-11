@@ -1,3 +1,9 @@
+/**
+ * Firestarter.io
+ *
+ * Routes for /api/campaign
+ */
+
 // POST /api/campaign
 
 import fetch from 'node-fetch';
