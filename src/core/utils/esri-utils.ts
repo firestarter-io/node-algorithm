@@ -104,7 +104,7 @@ export class EsriImageRequest {
 			await this._fetchJson();
 		}
 		const params = this._buildExportParams(llBounds, options);
-		var fullUrl = this._url + 'exportImage' + L.Util.getParamString(params);
+		var fullUrl = this._url + '/exportImage' + L.Util.getParamString(params);
 		console.log(fullUrl);
 	}
 

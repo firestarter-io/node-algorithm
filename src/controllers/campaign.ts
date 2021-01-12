@@ -10,7 +10,8 @@ import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
-import { EsriImageRequest } from '../core/utils/esri-utils';
+import { EsriImageRequest, getEsriToken } from '../core/utils/esri-utils';
+import { MapBounds } from '../types/gis.types';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
@@ -33,11 +34,27 @@ export const campaign = async (req, res) => {
 	// 	.then((res) => res.json())
 	// 	.then((r) => console.log(r));
 
-	const satelliteRequest = new EsriImageRequest(
-		'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
-	);
+	if (mapBounds) {
+		const paddedBounds = mapBounds.map((bounds: MapBounds) =>
+			L.latLngBounds(bounds._southWest, bounds._northEast).pad(0.5)
+		);
+		const satelliteRequest = new EsriImageRequest(
+			'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
+		);
 
-	mapBounds && satelliteRequest.fetchImage(mapBounds[0]);
+		satelliteRequest.fetchImage(paddedBounds[0]);
+
+		getEsriToken(
+			process.env.ESRI_FS_CLIENT_ID,
+			process.env.ESRI_FS_CLIENT_SECRET
+		).then((token) => {
+			const groundCoverRequest = new EsriImageRequest(
+				'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
+			);
+
+			groundCoverRequest.fetchImage(paddedBounds[0], { token });
+		});
+	}
 
 	res.send('good job ahole');
 };
