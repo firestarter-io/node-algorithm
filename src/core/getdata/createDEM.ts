@@ -10,7 +10,6 @@ import * as xyz from 'xyz-affair';
 
 import { saveTile, tileCache, scale } from '../../config';
 import { TileCoord, MapBounds, PointLiteral } from '../../types/gis.types';
-import { boundsToExtent } from '../utils/geometry/esri-utils';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -116,15 +115,14 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
  *
  * TODO: store tile rgb data only for a given user session - wipe memory after that
  *
- * @param {Array} bounds | Array of MapBounds objects
+ * @param {Array} latLngBoundsArray | Array of MapBounds objects
  * @param {Number} scale | Zoom level of tiles
  */
-export function createDEM(bounds: MapBounds[], scale: number = 12) {
-	bounds.forEach((bound) => {
-		console.log('extent', boundsToExtent(bound));
-	});
-
-	let tileCoords: any = getTileCoords(bounds, scale); // why any??
+export async function createDEM(
+	latLngBoundsArray: MapBounds[],
+	scale: number = 12
+) {
+	let tileCoords: any = getTileCoords(latLngBoundsArray, scale); // why any??
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
@@ -142,7 +140,7 @@ export function createDEM(bounds: MapBounds[], scale: number = 12) {
 			'Map bounds and zoom comprised of over 20 tiles.  Consider smaller bounds or zoom.  Aborting tile fetching.'
 		);
 	} else {
-		Promise.all<CanvasImageSource>(
+		await Promise.all<CanvasImageSource>(
 			tileCoords.map((coord: TileCoord) => {
 				const url = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
 				return loadImage(url);

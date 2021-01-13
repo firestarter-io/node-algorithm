@@ -1,4 +1,10 @@
-// Get leaflet working in node:
+/**
+ * Firestarter.io
+ *
+ * Setup and configuration
+ */
+
+//  -----------Get leaflet working in node ----------------- //
 
 // Create globals so leaflet can load
 global.window = {
@@ -10,29 +16,25 @@ global.window = {
 global.document = {
 	documentElement: {
 		// @ts-ignore
-
 		style: {},
 	},
 	// @ts-ignore
-
 	getElementsByTagName: function () {
 		return [];
 	},
 	// @ts-ignore
-
 	createElement: function () {
 		return {};
 	},
 };
 // @ts-ignore
-
 global.navigator = {
 	userAgent: 'nodejs',
 	platform: 'nodejs',
 };
 global.L = require('leaflet');
 
-// Configuration options for the algorithm
+// -------  Configuration options for the algorithm ----------------- //
 
 import { tiles } from './data';
 
