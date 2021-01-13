@@ -40,6 +40,7 @@ export async function getEsriToken(
 		})
 		.catch((error) => {
 			console.error(error);
+			return error;
 		});
 
 	return token;
@@ -160,12 +161,8 @@ export class EsriImageRequest {
 			llBounds._northEast
 		);
 
-		const neProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getNorthEast()
-		);
-		const swProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getSouthWest()
-		);
+		const neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
+		const swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(

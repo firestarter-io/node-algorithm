@@ -6,7 +6,6 @@
 
 // POST /api/campaign
 
-import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
@@ -28,12 +27,6 @@ export const campaign = async (req, res) => {
 	// .then(calculate fire spread step by step)
 	// .then(return response to client)
 
-	// fetch(
-	// 	'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/?f=json'
-	// )
-	// 	.then((res) => res.json())
-	// 	.then((r) => console.log(r));
-
 	if (mapBounds) {
 		const paddedBounds = mapBounds.map((bounds: MapBounds) =>
 			L.latLngBounds(bounds._southWest, bounds._northEast).pad(0.5)
@@ -47,12 +40,14 @@ export const campaign = async (req, res) => {
 		getEsriToken(
 			process.env.ESRI_FS_CLIENT_ID,
 			process.env.ESRI_FS_CLIENT_SECRET
-		).then((token) => {
-			const groundCoverRequest = new EsriImageRequest(
-				'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
-			);
-			groundCoverRequest.fetchImage(paddedBounds, { token });
-		});
+		)
+			.then((token) => {
+				const groundCoverRequest = new EsriImageRequest(
+					'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
+				);
+				groundCoverRequest.fetchImage(paddedBounds, { token });
+			})
+			.catch((e) => console.log(e));
 	}
 
 	res.send('good job ahole');
