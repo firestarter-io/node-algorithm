@@ -38,11 +38,11 @@ export const campaign = async (req, res) => {
 		const paddedBounds = mapBounds.map((bounds: MapBounds) =>
 			L.latLngBounds(bounds._southWest, bounds._northEast).pad(0.5)
 		);
-		const satelliteRequest = new EsriImageRequest(
-			'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
-		);
 
-		satelliteRequest.fetchImage(paddedBounds[0]);
+		// const satelliteRequest = new EsriImageRequest(
+		// 	'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
+		// );
+		// satelliteRequest.fetchImage(paddedBounds);
 
 		getEsriToken(
 			process.env.ESRI_FS_CLIENT_ID,
@@ -51,8 +51,7 @@ export const campaign = async (req, res) => {
 			const groundCoverRequest = new EsriImageRequest(
 				'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
 			);
-
-			groundCoverRequest.fetchImage(paddedBounds[0], { token });
+			groundCoverRequest.fetchImage(paddedBounds, { token });
 		});
 	}
 

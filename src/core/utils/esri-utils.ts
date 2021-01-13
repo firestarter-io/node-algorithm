@@ -12,6 +12,8 @@ import { scale } from '../../config';
 import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
 import { MapBounds } from '../../types/gis.types';
 import { ImageRequestOptions } from '../../types/esri.types';
+import { loadImage, Image } from 'canvas';
+import { simplifyBoundsArray } from './geometry/Bounds';
 
 /**
  * Token getter function for ESRI authenticated services
@@ -99,13 +101,29 @@ export class EsriImageRequest {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	async fetchImage(llBounds: MapBounds, options?: ImageRequestOptions) {
+	async fetchImage(
+		latLngBoundsArray: MapBounds[],
+		options?: ImageRequestOptions
+	) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
-		const params = this._buildExportParams(llBounds, options);
-		var fullUrl = this._url + '/exportImage' + L.Util.getParamString(params);
-		console.log(fullUrl);
+
+		latLngBoundsArray = simplifyBoundsArray(latLngBoundsArray);
+
+		await Promise.all(
+			latLngBoundsArray.map((llBounds: MapBounds) => {
+				const params = this._buildExportParams(llBounds, options);
+				var fullUrl =
+					this._url + '/exportImage' + L.Util.getParamString(params);
+				console.log('fullUrl', fullUrl);
+				return loadImage(fullUrl);
+			})
+		).then((images: Image[]): void => {
+			images.forEach((image: Image) => {
+				console.log(image);
+			});
+		});
 	}
 
 	/**
