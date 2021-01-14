@@ -33,6 +33,7 @@ global.navigator = {
 	platform: 'nodejs',
 };
 global.L = require('leaflet');
+global.URL = require('url').URL;
 
 // -------  Configuration options for the algorithm ----------------- //
 

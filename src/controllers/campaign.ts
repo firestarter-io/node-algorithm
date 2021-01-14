@@ -11,9 +11,19 @@ import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
 import { EsriImageRequest, getEsriToken } from '../core/utils/esri-utils';
 import { MapBounds } from '../types/gis.types';
+import { configure } from '../../../../../../../Documents/GitHub/leaflet-topography/build/leaflet-topography.js';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
+
+	configure({
+		token: process.env.MAPBOX_TOKEN,
+	});
+
+	// leaflet-topography testing in node.js
+	if (latlng) {
+		console.log(latlng);
+	}
 
 	// Get DEM tiles for map bounds
 	// mapBounds && createDEM(mapBounds);
