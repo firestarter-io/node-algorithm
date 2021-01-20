@@ -39,20 +39,36 @@ export const campaign = async (req, res) => {
 			L.latLngBounds(bounds._southWest, bounds._northEast).pad(0.5)
 		);
 
+		// SATELLITE IMAGERY IMAGE REQUEST --------------------------------------------
 		// const satelliteRequest = new EsriImageRequest(
 		// 	'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
 		// );
 		// satelliteRequest.fetchImage(paddedBounds);
 
-		getEsriToken(
-			process.env.ESRI_FS_CLIENT_ID,
-			process.env.ESRI_FS_CLIENT_SECRET
-		).then((token) => {
-			const groundCoverRequest = new EsriImageRequest(
-				'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
-			);
-			groundCoverRequest.fetchImage(paddedBounds, { token });
+		// GROUNDCOVER IMAGE REQUEST (AUTHENTICATED) ----------------------------------
+		// getEsriToken(
+		// 	process.env.ESRI_FS_CLIENT_ID,
+		// 	process.env.ESRI_FS_CLIENT_SECRET
+		// ).then((token) => {
+		// 	const groundCoverRequest = new EsriImageRequest(
+		// 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
+		// 	);
+		// 	groundCoverRequest.fetchImage(paddedBounds, { token });
+		// });
+
+		// LANDFIRE VEGETATION CONDITION CLASS REQUEST ---------------------------------
+		const landfireVCCRequest = new EsriImageRequest({
+			url:
+				'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
+			exportType: 'export',
+			f: 'image',
+			format: 'png32',
+			sr: '102100',
+			sublayer: '30',
+			dpi: '96',
 		});
+
+		landfireVCCRequest.fetchImage(mapBounds);
 	}
 
 	res.send('good job ahole');

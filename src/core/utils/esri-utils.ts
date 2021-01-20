@@ -75,17 +75,23 @@ export function boundsToExtent(bounds: MapBounds) {
 	};
 }
 
+interface NewRequestOptions extends ImageRequestOptions {
+	url: string;
+}
+
 /**
  * Util class for creating esri image requests
  */
 export class EsriImageRequest {
 	_url: string;
+	_options: ImageRequestOptions;
 	_bounds: Bounds;
 	_layerJSON: any;
 
-	constructor(url: string, bounds?: Bounds) {
-		this._url = url;
-		this._bounds = bounds;
+	constructor(options: NewRequestOptions) {
+		const { url, ...rest } = options;
+		this._url = options.url;
+		this._options = rest;
 	}
 
 	/**
@@ -101,10 +107,7 @@ export class EsriImageRequest {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	async fetchImage(
-		latLngBoundsArray: MapBounds[],
-		options?: ImageRequestOptions
-	) {
+	async fetchImage(latLngBoundsArray: MapBounds[]) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
@@ -113,10 +116,11 @@ export class EsriImageRequest {
 
 		await Promise.all(
 			latLngBoundsArray.map((llBounds: MapBounds) => {
-				const params = this._buildExportParams(llBounds, options);
+				const exportType = this._options?.exportType || 'exportImage';
+				const params = this._buildExportParams(llBounds);
 				var fullUrl =
-					this._url + '/exportImage' + L.Util.getParamString(params);
-				console.log('fullUrl', fullUrl);
+					this._url + `/${exportType}` + L.Util.getParamString(params);
+				console.log('fullUrl:\n', fullUrl);
 				return loadImage(fullUrl);
 			})
 		).then((images: Image[]): void => {
@@ -186,28 +190,41 @@ export class EsriImageRequest {
 	 * @param llBounds | Map bounds of desired image
 	 * @param options | Options
 	 */
-	_buildExportParams(llBounds: MapBounds, options?: ImageRequestOptions) {
+	_buildExportParams(llBounds: MapBounds) {
 		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
 		const params: any = {
 			bbox: this._calculateBbox(llBounds),
 			size: this._calculateImageSize(llBounds),
-			format: options?.format || 'png',
+			format: this._options?.format || 'png',
 			bboxSR: sr,
 			imageSR: sr,
-			f: options?.format || 'image',
+			f: this._options?.f || 'image',
 		};
 
-		if (options?.token) {
-			params.token = options.token;
+		if (this._options?.token) {
+			params.token = this._options.token;
 		}
 
-		if (options?.renderingRule) {
-			params.renderingRule = JSON.stringify(options.renderingRule);
+		if (this._options?.renderingRule) {
+			params.renderingRule = JSON.stringify(this._options.renderingRule);
 		}
 
-		if (options?.mosaicRule) {
-			params.mosaicRule = JSON.stringify(options.mosaicRule);
+		if (this._options?.mosaicRule) {
+			params.mosaicRule = JSON.stringify(this._options.mosaicRule);
 		}
+
+		if (this._options?.sr) {
+			params.bboxSR = this._options.sr;
+			params.imageSR = this._options.sr;
+		}
+
+		if (this._options?.sublayer) {
+			params.layers = `show:${this._options.sublayer}`;
+		}
+
+		// if (this._options?.f) {
+		// 	params.f = this._options.f;
+		// }
 
 		return params;
 	}
