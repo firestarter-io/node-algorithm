@@ -12,7 +12,7 @@ import { scale } from '../../config';
 import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
 import { MapBounds } from '../../types/gis.types';
 import { ImageRequestOptions } from '../../types/esri.types';
-import { loadImage, Image } from 'canvas';
+import { loadImage, Image, createCanvas } from 'canvas';
 import { simplifyBoundsArray } from './geometry/Bounds';
 
 /**
@@ -222,11 +222,45 @@ export class EsriImageRequest {
 			params.layers = `show:${this._options.sublayer}`;
 		}
 
-		// if (this._options?.f) {
-		// 	params.f = this._options.f;
-		// }
-
 		return params;
+	}
+
+	async generateLegend() {
+		const legendUrl = `${this._url}/legend?f=pjson`;
+		let layerJSON, legend, rgbValues;
+
+		const canvas = createCanvas(20, 20);
+		const ctx = canvas.getContext('2d');
+
+		// Get JSON of layer / sublayer's legend
+		await fetch(legendUrl)
+			.then((res) => res.json())
+			.then((data) => {
+				const layerId = this._options.sublayer || 0;
+				layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+			});
+
+		// Transform legend array images into rgbValues
+		await Promise.all(
+			layerJSON.legend.map((symbol) =>
+				loadImage(`data:image/png;base64,${symbol.imageData}`)
+			)
+		).then((symbolImages) => {
+			rgbValues = symbolImages.map((image) => {
+				ctx.drawImage(image, 0, 0);
+				const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
+				console.log({ R, G, B, A });
+				return { R, G, B, A };
+			});
+			return rgbValues;
+		});
+
+		legend = await layerJSON.legend.map((symbol, ind) => ({
+			...symbol,
+			rgbvalue: rgbValues[ind],
+		}));
+
+		return legend;
 	}
 
 	/**

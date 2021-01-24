@@ -4,6 +4,7 @@ import * as bp from 'body-parser';
 import * as cors from 'cors';
 import './config';
 import router from './router';
+import { EsriImageRequest } from './core/utils/esri-utils';
 dotenv.config();
 
 // Set up app
@@ -17,6 +18,19 @@ app.use(cors());
 
 // Set up routes
 app.use('/', router);
+
+const landfireVCCRequest = (globalThis.landfireVCCRequest = new EsriImageRequest(
+	{
+		url:
+			'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
+		exportType: 'export',
+		f: 'image',
+		format: 'png32',
+		sr: '102100',
+		sublayer: '30',
+		dpi: '96',
+	}
+));
 
 // Start server
 app.listen(port, () => {
