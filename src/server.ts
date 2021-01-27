@@ -19,19 +19,6 @@ app.use(cors());
 // Set up routes
 app.use('/', router);
 
-const landfireVCCRequest = (globalThis.landfireVCCRequest = new EsriImageRequest(
-	{
-		url:
-			'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
-		exportType: 'export',
-		f: 'image',
-		format: 'png32',
-		sr: '102100',
-		sublayer: '30',
-		dpi: '96',
-	}
-));
-
 // Start server
 app.listen(port, () => {
 	console.log(`App is listening on port ${port}`);

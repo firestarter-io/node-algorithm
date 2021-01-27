@@ -85,13 +85,15 @@ interface NewRequestOptions extends ImageRequestOptions {
 export class EsriImageRequest {
 	_url: string;
 	_options: ImageRequestOptions;
-	_bounds: Bounds;
+	_bounds: L.LatLngBoundsLiteral;
 	_layerJSON: any;
+	_bboxes: Bounds[];
 
 	constructor(options: NewRequestOptions) {
 		const { url, ...rest } = options;
 		this._url = options.url;
 		this._options = rest;
+		this._bboxes = [];
 	}
 
 	/**
@@ -125,7 +127,7 @@ export class EsriImageRequest {
 			})
 		).then((images: Image[]): void => {
 			images.forEach((image: Image) => {
-				console.log(image);
+				// TODO: save image data to canvas for later pixel-by-pixel availability
 			});
 		});
 	}
@@ -177,12 +179,39 @@ export class EsriImageRequest {
 			swProjected as any
 		);
 
+		this._bboxes.push(boundsProjected);
+
 		return [
 			boundsProjected.getBottomLeft().x,
 			boundsProjected.getBottomLeft().y,
 			boundsProjected.getTopRight().x,
 			boundsProjected.getTopRight().y,
 		].join(',');
+	}
+
+	/**
+	 * Function to get the pixel value of the esri image at the given latlng
+	 * @param latLng | LatLng
+	 */
+	getPixelAt(latLng: L.LatLngLiteral) {
+		const projectedPoint = L.CRS.EPSG3857.project(latLng);
+		const boundingBox = this._bboxes.find((box) =>
+			box.contains(projectedPoint)
+		);
+		const size = boundingBox.getSize();
+		// const position = boundingBox.getBottomLeft().subtract(projectedPoint);
+		const position = projectedPoint.subtract(boundingBox.getBottomLeft());
+
+		console.log('projectedPoint', projectedPoint);
+		console.log(
+			'boundingBox',
+			boundingBox,
+			'\n\nsize',
+			size,
+			'\n\nposition',
+			position
+		);
+		console.log(size.x / size.y);
 	}
 
 	/**

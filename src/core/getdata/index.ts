@@ -4,9 +4,9 @@
  * Code to get all required data to run model
  */
 
-import { MapBounds } from '../../types/gis.types';
-import { EsriImageRequest } from '../utils/esri-utils';
+import { groundcoverRequest, landfireVCCRequest } from './rasterSources';
 import { createDEM } from './createDEM';
+import { MapBounds } from '../../types/gis.types';
 
 export async function getData(latLngBoundsArray: MapBounds[]) {
 	/**
@@ -15,9 +15,7 @@ export async function getData(latLngBoundsArray: MapBounds[]) {
 	const DEMpromise = createDEM(latLngBoundsArray);
 
 	/**
-	 * Promise to get groundcover image data
+	 * Promise to get LANDFIRE vegetation coverage raster data
 	 */
-	const groundcoverRequest = new EsriImageRequest(
-		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
-	);
+	const LFVCCpromise = landfireVCCRequest.fetchImage(latLngBoundsArray);
 }
