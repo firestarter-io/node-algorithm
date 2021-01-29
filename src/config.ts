@@ -36,10 +36,10 @@ global.L = require('leaflet');
 
 // -------  Configuration options for the algorithm ----------------- //
 
-import { tiles } from './data';
+import { DEMtiles } from './data';
 
 export const scale: number = 12;
-export const tileCache = tiles;
+export const tileCache = DEMtiles;
 
 /**
  * Saves tile image data to specified storage location
@@ -47,14 +47,15 @@ export const tileCache = tiles;
  * @param {ImageData} tileData | ImageData for tile
  */
 export const saveTile = (tileName: string, tileData: ImageData): void => {
-	tiles[tileName] = tileData;
+	tileCache[tileName] = tileData;
 };
 
 /**
  * Given the tile name, retrieves the tile ImageData
  * @param {String} tileName | Name of tile in the format of X<X>Y<Y>Z<Z>
  */
-export const retrieveTile = (tileName: string): ImageData => tiles[tileName];
+export const retrieveTile = (tileName: string): ImageData =>
+	tileCache[tileName];
 
 export default {
 	scale,

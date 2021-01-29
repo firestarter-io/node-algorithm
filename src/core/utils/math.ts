@@ -51,28 +51,3 @@ export function compareObjectWithTolerance<T>(
 	});
 	return !sames.some((c) => !c);
 }
-
-/**
- * Utility class for working wit RGBA values
- */
-export class RGBA {
-	R: number;
-	G: number;
-	B: number;
-	A: number;
-
-	constructor(R: number, G: number, B: number, A: number) {
-		this.R = R;
-		this.G = G;
-		this.B = B;
-		this.A = A;
-	}
-
-	matches(RGBA, tolerance: number = 1): boolean {
-		return compareObjectWithTolerance(
-			{ R: this.R, G: this.G, B: this.B, A: this.A },
-			RGBA,
-			tolerance
-		);
-	}
-}

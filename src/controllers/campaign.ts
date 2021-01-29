@@ -12,24 +12,17 @@ import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
 import { EsriImageRequest, getEsriToken } from '../core/utils/esri-utils';
 import { MapBounds } from '../types/gis.types';
-
-const landfireVCCRequest = new EsriImageRequest({
-	url:
-		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
-	exportType: 'export',
-	f: 'image',
-	format: 'png32',
-	sr: '102100',
-	sublayer: '30',
-	dpi: '96',
-});
+import { landfireVCCRequest } from '../core/getdata/rasterSources';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
 
 	// Get DEM tiles for map bounds
-	// mapBounds && createDEM(mapBounds);
-	// const topo = await getTopography(latlng);
+	mapBounds && createDEM(mapBounds);
+	if (latlng) {
+		const topo = await getTopography(latlng);
+		console.log(topo);
+	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
 	// latlng && zoom && console.log(topo);
 

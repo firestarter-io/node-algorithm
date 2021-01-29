@@ -5,6 +5,7 @@
  */
 
 import { EsriImageRequest } from '../utils/esri-utils';
+import { vegetationClassCache, groundcoverCache } from '../../data';
 
 export const landfireVCCRequest = new EsriImageRequest({
 	url:
@@ -15,9 +16,11 @@ export const landfireVCCRequest = new EsriImageRequest({
 	sr: '102100',
 	sublayer: '30',
 	dpi: '96',
+	dataCache: vegetationClassCache,
 });
 
 export const groundcoverRequest = new EsriImageRequest({
 	url:
 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
+	dataCache: groundcoverCache,
 });

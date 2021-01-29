@@ -14,6 +14,8 @@ import { MapBounds } from '../../types/gis.types';
 import { ImageRequestOptions } from '../../types/esri.types';
 import { loadImage, Image, createCanvas } from 'canvas';
 import { simplifyBoundsArray } from './geometry/Bounds';
+import { ImageDataCache } from '../../data';
+import { getRGBfromImgData } from './rgba';
 
 /**
  * Token getter function for ESRI authenticated services
@@ -87,13 +89,15 @@ export class EsriImageRequest {
 	_options: ImageRequestOptions;
 	_bounds: L.LatLngBoundsLiteral;
 	_layerJSON: any;
-	_bboxes: Bounds[];
+	_bboxes: { bounds: Bounds; url: string }[];
+	_cache: ImageDataCache;
 
 	constructor(options: NewRequestOptions) {
 		const { url, ...rest } = options;
 		this._url = options.url;
 		this._options = rest;
 		this._bboxes = [];
+		this._cache = options.dataCache;
 	}
 
 	/**
@@ -116,18 +120,26 @@ export class EsriImageRequest {
 
 		latLngBoundsArray = simplifyBoundsArray(latLngBoundsArray);
 
+		const fullUrls = latLngBoundsArray.map((llBounds: MapBounds) =>
+			this._buildImageUrl(llBounds)
+		);
+
 		await Promise.all(
-			latLngBoundsArray.map((llBounds: MapBounds) => {
-				const exportType = this._options?.exportType || 'exportImage';
-				const params = this._buildExportParams(llBounds);
-				var fullUrl =
-					this._url + `/${exportType}` + L.Util.getParamString(params);
-				console.log('fullUrl:\n', fullUrl);
-				return loadImage(fullUrl);
+			latLngBoundsArray.map((llBounds: MapBounds, i: number) => {
+				console.log('fullUrl:\n', fullUrls[i]);
+				return loadImage(fullUrls[i]);
 			})
 		).then((images: Image[]): void => {
-			images.forEach((image: Image) => {
-				// TODO: save image data to canvas for later pixel-by-pixel availability
+			images.forEach((image: Image, i: number) => {
+				const canvas = createCanvas(image.width, image.height);
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, image.width, image.height);
+				this._cache[fullUrls[i]] = ctx.getImageData(
+					0,
+					0,
+					image.width,
+					image.height
+				);
 			});
 		});
 	}
@@ -179,8 +191,6 @@ export class EsriImageRequest {
 			swProjected as any
 		);
 
-		this._bboxes.push(boundsProjected);
-
 		return [
 			boundsProjected.getBottomLeft().x,
 			boundsProjected.getBottomLeft().y,
@@ -190,28 +200,89 @@ export class EsriImageRequest {
 	}
 
 	/**
+	 * Takes in a map bounds and generates the image url for those bounds
+	 * @param llBounds | Map bounds object
+	 */
+	_buildImageUrl(llBounds: MapBounds): string {
+		// Duplicate logic from getBbox - can be more DRY?
+		const mapBounds: L.LatLngBounds = latLngBounds(
+			llBounds._southWest,
+			llBounds._northEast
+		);
+
+		const neProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getNorthEast()
+		);
+		const swProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getSouthWest()
+		);
+
+		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
+		var boundsProjected: Bounds = bounds(
+			neProjected as any,
+			swProjected as any
+		);
+
+		const exportType = this._options?.exportType || 'exportImage';
+		const params = this._buildExportParams(llBounds);
+		var fullUrl =
+			this._url + `/${exportType}` + L.Util.getParamString(params);
+
+		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
+		this._bboxes.push({
+			bounds: boundsProjected,
+			url: fullUrl,
+		});
+
+		return fullUrl;
+	}
+
+	/**
 	 * Function to get the pixel value of the esri image at the given latlng
 	 * @param latLng | LatLng
 	 */
 	getPixelAt(latLng: L.LatLngLiteral) {
 		const projectedPoint = L.CRS.EPSG3857.project(latLng);
-		const boundingBox = this._bboxes.find((box) =>
-			box.contains(projectedPoint)
+		const { bounds, url } = this._bboxes.find((box) =>
+			box.bounds.contains(projectedPoint)
 		);
-		const size = boundingBox.getSize();
-		// const position = boundingBox.getBottomLeft().subtract(projectedPoint);
-		const position = projectedPoint.subtract(boundingBox.getBottomLeft());
 
-		console.log('projectedPoint', projectedPoint);
-		console.log(
-			'boundingBox',
-			boundingBox,
-			'\n\nsize',
-			size,
-			'\n\nposition',
-			position
+		const size = bounds.getSize();
+		const position = projectedPoint.subtract(bounds.getBottomLeft());
+
+		const xRatio = Math.abs(position.x / size.x);
+		const yRatio = Math.abs(position.y / size.y);
+
+		const imageData = this._cache[url];
+
+		const xPositionOnImage = Math.floor(xRatio * imageData.width);
+		const yPositionOnImage = Math.floor(yRatio * imageData.height);
+
+		const RGBA = getRGBfromImgData(
+			imageData,
+			xPositionOnImage,
+			yPositionOnImage
 		);
-		console.log(size.x / size.y);
+
+		// console.log('projectedPoint', projectedPoint);
+		console.log(
+			// 'bounds',
+			// bounds,
+			// '\n\nsize',
+			// size,
+			// '\n\nposition',
+			// position,
+			// '\n\nxRatio:',
+			// xRatio,
+			// '\n\nyRatio:',
+			// yRatio,
+			'\n\nxPositionOnImage',
+			xPositionOnImage,
+			'\n\nyPositionOnImage',
+			yPositionOnImage,
+			'\n\nRGBA',
+			RGBA
+		);
 	}
 
 	/**
