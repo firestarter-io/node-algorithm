@@ -12,8 +12,10 @@ import { scale } from '../../config';
 import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
 import { MapBounds } from '../../types/gis.types';
 import { ImageRequestOptions } from '../../types/esri.types';
-import { loadImage, Image } from 'canvas';
+import { loadImage, Image, createCanvas } from 'canvas';
 import { simplifyBoundsArray } from './geometry/Bounds';
+import { ImageDataCache } from '../../data';
+import { getRGBfromImgData } from './rgba';
 
 /**
  * Token getter function for ESRI authenticated services
@@ -76,17 +78,27 @@ export function boundsToExtent(bounds: MapBounds) {
 	};
 }
 
+interface NewRequestOptions extends ImageRequestOptions {
+	url: string;
+}
+
 /**
  * Util class for creating esri image requests
  */
 export class EsriImageRequest {
 	_url: string;
-	_bounds: Bounds;
+	_options: ImageRequestOptions;
+	_bounds: L.LatLngBoundsLiteral;
 	_layerJSON: any;
+	_bboxes: { bounds: Bounds; url: string }[];
+	_cache: ImageDataCache;
 
-	constructor(url: string, bounds?: Bounds) {
-		this._url = url;
-		this._bounds = bounds;
+	constructor(options: NewRequestOptions) {
+		const { url, ...rest } = options;
+		this._url = options.url;
+		this._options = rest;
+		this._bboxes = [];
+		this._cache = options.dataCache;
 	}
 
 	/**
@@ -102,27 +114,33 @@ export class EsriImageRequest {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	async fetchImage(
-		latLngBoundsArray: MapBounds[],
-		options?: ImageRequestOptions
-	) {
+	async fetchImage(latLngBoundsArray: MapBounds[]) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
 
 		latLngBoundsArray = simplifyBoundsArray(latLngBoundsArray);
 
+		const fullUrls = latLngBoundsArray.map((llBounds: MapBounds) =>
+			this._buildImageUrl(llBounds)
+		);
+
 		await Promise.all(
-			latLngBoundsArray.map((llBounds: MapBounds) => {
-				const params = this._buildExportParams(llBounds, options);
-				var fullUrl =
-					this._url + '/exportImage' + L.Util.getParamString(params);
-				console.log('fullUrl', fullUrl);
-				return loadImage(fullUrl);
+			latLngBoundsArray.map((llBounds: MapBounds, i: number) => {
+				console.log('fullUrl:\n', fullUrls[i]);
+				return loadImage(fullUrls[i]);
 			})
 		).then((images: Image[]): void => {
-			images.forEach((image: Image) => {
-				console.log(image);
+			images.forEach((image: Image, i: number) => {
+				const canvas = createCanvas(image.width, image.height);
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, image.width, image.height);
+				this._cache[fullUrls[i]] = ctx.getImageData(
+					0,
+					0,
+					image.width,
+					image.height
+				);
 			});
 		});
 	}
@@ -179,34 +197,167 @@ export class EsriImageRequest {
 	}
 
 	/**
+	 * Takes in a map bounds and generates the image url for those bounds
+	 * @param llBounds | Map bounds object
+	 */
+	_buildImageUrl(llBounds: MapBounds): string {
+		// Duplicate logic from getBbox - can be more DRY?
+		const mapBounds: L.LatLngBounds = latLngBounds(
+			llBounds._southWest,
+			llBounds._northEast
+		);
+
+		const neProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getNorthEast()
+		);
+		const swProjected: Point = L.CRS.EPSG3857.project(
+			mapBounds.getSouthWest()
+		);
+
+		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
+		var boundsProjected: Bounds = bounds(
+			neProjected as any,
+			swProjected as any
+		);
+
+		const exportType = this._options?.exportType || 'exportImage';
+		const params = this._buildExportParams(llBounds);
+		var fullUrl =
+			this._url + `/${exportType}` + L.Util.getParamString(params);
+
+		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
+		this._bboxes.push({
+			bounds: boundsProjected,
+			url: fullUrl,
+		});
+
+		return fullUrl;
+	}
+
+	/**
+	 * Function to get the pixel value of the esri image at the given latlng
+	 * @param latLng | LatLng
+	 */
+	getPixelAt(latLng: L.LatLngLiteral) {
+		const projectedPoint = L.CRS.EPSG3857.project(latLng);
+		const { bounds, url } = this._bboxes.find((box) =>
+			box.bounds.contains(projectedPoint)
+		);
+
+		const size = bounds.getSize();
+		const position = projectedPoint.subtract(bounds.getBottomLeft());
+
+		const xRatio = Math.abs(position.x / size.x);
+		const yRatio = Math.abs(position.y / size.y);
+
+		const imageData = this._cache[url];
+
+		const xPositionOnImage = Math.floor(xRatio * imageData.width);
+		const yPositionOnImage = Math.floor(yRatio * imageData.height);
+
+		const RGBA = getRGBfromImgData(
+			imageData,
+			xPositionOnImage,
+			yPositionOnImage
+		);
+
+		// console.log('projectedPoint', projectedPoint);
+		console.log(
+			// 'bounds',
+			// bounds,
+			// '\n\nsize',
+			// size,
+			// '\n\nposition',
+			// position,
+			// '\n\nxRatio:',
+			// xRatio,
+			// '\n\nyRatio:',
+			// yRatio,
+			'\n\nxPositionOnImage',
+			xPositionOnImage,
+			'\n\nyPositionOnImage',
+			yPositionOnImage,
+			'\n\nRGBA',
+			RGBA
+		);
+	}
+
+	/**
 	 * Function to build export parameters for esri request of desired image
 	 * @param llBounds | Map bounds of desired image
 	 * @param options | Options
 	 */
-	_buildExportParams(llBounds: MapBounds, options?: ImageRequestOptions) {
+	_buildExportParams(llBounds: MapBounds) {
 		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
 		const params: any = {
 			bbox: this._calculateBbox(llBounds),
 			size: this._calculateImageSize(llBounds),
-			format: options?.format || 'png',
+			format: this._options?.format || 'png',
 			bboxSR: sr,
 			imageSR: sr,
-			f: options?.format || 'image',
+			f: this._options?.f || 'image',
 		};
 
-		if (options?.token) {
-			params.token = options.token;
+		if (this._options?.token) {
+			params.token = this._options.token;
 		}
 
-		if (options?.renderingRule) {
-			params.renderingRule = JSON.stringify(options.renderingRule);
+		if (this._options?.renderingRule) {
+			params.renderingRule = JSON.stringify(this._options.renderingRule);
 		}
 
-		if (options?.mosaicRule) {
-			params.mosaicRule = JSON.stringify(options.mosaicRule);
+		if (this._options?.mosaicRule) {
+			params.mosaicRule = JSON.stringify(this._options.mosaicRule);
+		}
+
+		if (this._options?.sr) {
+			params.bboxSR = this._options.sr;
+			params.imageSR = this._options.sr;
+		}
+
+		if (this._options?.sublayer) {
+			params.layers = `show:${this._options.sublayer}`;
 		}
 
 		return params;
+	}
+
+	async generateLegend() {
+		const legendUrl = `${this._url}/legend?f=pjson`;
+		let layerJSON, legend, rgbValues;
+
+		const canvas = createCanvas(20, 20);
+		const ctx = canvas.getContext('2d');
+
+		// Get JSON of layer / sublayer's legend
+		await fetch(legendUrl)
+			.then((res) => res.json())
+			.then((data) => {
+				const layerId = this._options.sublayer || 0;
+				layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+			});
+
+		// Transform legend array images into rgbValues
+		await Promise.all(
+			layerJSON.legend.map((symbol) =>
+				loadImage(`data:image/png;base64,${symbol.imageData}`)
+			)
+		).then((symbolImages) => {
+			rgbValues = symbolImages.map((image) => {
+				ctx.drawImage(image, 0, 0);
+				const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
+				console.log({ R, G, B, A });
+				return { R, G, B, A };
+			});
+			return rgbValues;
+		});
+
+		legend = await layerJSON.legend.map((symbol, ind) => ({
+			...symbol,
+			rgbvalue: rgbValues[ind],
+		}));
+
+		return legend;
 	}
 
 	/**

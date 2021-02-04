@@ -4,6 +4,7 @@ import * as bp from 'body-parser';
 import * as cors from 'cors';
 import './config';
 import router from './router';
+import { EsriImageRequest } from './core/utils/esri-utils';
 dotenv.config();
 
 // Set up app

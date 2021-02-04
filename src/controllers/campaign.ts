@@ -11,13 +11,17 @@ import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
 import { EsriImageRequest, getEsriToken } from '../core/utils/esri-utils';
 import { MapBounds } from '../types/gis.types';
+import { landfireVCCRequest } from '../core/getdata/rasterSources';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
 
 	// Get DEM tiles for map bounds
-	// mapBounds && createDEM(mapBounds);
-	// const topo = await getTopography(latlng);
+	mapBounds && createDEM(mapBounds);
+	if (latlng) {
+		const topo = await getTopography(latlng);
+		console.log(topo);
+	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
 	// latlng && zoom && console.log(topo);
 
@@ -27,28 +31,28 @@ export const campaign = async (req, res) => {
 	// .then(calculate fire spread step by step)
 	// .then(return response to client)
 
-	if (mapBounds) {
-		const paddedBounds = mapBounds.map((bounds: MapBounds) =>
-			L.latLngBounds(bounds._southWest, bounds._northEast).pad(0.5)
-		);
+	// SATELLITE IMAGERY IMAGE REQUEST --------------------------------------------
+	// const satelliteRequest = new EsriImageRequest(
+	// 	'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
+	// );
+	// satelliteRequest.fetchImage(paddedBounds);
 
-		// const satelliteRequest = new EsriImageRequest(
-		// 	'https://landsat.arcgis.com/arcgis/rest/services/Landsat/PS/ImageServer/'
-		// );
-		// satelliteRequest.fetchImage(paddedBounds);
+	// GROUNDCOVER IMAGE REQUEST (AUTHENTICATED) ----------------------------------
+	// getEsriToken(
+	// 	process.env.ESRI_FS_CLIENT_ID,
+	// 	process.env.ESRI_FS_CLIENT_SECRET
+	// ).then((token) => {
+	// 	const groundCoverRequest = new EsriImageRequest(
+	// 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
+	// 	);
+	// 	groundCoverRequest.fetchImage(paddedBounds, { token });
+	// });
 
-		getEsriToken(
-			process.env.ESRI_FS_CLIENT_ID,
-			process.env.ESRI_FS_CLIENT_SECRET
-		)
-			.then((token) => {
-				const groundCoverRequest = new EsriImageRequest(
-					'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
-				);
-				groundCoverRequest.fetchImage(paddedBounds, { token });
-			})
-			.catch((e) => console.log(e));
-	}
+	// LANDFIRE VEGETATION CONDITION CLASS REQUEST ---------------------------------
+
+	mapBounds && landfireVCCRequest.fetchImage(mapBounds);
+
+	latlng && landfireVCCRequest.getPixelAt(latlng);
 
 	res.send('good job ahole');
 };

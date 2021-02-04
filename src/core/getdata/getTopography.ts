@@ -9,8 +9,8 @@ import { LatLngLiteral, Point } from 'leaflet';
 import { retrieveTile, tileCache, scale } from '../../config';
 import { getTileCoord, fetchDEMTile } from './createDEM';
 import { PointLiteral, Topography } from '../../types/gis.types';
-import { project, unproject } from '../utils/geometry/projections';
 import { Earth } from '../utils/geometry/CRS.Earth';
+import { getRGBfromImgData } from '../utils/rgba';
 
 /**
  * Takes in a projected point and returns an elevation
@@ -39,20 +39,6 @@ export async function getElevation(point: PointLiteral): Promise<number> {
 	const { R, G, B } = RGBA;
 
 	return -10000 + (R * 256 * 256 + G * 256 + B) * 0.1;
-}
-
-/**
- * Takes in ImageData object (created when saving a tile to the store), and xy coordinate
- * of point on tile, returns RGBA value of that pixel from that ImageData's Uint8ClampedArray
- * @param {Object} imgData
- * @param {Number} x | x position of point on tile
- * @param {Number} y | y position of point on tile
- */
-function getRGBfromImgData(imgData: ImageData, x: number, y: number) {
-	var index = y * imgData.width + x;
-	var i = index * 4;
-	var d = imgData.data;
-	return { R: d[i], G: d[i + 1], B: d[i + 2], A: d[i + 3] };
 }
 
 /**
