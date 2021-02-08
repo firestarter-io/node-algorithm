@@ -7,7 +7,7 @@
 // POST /api/campaign
 
 import * as L from 'leaflet';
-import { createDEM } from '../core/getdata/createDEM';
+import { createDEM, refitBoundsToMapTiles } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
 import { EsriImageRequest, getEsriToken } from '../core/utils/esri-utils';
 import { MapBounds } from '../types/gis.types';
@@ -50,7 +50,8 @@ export const campaign = async (req, res) => {
 
 	// LANDFIRE VEGETATION CONDITION CLASS REQUEST ---------------------------------
 
-	mapBounds && landfireVCCRequest.fetchImage(mapBounds);
+	// mapBounds && landfireVCCRequest.fetchImage(mapBounds);
+	mapBounds && refitBoundsToMapTiles(mapBounds[0]);
 
 	latlng && landfireVCCRequest.getPixelAt(latlng);
 
