@@ -4,10 +4,10 @@
  * List of raster data sources
  */
 
-import { EsriImageRequest } from '../utils/esri-utils';
+import { EsriRasterDataSource } from '../utils/esri-utils';
 import { vegetationClassCache, groundcoverCache } from '../../data';
 
-export const landfireVCCRequest = new EsriImageRequest({
+export const landfireVCCRequest = new EsriRasterDataSource({
 	url:
 		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
 	exportType: 'export',
@@ -19,7 +19,7 @@ export const landfireVCCRequest = new EsriImageRequest({
 	dataCache: vegetationClassCache,
 });
 
-export const groundcoverRequest = new EsriImageRequest({
+export const groundcoverRequest = new EsriRasterDataSource({
 	url:
 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
 	dataCache: groundcoverCache,

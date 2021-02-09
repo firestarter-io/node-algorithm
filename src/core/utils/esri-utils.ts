@@ -83,9 +83,9 @@ interface NewRequestOptions extends ImageRequestOptions {
 }
 
 /**
- * Util class for creating esri image requests
+ * Util class for requesting and interpereting esri raster data sources
  */
-export class EsriImageRequest {
+export class EsriRasterDataSource {
 	_url: string;
 	_options: ImageRequestOptions;
 	_bounds: L.LatLngBoundsLiteral;
@@ -179,12 +179,8 @@ export class EsriImageRequest {
 			llBounds._northEast
 		);
 
-		const neProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getNorthEast()
-		);
-		const swProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getSouthWest()
-		);
+		const neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
+		const swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(
@@ -211,12 +207,8 @@ export class EsriImageRequest {
 			llBounds._northEast
 		);
 
-		const neProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getNorthEast()
-		);
-		const swProjected: Point = L.CRS.EPSG3857.project(
-			mapBounds.getSouthWest()
-		);
+		const neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
+		const swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(
@@ -226,8 +218,7 @@ export class EsriImageRequest {
 
 		const exportType = this._options?.exportType || 'exportImage';
 		const params = this._buildExportParams(llBounds);
-		var fullUrl =
-			this._url + `/${exportType}` + L.Util.getParamString(params);
+		var fullUrl = this._url + `/${exportType}` + L.Util.getParamString(params);
 
 		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
 		this._bboxes.push({
@@ -265,25 +256,7 @@ export class EsriImageRequest {
 			yPositionOnImage
 		);
 
-		// console.log('projectedPoint', projectedPoint);
-		console.log(
-			// 'bounds',
-			// bounds,
-			// '\n\nsize',
-			// size,
-			// '\n\nposition',
-			// position,
-			// '\n\nxRatio:',
-			// xRatio,
-			// '\n\nyRatio:',
-			// yRatio,
-			// '\n\nxPositionOnImage',
-			// xPositionOnImage,
-			// '\n\nyPositionOnImage',
-			// yPositionOnImage,
-			'\n\nRGBA',
-			RGBA
-		);
+		console.log('\n\nRGBA', RGBA);
 	}
 
 	/**

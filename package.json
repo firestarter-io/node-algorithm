@@ -4,9 +4,9 @@
 	"description": "Nodejs server / burn code",
 	"main": "index.js",
 	"scripts": {
-		"start": "node -r ts-node/register ./src/server.ts",
+		"server": "node -r ts-node/register ./src/server.ts",
 		"start:debug": "node --inspect -r ts-node/register ./src/server.ts",
-		"dev": "nodemon",
+		"start": "nodemon",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
