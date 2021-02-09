@@ -4,7 +4,11 @@
  * Setup and configuration
  */
 
-//  -----------Get leaflet working in node ----------------- //
+import { DEMtiles } from './data';
+
+// --------------------------------------------------------- //
+//             Get leaflet working in node                   //
+// --------------------------------------------------------- //
 
 // Create globals so leaflet can load
 global.window = {
@@ -34,9 +38,9 @@ global.navigator = {
 };
 global.L = require('leaflet');
 
-// -------  Configuration options for the algorithm ----------------- //
-
-import { DEMtiles } from './data';
+// ----------------------------------------------------------------//
+//           Configuration options for the algorithm               //
+// ----------------------------------------------------------------//
 
 export const scale: number = 12;
 export const tileCache = DEMtiles;
@@ -57,6 +61,9 @@ export const saveTile = (tileName: string, tileData: ImageData): void => {
 export const retrieveTile = (tileName: string): ImageData =>
 	tileCache[tileName];
 
+/**
+ * Default configuration for algorithm
+ */
 export default {
 	scale,
 	tileCache,

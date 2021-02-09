@@ -9,9 +9,11 @@
 import * as L from 'leaflet';
 import { createDEM, refitBoundsToMapTiles } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
-import { EsriRasterDataSource, getEsriToken } from '../core/utils/esri-utils';
 import { MapBounds } from '../types/gis.types';
-import { landfireVCCRequest } from '../core/getdata/rasterSources';
+import {
+	LandfireVegetationCondition,
+	LandfireFuelVegetationType,
+} from '../core/getdata/rasterSources';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
@@ -42,21 +44,20 @@ export const campaign = async (req, res) => {
 	// 	process.env.ESRI_FS_CLIENT_ID,
 	// 	process.env.ESRI_FS_CLIENT_SECRET
 	// ).then((token) => {
-	// 	const groundCoverRequest = new EsriRasterDataSource(
+	// 	const GroundcoverRequest = new EsriRasterDataSource(
 	// 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer'
 	// 	);
-	// 	groundCoverRequest.fetchImage(paddedBounds, { token });
+	// 	GroundcoverRequest.fetchImage(paddedBounds, { token });
 	// });
 
 	// LANDFIRE VEGETATION CONDITION CLASS REQUEST ---------------------------------
 
 	mapBounds &&
-		landfireVCCRequest.fetchImage(
+		LandfireFuelVegetationType.fetchImage(
 			mapBounds.map((bounds) => refitBoundsToMapTiles(bounds))
 		);
-	mapBounds && refitBoundsToMapTiles(mapBounds[0]);
 
-	latlng && landfireVCCRequest.getPixelAt(latlng);
+	latlng && LandfireFuelVegetationType.getPixelAt(latlng);
 
 	res.send('good job ahole');
 };

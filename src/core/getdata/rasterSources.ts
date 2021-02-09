@@ -5,9 +5,13 @@
  */
 
 import { EsriRasterDataSource } from '../utils/esri-utils';
-import { vegetationClassCache, groundcoverCache } from '../../data';
+import {
+	vegetationClassCache,
+	groundcoverCache,
+	fuelVegetationType,
+} from '../../data';
 
-export const landfireVCCRequest = new EsriRasterDataSource({
+export const LandfireVegetationCondition = new EsriRasterDataSource({
 	url:
 		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
 	exportType: 'export',
@@ -19,7 +23,19 @@ export const landfireVCCRequest = new EsriRasterDataSource({
 	dataCache: vegetationClassCache,
 });
 
-export const groundcoverRequest = new EsriRasterDataSource({
+export const LandfireFuelVegetationType = new EsriRasterDataSource({
+	url:
+		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
+	exportType: 'export',
+	f: 'image',
+	format: 'png32',
+	sr: '102100',
+	sublayer: '25',
+	dpi: '96',
+	dataCache: fuelVegetationType,
+});
+
+export const GroundcoverRequest = new EsriRasterDataSource({
 	url:
 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
 	dataCache: groundcoverCache,
