@@ -91,6 +91,9 @@ export function refitBoundsToMapTiles(
 		L.CRS.EPSG3857.pointToLatLng(bottomRightXY, zoom)
 	);
 
+	// console.log(bottomRightXY.subtract(topLeftXY));
+	console.log(L.bounds(topLeftXY, bottomRightXY).getSize());
+
 	return refitBounds;
 }
 

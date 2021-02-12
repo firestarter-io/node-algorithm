@@ -104,7 +104,7 @@ export class EsriRasterDataSource {
 	/**
 	 * fetch layer JSON and store in instance
 	 */
-	async _fetchJson() {
+	private async _fetchJson() {
 		const response = await fetch(this._url + '?f=json');
 		const esriJSON = await response.json();
 		this._layerJSON = esriJSON;
@@ -114,7 +114,7 @@ export class EsriRasterDataSource {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	async fetchImage(latLngBoundsArray: MapBounds[]) {
+	public async fetchImage(latLngBoundsArray: MapBounds[]) {
 		if (!this._layerJSON) {
 			await this._fetchJson();
 		}
@@ -149,7 +149,7 @@ export class EsriRasterDataSource {
 	 * Calculates size of desired image
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	_calculateImageSize(llBounds: MapBounds) {
+	private _calculateImageSize(llBounds: MapBounds) {
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
 			llBounds._northEast
@@ -173,7 +173,7 @@ export class EsriRasterDataSource {
 	 * @param llBounds | LatLngBounds of desired image
 	 * Adjusted from esri-leaflet/src/Layers/RasterLayer.js to not need an L.Map instance
 	 */
-	_calculateBbox(llBounds: MapBounds): string {
+	private _calculateBbox(llBounds: MapBounds): string {
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
 			llBounds._northEast
@@ -200,7 +200,7 @@ export class EsriRasterDataSource {
 	 * Takes in a map bounds and generates the image url for those bounds
 	 * @param llBounds | Map bounds object
 	 */
-	_buildImageUrl(llBounds: MapBounds): string {
+	private _buildImageUrl(llBounds: MapBounds): string {
 		// Duplicate logic from getBbox - can be more DRY?
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
@@ -233,7 +233,7 @@ export class EsriRasterDataSource {
 	 * Function to get the pixel value of the esri image at the given latlng
 	 * @param latLng | LatLng
 	 */
-	getPixelAt(latLng: L.LatLngLiteral) {
+	public getPixelAt(latLng: L.LatLngLiteral) {
 		const projectedPoint = L.CRS.EPSG3857.project(latLng);
 		const { bounds, url } = this._bboxes.find((box) =>
 			box.bounds.contains(projectedPoint)
@@ -264,7 +264,7 @@ export class EsriRasterDataSource {
 	 * @param llBounds | Map bounds of desired image
 	 * @param options | Options
 	 */
-	_buildExportParams(llBounds: MapBounds) {
+	private _buildExportParams(llBounds: MapBounds) {
 		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
 		const params: any = {
 			bbox: this._calculateBbox(llBounds),
@@ -299,7 +299,13 @@ export class EsriRasterDataSource {
 		return params;
 	}
 
-	async generateLegend() {
+	/**
+	 * This function will fetch the layer's legend JSON from esri, extract the RGB pixel data
+	 * from the legend's images, and return the legend JSON with each field appended
+	 * with that RGBA data.  Can be used later to 'decode' pixel values of a layer to their
+	 * meaning according to the legend.
+	 */
+	public async generateLegend() {
 		const legendUrl = `${this._url}/legend?f=pjson`;
 		let layerJSON, legend, rgbValues;
 

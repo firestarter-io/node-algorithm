@@ -4,6 +4,7 @@
  * Setup and configuration
  */
 
+import { create, all } from 'mathjs';
 import { DEMtiles } from './data';
 
 // --------------------------------------------------------- //
@@ -70,3 +71,9 @@ export default {
 	saveTile,
 	retrieveTile,
 };
+
+// ----------------------------------------------------------------//
+//           Useful Initialization Definitions                     //
+// ----------------------------------------------------------------//
+
+export const math = create(all, {});
