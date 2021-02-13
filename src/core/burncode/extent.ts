@@ -7,7 +7,7 @@
 
 import * as L from 'leaflet';
 import { Matrix } from 'mathjs';
-import { scale } from '../../config';
+import { scale } from '@config';
 
 /**
  * A defined map extent with activity in a current simulation
