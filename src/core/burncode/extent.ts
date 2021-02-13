@@ -37,7 +37,7 @@ import { scale } from '../../config';
 //    origin: L.Point;
 // }
 
-export class Area {
+export class Extent {
 	public latLngBounds: L.LatLngBounds;
 	public bounds: L.Bounds;
 	public width: number;

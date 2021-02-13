@@ -6,14 +6,10 @@
 
 // POST /api/campaign
 
-import * as L from 'leaflet';
-import { createDEM, refitBoundsToMapTiles } from '../core/getdata/createDEM';
+import { refitBoundsToMapTiles } from '../core/utils/geometry/bounds';
+import { createDEM } from '../core/getdata/createDEM';
 import { getTopography } from '../core/getData/getTopography';
-import { MapBounds } from '../types/gis.types';
-import {
-	LandfireVegetationCondition,
-	LandfireFuelVegetationType,
-} from '../core/getdata/rasterSources';
+import { LandfireFuelVegetationType } from '../core/getdata/rasterSources';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;

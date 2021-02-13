@@ -5,10 +5,8 @@
  * and converting them to raw rgba pixel data
  */
 
-import * as L from 'leaflet';
 import { Canvas, createCanvas, loadImage } from 'canvas';
-import * as xyz from 'xyz-affair';
-
+import { getTileCoords } from '../utils/geometry/Bounds';
 import { saveTile, tileCache, scale } from '../../config';
 import { TileCoord, MapBounds, PointLiteral } from '../../types/gis.types';
 
@@ -21,81 +19,6 @@ const createMapboxRgbUrl = (coord: TileCoord, token: string): string => {
 	const { X, Y, Z } = coord;
 	return `https://api.mapbox.com/v4/mapbox.terrain-rgb/${Z}/${X}/${Y}.pngraw?access_token=${token}`;
 };
-
-/**
- * Takes in array of LatLngBounds objects and returns array of XYZ coordinate objects
- * for all maptiles in those bounds
- * @param {Array} latLngBoundsArray | Array of LatLngBounds objects
- * @param {Number} scale | Map zoom value for which you want to get tile coords
- */
-function getTileCoords(latLngBounds: MapBounds, scale: number): TileCoord[] {
-	var allTileCoordsUnfiltered = [];
-	const mod = Math.pow(2, scale);
-
-	const { _southWest, _northEast } = latLngBounds;
-
-	const boundsAsArray = [
-		[_southWest.lng, _southWest.lat],
-		[_northEast.lng, _northEast.lat],
-	];
-
-	let tileCoords = xyz(boundsAsArray, scale);
-
-	// correct for any negative coordinate values
-	tileCoords = tileCoords.map((c) => ({
-		x: ((c.x % mod) + mod) % mod,
-		y: ((c.y % mod) + mod) % mod,
-		z: c.z,
-	}));
-
-	allTileCoordsUnfiltered = [...allTileCoordsUnfiltered, ...tileCoords];
-
-	// filter duplicate values
-	const filteredTileCoords = allTileCoordsUnfiltered.filter(
-		(elem, index, self) =>
-			self.findIndex((t) => {
-				return t.x === elem.x && t.y === elem.y && t.z === elem.z;
-			}) === index
-	);
-
-	return filteredTileCoords.map((c) => ({ X: c.x, Y: c.y, Z: c.z }));
-}
-
-/**
- * Takes in an array of latlng bounds, remaps the bounds to the bounds of the
- * map tiles that they contain
- * @param latLngBoundsArray | Array of lat lng bounds
- * @param scale | Map scale
- */
-export function refitBoundsToMapTiles(
-	latLngBounds: MapBounds,
-	zoom: number = scale
-) {
-	const tileCoords = getTileCoords(latLngBounds, zoom);
-	console.log(tileCoords);
-	const topLeftTile = tileCoords.reduce(function (prev, curr) {
-		return prev.X > curr.X && prev.Y > curr.Y ? curr : prev;
-	});
-	const bottomRightTile = tileCoords.reduce(function (prev, curr) {
-		return prev.X > curr.X && prev.Y > curr.Y ? prev : curr;
-	});
-
-	const topLeftXY = new L.Point(topLeftTile.X * 256, topLeftTile.Y * 256);
-	const bottomRightXY = new L.Point(
-		(bottomRightTile.X + 1) * 256,
-		(bottomRightTile.Y + 1) * 256
-	);
-
-	const refitBounds = L.latLngBounds(
-		L.CRS.EPSG3857.pointToLatLng(topLeftXY, zoom),
-		L.CRS.EPSG3857.pointToLatLng(bottomRightXY, zoom)
-	);
-
-	// console.log(bottomRightXY.subtract(topLeftXY));
-	console.log(L.bounds(topLeftXY, bottomRightXY).getSize());
-
-	return refitBounds;
-}
 
 /**
  * Take in a projection point and return the tile coordinates { X, Y, Z } of that point
