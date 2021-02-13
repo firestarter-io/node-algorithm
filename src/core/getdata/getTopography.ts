@@ -8,7 +8,7 @@ import * as L from 'leaflet';
 import { LatLngLiteral, Point } from 'leaflet';
 import { retrieveTile, tileCache, scale } from '@config';
 import { getTileCoord, fetchDEMTile } from './dem';
-import { PointLiteral, Topography } from '../../types/gis';
+import { PointLiteral, Topography } from 'typings/gis';
 import { Earth } from '@utils/geometry/CRS.Earth';
 import { getRGBfromImgData } from '@utils/rgba';
 
