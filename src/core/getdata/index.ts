@@ -9,7 +9,7 @@ import {
 	LandfireVegetationCondition,
 	LandfireFuelVegetationType,
 } from './rasterSources';
-import { createDEM } from './createDEM';
+import { createDEM } from './dem';
 import { MapBounds } from '../../types/gis.types';
 
 export async function getData(latLngBoundsArray: MapBounds[]) {

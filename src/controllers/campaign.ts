@@ -7,7 +7,7 @@
 // POST /api/campaign
 
 import { refitBoundsToMapTiles } from '../core/utils/geometry/bounds';
-import { createDEM } from '../core/getdata/createDEM';
+import { createDEM } from '../core/getdata/dem';
 import { getTopography } from '../core/getData/getTopography';
 import { LandfireFuelVegetationType } from '../core/getdata/rasterSources';
 
