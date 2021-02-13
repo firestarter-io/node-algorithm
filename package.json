@@ -4,8 +4,8 @@
 	"description": "Nodejs server / burn code",
 	"main": "index.js",
 	"scripts": {
-		"server": "node -r ts-node/register ./src/server.ts",
-		"start:debug": "node --inspect -r ts-node/register ./src/server.ts",
+		"server": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+		"start:debug": "node --inspect -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
 		"start": "nodemon",
 		"build": "tsc",
 		"test": "echo \"Error: no test specified\" && exit 1"
@@ -63,7 +63,9 @@
 		"leaflet": "^1.7.1",
 		"leaflet-geometryutil": "^0.9.3",
 		"mathjs": "^9.2.0",
+		"module-alias": "^2.2.2",
 		"node-fetch": "^2.6.1",
+		"tsconfig-paths": "^3.9.0",
 		"xyz-affair": "^0.9.1"
 	}
 }

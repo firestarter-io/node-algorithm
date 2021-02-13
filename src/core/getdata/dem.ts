@@ -6,9 +6,9 @@
  */
 
 import { Canvas, createCanvas, loadImage } from 'canvas';
-import { getTileCoords } from '../utils/geometry/Bounds';
-import { saveTile, tileCache, scale } from '../../config';
-import { TileCoord, MapBounds, PointLiteral } from '../../types/gis.types';
+import { getTileCoords } from '@utils/geometry/Bounds';
+import { saveTile, tileCache, scale } from '@config';
+import { TileCoord, MapBounds, PointLiteral } from '../../types/gis';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url

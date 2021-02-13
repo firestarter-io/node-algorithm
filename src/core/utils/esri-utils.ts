@@ -8,13 +8,13 @@
 
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
-import { scale } from '../../config';
+import { scale } from '@config';
 import { Bounds, latLng, latLngBounds, bounds, Point } from 'leaflet';
-import { MapBounds } from '../../types/gis.types';
-import { ImageRequestOptions } from '../../types/esri.types';
+import { MapBounds } from '../../types/gis';
+import { ImageRequestOptions } from '../../types/esri';
 import { loadImage, Image, createCanvas } from 'canvas';
 import { simplifyBoundsArray } from './geometry/Bounds';
-import { ImageDataCache } from '../../data';
+import { ImageDataCache } from '@data';
 import { getRGBfromImgData } from './rgba';
 
 /**

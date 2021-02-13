@@ -4,7 +4,7 @@
  * Type definition for esri related functions and utils
  */
 
-import { ImageDataCache } from '../data';
+import { ImageDataCache } from '@data';
 
 export interface ImageRequestOptions {
 	exportType?: 'export';

@@ -6,11 +6,11 @@
 
 import * as L from 'leaflet';
 import { LatLngLiteral, Point } from 'leaflet';
-import { retrieveTile, tileCache, scale } from '../../config';
+import { retrieveTile, tileCache, scale } from '@config';
 import { getTileCoord, fetchDEMTile } from './dem';
-import { PointLiteral, Topography } from '../../types/gis.types';
-import { Earth } from '../utils/geometry/CRS.Earth';
-import { getRGBfromImgData } from '../utils/rgba';
+import { PointLiteral, Topography } from '../../types/gis';
+import { Earth } from '@utils/geometry/CRS.Earth';
+import { getRGBfromImgData } from '@utils/rgba';
 
 /**
  * Takes in a projected point and returns an elevation

@@ -4,12 +4,12 @@
  * List of raster data sources
  */
 
-import { EsriRasterDataSource } from '../utils/esri-utils';
+import { EsriRasterDataSource } from '@utils/esri-utils';
 import {
 	vegetationClassCache,
 	groundcoverCache,
 	fuelVegetationType,
-} from '../../data';
+} from '@data';
 
 export const LandfireVegetationCondition = new EsriRasterDataSource({
 	url:

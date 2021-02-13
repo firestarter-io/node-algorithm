@@ -7,11 +7,10 @@
  * https://github.com/Leaflet/Leaflet/blob/bc918d4bdc2ba189807bc207c77080fb41ecc196/src/geo/crs/CRS.js
  */
 
-import { LatLngExpression, LatLngLiteral } from 'leaflet';
-import { PointLiteral } from '../../../types/gis.types';
+import { LatLngLiteral } from 'leaflet';
+import { PointLiteral } from '../../../types/gis';
 import { EPSG3857 } from './CRS.EPSG3857';
 import SphericalMercator from './SphericalMercator';
-import { Transformation } from './Transformation';
 
 // @method latLngToPoint(latlng: LatLng, zoom: Number): Point
 // Projects geographical coordinates into pixel coordinates for a given zoom.
