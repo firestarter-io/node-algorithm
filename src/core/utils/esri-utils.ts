@@ -86,28 +86,46 @@ interface NewRequestOptions extends ImageRequestOptions {
  * Util class for requesting and interpereting esri raster data sources
  */
 export class EsriRasterDataSource {
-	_url: string;
-	_options: ImageRequestOptions;
-	_bounds: L.LatLngBoundsLiteral;
-	_layerJSON: any;
-	_bboxes: { bounds: Bounds; url: string }[];
-	_cache: ImageDataCache;
+	/**
+	 * Url of the data source
+	 */
+	readonly url: string;
+	/**
+	 * Options for the image request
+	 */
+	readonly options: ImageRequestOptions;
+	/**
+	 * Bounds of desired image for the raster source
+	 */
+	readonly bounds: L.LatLngBoundsLiteral;
+	/**
+	 * The JSON of the ESRI layer
+	 */
+	layerJSON: any;
+	/**
+	 * A reference to the bounds of a given image, in L.Bounds and as a url string
+	 */
+	private bboxes: { bounds: Bounds; url: string }[];
+	/**
+	 * The in-memory database for the processed image data
+	 */
+	public cache: ImageDataCache;
 
 	constructor(options: NewRequestOptions) {
 		const { url, ...rest } = options;
-		this._url = options.url;
-		this._options = rest;
-		this._bboxes = [];
-		this._cache = options.dataCache;
+		this.url = options.url;
+		this.options = rest;
+		this.bboxes = [];
+		this.cache = options.dataCache;
 	}
 
 	/**
 	 * fetch layer JSON and store in instance
 	 */
-	private async _fetchJson() {
-		const response = await fetch(this._url + '?f=json');
+	public async fetchJson() {
+		const response = await fetch(this.url + '?f=json');
 		const esriJSON = await response.json();
-		this._layerJSON = esriJSON;
+		this.layerJSON = esriJSON;
 	}
 
 	/**
@@ -115,14 +133,14 @@ export class EsriRasterDataSource {
 	 * @param llBounds | LatLngBounds of desired image
 	 */
 	public async fetchImage(latLngBoundsArray: MapBounds[]) {
-		if (!this._layerJSON) {
-			await this._fetchJson();
+		if (!this.layerJSON) {
+			await this.fetchJson();
 		}
 
 		latLngBoundsArray = simplifyBoundsArray(latLngBoundsArray);
 
 		const fullUrls = latLngBoundsArray.map((llBounds: MapBounds) =>
-			this._buildImageUrl(llBounds)
+			this.buildImageUrl(llBounds)
 		);
 
 		await Promise.all(
@@ -135,7 +153,7 @@ export class EsriRasterDataSource {
 				const canvas = createCanvas(image.width, image.height);
 				const ctx = canvas.getContext('2d');
 				ctx.drawImage(image, 0, 0, image.width, image.height);
-				this._cache[fullUrls[i]] = ctx.getImageData(
+				this.cache[fullUrls[i]] = ctx.getImageData(
 					0,
 					0,
 					image.width,
@@ -149,7 +167,7 @@ export class EsriRasterDataSource {
 	 * Calculates size of desired image
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	private _calculateImageSize(llBounds: MapBounds) {
+	private calculateImageSize(llBounds: MapBounds) {
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
 			llBounds._northEast
@@ -173,7 +191,7 @@ export class EsriRasterDataSource {
 	 * @param llBounds | LatLngBounds of desired image
 	 * Adjusted from esri-leaflet/src/Layers/RasterLayer.js to not need an L.Map instance
 	 */
-	private _calculateBbox(llBounds: MapBounds): string {
+	private calculateBbox(llBounds: MapBounds): string {
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
 			llBounds._northEast
@@ -200,7 +218,7 @@ export class EsriRasterDataSource {
 	 * Takes in a map bounds and generates the image url for those bounds
 	 * @param llBounds | Map bounds object
 	 */
-	private _buildImageUrl(llBounds: MapBounds): string {
+	private buildImageUrl(llBounds: MapBounds): string {
 		// Duplicate logic from getBbox - can be more DRY?
 		const mapBounds: L.LatLngBounds = latLngBounds(
 			llBounds._southWest,
@@ -216,12 +234,12 @@ export class EsriRasterDataSource {
 			swProjected as any
 		);
 
-		const exportType = this._options?.exportType || 'exportImage';
-		const params = this._buildExportParams(llBounds);
-		var fullUrl = this._url + `/${exportType}` + L.Util.getParamString(params);
+		const exportType = this.options?.exportType || 'exportImage';
+		const params = this.buildExportParams(llBounds);
+		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
 
 		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
-		this._bboxes.push({
+		this.bboxes.push({
 			bounds: boundsProjected,
 			url: fullUrl,
 		});
@@ -235,7 +253,7 @@ export class EsriRasterDataSource {
 	 */
 	public getPixelAt(latLng: L.LatLngLiteral) {
 		const projectedPoint = L.CRS.EPSG3857.project(latLng);
-		const { bounds, url } = this._bboxes.find((box) =>
+		const { bounds, url } = this.bboxes.find((box) =>
 			box.bounds.contains(projectedPoint)
 		);
 
@@ -245,7 +263,7 @@ export class EsriRasterDataSource {
 		const xRatio = Math.abs(position.x / size.x);
 		const yRatio = Math.abs(position.y / size.y);
 
-		const imageData = this._cache[url];
+		const imageData = this.cache[url];
 
 		const xPositionOnImage = Math.floor(xRatio * imageData.width);
 		const yPositionOnImage = Math.floor(yRatio * imageData.height);
@@ -264,36 +282,36 @@ export class EsriRasterDataSource {
 	 * @param llBounds | Map bounds of desired image
 	 * @param options | Options
 	 */
-	private _buildExportParams(llBounds: MapBounds) {
+	private buildExportParams(llBounds: MapBounds) {
 		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
 		const params: any = {
-			bbox: this._calculateBbox(llBounds),
-			size: this._calculateImageSize(llBounds),
-			format: this._options?.format || 'png',
+			bbox: this.calculateBbox(llBounds),
+			size: this.calculateImageSize(llBounds),
+			format: this.options?.format || 'png',
 			bboxSR: sr,
 			imageSR: sr,
-			f: this._options?.f || 'image',
+			f: this.options?.f || 'image',
 		};
 
-		if (this._options?.token) {
-			params.token = this._options.token;
+		if (this.options?.token) {
+			params.token = this.options.token;
 		}
 
-		if (this._options?.renderingRule) {
-			params.renderingRule = JSON.stringify(this._options.renderingRule);
+		if (this.options?.renderingRule) {
+			params.renderingRule = JSON.stringify(this.options.renderingRule);
 		}
 
-		if (this._options?.mosaicRule) {
-			params.mosaicRule = JSON.stringify(this._options.mosaicRule);
+		if (this.options?.mosaicRule) {
+			params.mosaicRule = JSON.stringify(this.options.mosaicRule);
 		}
 
-		if (this._options?.sr) {
-			params.bboxSR = this._options.sr;
-			params.imageSR = this._options.sr;
+		if (this.options?.sr) {
+			params.bboxSR = this.options.sr;
+			params.imageSR = this.options.sr;
 		}
 
-		if (this._options?.sublayer) {
-			params.layers = `show:${this._options.sublayer}`;
+		if (this.options?.sublayer) {
+			params.layers = `show:${this.options.sublayer}`;
 		}
 
 		return params;
@@ -306,7 +324,7 @@ export class EsriRasterDataSource {
 	 * meaning according to the legend.
 	 */
 	public async generateLegend() {
-		const legendUrl = `${this._url}/legend?f=pjson`;
+		const legendUrl = `${this.url}/legend?f=pjson`;
 		let layerJSON, legend, rgbValues;
 
 		const canvas = createCanvas(20, 20);
@@ -316,7 +334,7 @@ export class EsriRasterDataSource {
 		await fetch(legendUrl)
 			.then((res) => res.json())
 			.then((data) => {
-				const layerId = this._options.sublayer || 0;
+				const layerId = this.options.sublayer || 0;
 				layerJSON = data.layers.find((layer) => layer.layerId == layerId);
 			});
 
