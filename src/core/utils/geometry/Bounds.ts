@@ -98,7 +98,6 @@ export function refitBoundsToMapTiles(
 	zoom: number = scale
 ) {
 	const tileCoords = getTileCoords(latLngBounds, zoom);
-	console.log(tileCoords);
 	const topLeftTile = tileCoords.reduce(function (prev, curr) {
 		return prev.X > curr.X && prev.Y > curr.Y ? curr : prev;
 	});
@@ -112,13 +111,12 @@ export function refitBoundsToMapTiles(
 		(bottomRightTile.Y + 1) * 256
 	);
 
-	const refitBounds = L.latLngBounds(
+	const refitBounds: L.Bounds = L.bounds(topLeftXY, bottomRightXY);
+
+	const refitLatLngBounds: L.LatLngBounds = L.latLngBounds(
 		L.CRS.EPSG3857.pointToLatLng(topLeftXY, zoom),
 		L.CRS.EPSG3857.pointToLatLng(bottomRightXY, zoom)
 	);
 
-	// console.log(bottomRightXY.subtract(topLeftXY));
-	console.log(L.bounds(topLeftXY, bottomRightXY).getSize());
-
-	return refitBounds;
+	return { refitLatLngBounds, refitBounds };
 }

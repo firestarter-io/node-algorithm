@@ -4,6 +4,10 @@
  * Some basic math utility functions
  */
 
+import { create, all } from 'mathjs';
+
+export const math = create(all, {});
+
 /**
  * Take object of value: number pairs and return same object with rounded values
  * @param object | Any object with [key: string]: number entries

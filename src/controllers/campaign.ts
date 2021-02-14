@@ -6,10 +6,10 @@
 
 // POST /api/campaign
 
-import { refitBoundsToMapTiles } from '../core/utils/geometry/bounds';
-import { createDEM } from '../core/getdata/dem';
-import { getTopography } from '../core/getData/getTopography';
-import { LandfireFuelVegetationType } from '../core/getdata/rasterSources';
+import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
+import { createDEM } from '@getdata/dem';
+import { getTopography } from '@core/getData/getTopography';
+import { LandfireFuelVegetationType } from '@getdata/rasterSources';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
@@ -50,7 +50,7 @@ export const campaign = async (req, res) => {
 
 	mapBounds &&
 		LandfireFuelVegetationType.fetchImage(
-			mapBounds.map((bounds) => refitBoundsToMapTiles(bounds))
+			mapBounds.map((bounds) => refitBoundsToMapTiles(bounds).refitLatLngBounds)
 		);
 
 	latlng && LandfireFuelVegetationType.getPixelAt(latlng);
