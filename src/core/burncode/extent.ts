@@ -20,27 +20,27 @@ export class Extent {
 	/**
 	 * The latLngBounds of the extent (after refitting)
 	 */
-	latLngBounds: L.LatLngBounds;
+	readonly latLngBounds: L.LatLngBounds;
 	/**
 	 * The projected bounds of the extend (after refitting)
 	 */
-	bounds: L.Bounds;
+	readonly bounds: L.Bounds;
 	/**
 	 * The width of the projected bounds
 	 */
-	width: number;
+	readonly width: number;
 	/**
 	 * The height of the projected bounds
 	 */
-	height: number;
+	readonly height: number;
 	/**
 	 * The top left corner origin of the projected bounds
 	 */
-	origin: L.Point;
+	readonly origin: L.Point;
 	/**
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
-	burnMatrix: Matrix;
+	public burnMatrix: Matrix;
 
 	/**
 	 * Build the instance using the latlng bounds
