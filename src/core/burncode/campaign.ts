@@ -21,8 +21,17 @@ export class Campaign {
 		this.seedLatLng = latlng;
 	}
 
+	/**
+	 * Initialize a new campaign
+	 */
 	initialize() {
 		const bounds = this.seedLatLng.toBounds(16000);
 		const extent = new Extent(bounds);
 	}
+
+	/**
+	 * Compare all extents in the campaign and merge them when they overlap,
+	 * called when a new extent is created or when an existing extent grows
+	 */
+	compareExents() {}
 }
