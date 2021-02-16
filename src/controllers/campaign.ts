@@ -6,16 +6,23 @@
 
 // POST /api/campaign
 
+import * as L from 'leaflet';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import { LandfireFuelVegetationType } from '@getdata/rasterSources';
+import { MapBounds } from 'typings/gis';
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
 
 	// Get DEM tiles for map bounds
-	mapBounds && createDEM(mapBounds);
+	mapBounds &&
+		createDEM(
+			mapBounds.map((bounds: MapBounds) =>
+				L.latLngBounds(bounds._southWest, bounds._northEast)
+			)
+		);
 	if (latlng) {
 		const topo = await getTopography(latlng);
 		console.log(topo);
@@ -50,7 +57,12 @@ export const campaign = async (req, res) => {
 
 	mapBounds &&
 		LandfireFuelVegetationType.fetchImage(
-			mapBounds.map((bounds) => refitBoundsToMapTiles(bounds).refitLatLngBounds)
+			mapBounds.map(
+				(bounds: MapBounds) =>
+					refitBoundsToMapTiles(
+						L.latLngBounds([bounds._southWest, bounds._northEast])
+					).refitLatLngBounds
+			)
 		);
 
 	latlng && LandfireFuelVegetationType.getPixelAt(latlng);

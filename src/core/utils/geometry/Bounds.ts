@@ -17,17 +17,18 @@ import { scale } from '@config';
  * @param {Number} scale | Map zoom value for which you want to get tile coords
  */
 export function getTileCoords(
-	latLngBounds: MapBounds,
+	latLngBounds: L.LatLngBounds,
 	scale: number
 ): TileCoord[] {
 	var allTileCoordsUnfiltered = [];
 	const mod = Math.pow(2, scale);
 
-	const { _southWest, _northEast } = latLngBounds;
+	const sw = latLngBounds.getSouthWest();
+	const ne = latLngBounds.getNorthEast();
 
 	const boundsAsArray = [
-		[_southWest.lng, _southWest.lat],
-		[_northEast.lng, _northEast.lat],
+		[sw.lng, sw.lat],
+		[ne.lng, ne.lat],
 	];
 
 	let tileCoords = xyz(boundsAsArray, scale);
@@ -94,7 +95,7 @@ export function simplifyBoundsArray(
  * @param scale | Map scale
  */
 export function refitBoundsToMapTiles(
-	latLngBounds: MapBounds,
+	latLngBounds: L.LatLngBounds,
 	zoom: number = scale
 ) {
 	const tileCoords = getTileCoords(latLngBounds, zoom);

@@ -11,11 +11,6 @@ import { math } from '@utils/math';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { MapBounds } from 'typings/gis';
 
-/**
- * Extent class builds an object containing all required data for a given map extent.
- * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
- * and it creates a burn matrix with coordinates corresponding the the extend bounds
- */
 export class Extent {
 	/**
 	 * The latLngBounds of the extent (after refitting)
@@ -43,23 +38,25 @@ export class Extent {
 	public burnMatrix: Matrix;
 
 	/**
-	 * Build the instance using the latlng bounds
+	 * Extent class builds an object containing all required data for a given map extent.
+	 * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
+	 * and it creates a burn matrix with coordinates corresponding the the extend bounds
 	 * @param latLngBounds | LatLngBounds to create area for
 	 */
-	constructor(originalLatLngBounds: MapBounds) {
+	constructor(latLngBounds: L.LatLngBounds) {
 		/**
 		 * Take in a latlngbounds and refit those bounds to cleaner dimensions
 		 * Height and width of bounds will be multiple of 256
 		 */
 		const {
 			refitBounds: bounds,
-			refitLatLngBounds: latLngBounds,
-		} = refitBoundsToMapTiles(originalLatLngBounds);
+			refitLatLngBounds: llbounds,
+		} = refitBoundsToMapTiles(latLngBounds);
 		/**
 		 * Keep all values available on instance:
 		 */
 		this.bounds = bounds;
-		this.latLngBounds = latLngBounds;
+		this.latLngBounds = llbounds;
 		this.width = bounds.getSize().x;
 		this.height = bounds.getSize().y;
 		this.origin = bounds.getTopLeft();
