@@ -74,14 +74,10 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
  * @param {Number} scale | Zoom level of tiles
  */
 export async function createDEM(
-	latLngBoundsArray: L.LatLngBounds[],
+	latLngBounds: L.LatLngBounds,
 	scale: number = 12
 ) {
-	let tileCoords: any = [];
-
-	latLngBoundsArray.forEach((latLngBounds: L.LatLngBounds) => {
-		tileCoords.push(...getTileCoords(latLngBounds, scale));
-	});
+	let tileCoords: any = getTileCoords(latLngBounds, scale);
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;

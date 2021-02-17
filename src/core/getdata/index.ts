@@ -12,19 +12,19 @@ import {
 import { createDEM } from './dem';
 import { MapBounds } from 'typings/gis';
 
-export async function getData(latLngBoundsArray: MapBounds[]) {
+export async function getData(latLngBounds: L.LatLngBounds) {
 	/**
 	 * Promise to get DEM data
 	 */
-	await createDEM(latLngBoundsArray);
+	await createDEM(latLngBounds);
 
 	/**
 	 * Promise to get LANDFIRE vegetation coverage raster data
 	 */
-	await LandfireVegetationCondition.fetchImage(latLngBoundsArray);
+	await LandfireVegetationCondition.fetchImage(latLngBounds);
 
 	/**
 	 * Promise to get LANDFIRE fuel vegetation type raster data
 	 */
-	await LandfireFuelVegetationType.fetchImage(latLngBoundsArray);
+	await LandfireFuelVegetationType.fetchImage(latLngBounds);
 }

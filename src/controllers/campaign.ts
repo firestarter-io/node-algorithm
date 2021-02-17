@@ -18,11 +18,7 @@ export const campaign = async (req, res) => {
 
 	// Get DEM tiles for map bounds
 	mapBounds &&
-		createDEM(
-			mapBounds.map((bounds: MapBounds) =>
-				L.latLngBounds(bounds._southWest, bounds._northEast)
-			)
-		);
+		createDEM(L.latLngBounds(mapBounds._southWest, mapBounds._northEast));
 	if (latlng) {
 		const topo = await getTopography(latlng);
 		console.log(topo);
@@ -57,12 +53,9 @@ export const campaign = async (req, res) => {
 
 	mapBounds &&
 		LandfireFuelVegetationType.fetchImage(
-			mapBounds.map(
-				(bounds: MapBounds) =>
-					refitBoundsToMapTiles(
-						L.latLngBounds([bounds._southWest, bounds._northEast])
-					).refitLatLngBounds
-			)
+			refitBoundsToMapTiles(
+				L.latLngBounds([mapBounds._southWest, mapBounds._northEast])
+			).refitLatLngBounds
 		);
 
 	latlng && LandfireFuelVegetationType.getPixelAt(latlng);

@@ -132,49 +132,28 @@ export class EsriRasterDataSource {
 	 * request image based on bounds
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	public async fetchImage(latLngBoundsArray: MapBounds[]) {
+	public async fetchImage(latLngBounds: L.LatLngBounds) {
 		if (!this.layerJSON) {
 			await this.fetchJson();
 		}
 
-		latLngBoundsArray = simplifyBoundsArray(latLngBoundsArray);
+		const fullUrl = this.buildImageUrl(latLngBounds);
 
-		const fullUrls = latLngBoundsArray.map((llBounds: MapBounds) =>
-			this.buildImageUrl(llBounds)
-		);
+		const image: Image = await loadImage(fullUrl);
 
-		await Promise.all(
-			latLngBoundsArray.map((llBounds: MapBounds, i: number) => {
-				console.log('fullUrl:\n', fullUrls[i]);
-				return loadImage(fullUrls[i]);
-			})
-		).then((images: Image[]): void => {
-			images.forEach((image: Image, i: number) => {
-				const canvas = createCanvas(image.width, image.height);
-				const ctx = canvas.getContext('2d');
-				ctx.drawImage(image, 0, 0, image.width, image.height);
-				this.cache[fullUrls[i]] = ctx.getImageData(
-					0,
-					0,
-					image.width,
-					image.height
-				);
-			});
-		});
+		const canvas = createCanvas(image.width, image.height);
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(image, 0, 0, image.width, image.height);
+		this.cache[fullUrl] = ctx.getImageData(0, 0, image.width, image.height);
 	}
 
 	/**
 	 * Calculates size of desired image
 	 * @param llBounds | LatLngBounds of desired image
 	 */
-	private calculateImageSize(llBounds: MapBounds) {
-		const mapBounds: L.LatLngBounds = latLngBounds(
-			llBounds._southWest,
-			llBounds._northEast
-		);
-
-		const se = mapBounds.getSouthEast();
-		const nw = mapBounds.getNorthWest();
+	private calculateImageSize(latLngBounds: L.LatLngBounds) {
+		const se = latLngBounds.getSouthEast();
+		const nw = latLngBounds.getNorthWest();
 
 		const topLeft = L.CRS.EPSG3857.latLngToPoint(nw, scale);
 		const bottomRight = L.CRS.EPSG3857.latLngToPoint(se, scale);
@@ -191,14 +170,13 @@ export class EsriRasterDataSource {
 	 * @param llBounds | LatLngBounds of desired image
 	 * Adjusted from esri-leaflet/src/Layers/RasterLayer.js to not need an L.Map instance
 	 */
-	private calculateBbox(llBounds: MapBounds): string {
-		const mapBounds: L.LatLngBounds = latLngBounds(
-			llBounds._southWest,
-			llBounds._northEast
+	private calculateBbox(latLngBounds: L.LatLngBounds): string {
+		const neProjected: Point = L.CRS.EPSG3857.project(
+			latLngBounds.getNorthEast()
 		);
-
-		const neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
-		const swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
+		const swProjected: Point = L.CRS.EPSG3857.project(
+			latLngBounds.getSouthWest()
+		);
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(
@@ -218,15 +196,13 @@ export class EsriRasterDataSource {
 	 * Takes in a map bounds and generates the image url for those bounds
 	 * @param llBounds | Map bounds object
 	 */
-	private buildImageUrl(llBounds: MapBounds): string {
-		// Duplicate logic from getBbox - can be more DRY?
-		const mapBounds: L.LatLngBounds = latLngBounds(
-			llBounds._southWest,
-			llBounds._northEast
+	private buildImageUrl(latLngBounds: L.LatLngBounds): string {
+		const neProjected: Point = L.CRS.EPSG3857.project(
+			latLngBounds.getNorthEast()
 		);
-
-		const neProjected: Point = L.CRS.EPSG3857.project(mapBounds.getNorthEast());
-		const swProjected: Point = L.CRS.EPSG3857.project(mapBounds.getSouthWest());
+		const swProjected: Point = L.CRS.EPSG3857.project(
+			latLngBounds.getSouthWest()
+		);
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
 		var boundsProjected: Bounds = bounds(
@@ -235,7 +211,7 @@ export class EsriRasterDataSource {
 		);
 
 		const exportType = this.options?.exportType || 'exportImage';
-		const params = this.buildExportParams(llBounds);
+		const params = this.buildExportParams(latLngBounds);
 		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
 
 		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
@@ -282,11 +258,11 @@ export class EsriRasterDataSource {
 	 * @param llBounds | Map bounds of desired image
 	 * @param options | Options
 	 */
-	private buildExportParams(llBounds: MapBounds) {
+	private buildExportParams(latLngBounds: L.LatLngBounds) {
 		const sr = parseInt(L.CRS.EPSG3857.code.split(':')[1], 10);
 		const params: any = {
-			bbox: this.calculateBbox(llBounds),
-			size: this.calculateImageSize(llBounds),
+			bbox: this.calculateBbox(latLngBounds),
+			size: this.calculateImageSize(latLngBounds),
 			format: this.options?.format || 'png',
 			bboxSR: sr,
 			imageSR: sr,
