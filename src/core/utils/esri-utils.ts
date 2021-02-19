@@ -213,6 +213,7 @@ export class EsriRasterDataSource {
 		const exportType = this.options?.exportType || 'exportImage';
 		const params = this.buildExportParams(latLngBounds);
 		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
+		console.log(fullUrl);
 
 		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
 		this.bboxes.push({

@@ -22,6 +22,8 @@ export const LandfireVegetationCondition = new EsriRasterDataSource({
 	dpi: '96',
 	dataCache: vegetationClassCache,
 });
+// @ts-ignore
+global.LandfireVegetationCondition = LandfireVegetationCondition;
 
 export const LandfireFuelVegetationType = new EsriRasterDataSource({
 	url:
@@ -34,6 +36,8 @@ export const LandfireFuelVegetationType = new EsriRasterDataSource({
 	dpi: '96',
 	dataCache: fuelVegetationType,
 });
+// @ts-ignore
+global.LandfireFuelVegetationType = LandfireFuelVegetationType;
 
 export const GroundcoverRequest = new EsriRasterDataSource({
 	url:

@@ -9,7 +9,11 @@ import * as L from 'leaflet';
 import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
-import { MapBounds } from 'typings/gis';
+import { createDEM } from '@core/getdata/dem';
+import {
+	LandfireFuelVegetationType,
+	LandfireVegetationCondition,
+} from '@core/getdata/rasterSources';
 
 export class Extent {
 	/**
@@ -66,5 +70,23 @@ export class Extent {
 	/**
 	 * Will fetch all relevant data for the map extent
 	 */
-	public async getData() {}
+	public async fetchData() {
+		/**
+		 *  Generate Digital Elevation Model for extent:
+		 */
+		await createDEM(this.latLngBounds);
+		/**
+		 *  Get Groundcover Vegetation Condition
+		 */
+		await LandfireVegetationCondition.fetchImage(this.latLngBounds);
+		/**
+		 * Get groundcover vegetation type
+		 */
+		await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
+	}
+
+	/**
+	 * Returns data sources for the extent
+	 */
+	public getData() {}
 }

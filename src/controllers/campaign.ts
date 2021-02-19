@@ -12,9 +12,13 @@ import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import { LandfireFuelVegetationType } from '@getdata/rasterSources';
 import { MapBounds } from 'typings/gis';
+import { Campaign } from '@core/burncode/campaign';
+
+let camp;
 
 export const campaign = async (req, res) => {
-	const { mapBounds, pixelBounds, latlng, zoom } = req.body;
+	const { mapBounds, pixelBounds, zoom } = req.body;
+	const latlng: L.LatLngLiteral = req.body.latlng;
 
 	// Get DEM tiles for map bounds
 	mapBounds &&
@@ -22,6 +26,10 @@ export const campaign = async (req, res) => {
 	if (latlng) {
 		const topo = await getTopography(latlng);
 		console.log(topo);
+		if (!camp) {
+			camp = new Campaign(L.latLng(latlng));
+			await camp.initialize();
+		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
 	// latlng && zoom && console.log(topo);
@@ -58,7 +66,7 @@ export const campaign = async (req, res) => {
 			).refitLatLngBounds
 		);
 
-	latlng && LandfireFuelVegetationType.getPixelAt(latlng);
+	// latlng && LandfireFuelVegetationType.getPixelAt(latlng);
 
 	res.send('good job ahole');
 };

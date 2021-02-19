@@ -24,9 +24,18 @@ export class Campaign {
 	/**
 	 * Initialize a new campaign
 	 */
-	initialize() {
+	async initialize() {
 		const bounds = this.seedLatLng.toBounds(16000);
 		const extent = new Extent(bounds);
+		this.extents.push(extent);
+		await extent.fetchData();
+	}
+
+	/**
+	 * Return all active extents of the campaign
+	 */
+	public getExtents() {
+		return this.extents;
 	}
 
 	/**
