@@ -107,8 +107,7 @@ export class Extent {
 	getPixelValuesAt(latlng: L.LatLng) {
 		const vegetationCondition = this.data.LandfireVegetationCondition.getPixelAt(
 			latlng,
-			this.bounds,
-			this.origin
+			this.bounds
 		);
 
 		console.log(vegetationCondition);

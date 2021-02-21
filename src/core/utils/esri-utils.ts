@@ -139,7 +139,9 @@ export class EsriRasterDataSource {
 		const canvas = createCanvas(image.width, image.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(image, 0, 0, image.width, image.height);
-		this.cache.data = ctx.getImageData(0, 0, image.width, image.height);
+		const imageData = ctx.getImageData(0, 0, image.width, image.height);
+		this.cache.data = imageData;
+		return imageData;
 	}
 
 	/**
@@ -203,11 +205,7 @@ export class EsriRasterDataSource {
 	 * Function to get the pixel value of the esri image at the given latlng
 	 * @param latLng | LatLng
 	 */
-	public getPixelAt(
-		latLng: L.LatLngLiteral,
-		bounds: L.Bounds,
-		origin: L.Point
-	) {
+	public getPixelAt(latLng: L.LatLngLiteral, bounds: L.Bounds) {
 		const projectedPoint = L.CRS.EPSG3857.project(latLng);
 
 		const size = bounds.getSize();
@@ -220,8 +218,6 @@ export class EsriRasterDataSource {
 
 		const xPositionOnImage = Math.floor(xRatio * imageData.width);
 		const yPositionOnImage = Math.floor(yRatio * imageData.height);
-
-		console.log('\n\nbounds', bounds, '\n\nprojectedPoint', projectedPoint);
 
 		const RGBA = getRGBfromImgData(
 			imageData,
