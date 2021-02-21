@@ -103,10 +103,6 @@ export class EsriRasterDataSource {
 	 */
 	layerJSON: any;
 	/**
-	 * A reference to the bounds of a given image, in L.Bounds and as a url string
-	 */
-	private bboxes: { bounds: Bounds; url: string }[];
-	/**
 	 * The in-memory database for the processed image data
 	 */
 	public cache: ImageDataCache;
@@ -115,7 +111,6 @@ export class EsriRasterDataSource {
 		const { url, ...rest } = options;
 		this.url = options.url;
 		this.options = rest;
-		this.bboxes = [];
 		this.cache = options.dataCache;
 	}
 
@@ -144,7 +139,7 @@ export class EsriRasterDataSource {
 		const canvas = createCanvas(image.width, image.height);
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(image, 0, 0, image.width, image.height);
-		this.cache[fullUrl] = ctx.getImageData(0, 0, image.width, image.height);
+		this.cache.data = ctx.getImageData(0, 0, image.width, image.height);
 	}
 
 	/**
@@ -197,30 +192,10 @@ export class EsriRasterDataSource {
 	 * @param llBounds | Map bounds object
 	 */
 	private buildImageUrl(latLngBounds: L.LatLngBounds): string {
-		const neProjected: Point = L.CRS.EPSG3857.project(
-			latLngBounds.getNorthEast()
-		);
-		const swProjected: Point = L.CRS.EPSG3857.project(
-			latLngBounds.getSouthWest()
-		);
-
-		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
-		var boundsProjected: Bounds = bounds(
-			neProjected as any,
-			swProjected as any
-		);
-
 		const exportType = this.options?.exportType || 'exportImage';
 		const params = this.buildExportParams(latLngBounds);
 		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
 		console.log(fullUrl);
-
-		// Stash bounds and url for reference, required in getPixelAt to reference which image to use
-		this.bboxes.push({
-			bounds: boundsProjected,
-			url: fullUrl,
-		});
-
 		return fullUrl;
 	}
 
@@ -228,11 +203,12 @@ export class EsriRasterDataSource {
 	 * Function to get the pixel value of the esri image at the given latlng
 	 * @param latLng | LatLng
 	 */
-	public getPixelAt(latLng: L.LatLngLiteral) {
+	public getPixelAt(
+		latLng: L.LatLngLiteral,
+		bounds: L.Bounds,
+		origin: L.Point
+	) {
 		const projectedPoint = L.CRS.EPSG3857.project(latLng);
-		const { bounds, url } = this.bboxes.find((box) =>
-			box.bounds.contains(projectedPoint)
-		);
 
 		const size = bounds.getSize();
 		const position = projectedPoint.subtract(bounds.getBottomLeft());
@@ -240,10 +216,12 @@ export class EsriRasterDataSource {
 		const xRatio = Math.abs(position.x / size.x);
 		const yRatio = Math.abs(position.y / size.y);
 
-		const imageData = this.cache[url];
+		const imageData = this.cache.data;
 
 		const xPositionOnImage = Math.floor(xRatio * imageData.width);
 		const yPositionOnImage = Math.floor(yRatio * imageData.height);
+
+		console.log('\n\nbounds', bounds, '\n\nprojectedPoint', projectedPoint);
 
 		const RGBA = getRGBfromImgData(
 			imageData,
@@ -251,7 +229,7 @@ export class EsriRasterDataSource {
 			yPositionOnImage
 		);
 
-		console.log('\n\nRGBA', RGBA);
+		return RGBA;
 	}
 
 	/**

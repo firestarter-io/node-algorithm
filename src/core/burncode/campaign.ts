@@ -19,6 +19,7 @@ export class Campaign {
 	 */
 	constructor(latlng: L.LatLng) {
 		this.seedLatLng = latlng;
+		this.extents = [];
 	}
 
 	/**

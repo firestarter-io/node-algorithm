@@ -14,7 +14,7 @@ import { LandfireFuelVegetationType } from '@getdata/rasterSources';
 import { MapBounds } from 'typings/gis';
 import { Campaign } from '@core/burncode/campaign';
 
-let camp;
+let camp: Campaign;
 
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, zoom } = req.body;
@@ -24,11 +24,13 @@ export const campaign = async (req, res) => {
 	mapBounds &&
 		createDEM(L.latLngBounds(mapBounds._southWest, mapBounds._northEast));
 	if (latlng) {
-		const topo = await getTopography(latlng);
-		console.log(topo);
+		// const topo = await getTopography(latlng);
+		// console.log(topo);
 		if (!camp) {
 			camp = new Campaign(L.latLng(latlng));
 			await camp.initialize();
+			// @ts-ignore
+			global.camp = camp;
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
@@ -66,7 +68,7 @@ export const campaign = async (req, res) => {
 			).refitLatLngBounds
 		);
 
-	// latlng && LandfireFuelVegetationType.getPixelAt(latlng);
+	latlng && camp && camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 
 	res.send('good job ahole');
 };

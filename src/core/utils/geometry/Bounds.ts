@@ -112,12 +112,17 @@ export function refitBoundsToMapTiles(
 		(bottomRightTile.Y + 1) * 256
 	);
 
-	const refitBounds: L.Bounds = L.bounds(topLeftXY, bottomRightXY);
+	const refitPixelBounds: L.Bounds = L.bounds(topLeftXY, bottomRightXY);
 
 	const refitLatLngBounds: L.LatLngBounds = L.latLngBounds(
 		L.CRS.EPSG3857.pointToLatLng(topLeftXY, zoom),
 		L.CRS.EPSG3857.pointToLatLng(bottomRightXY, zoom)
 	);
 
-	return { refitLatLngBounds, refitBounds };
+	const refitBounds = L.bounds(
+		L.CRS.EPSG3857.project(refitLatLngBounds.getNorthEast()),
+		L.CRS.EPSG3857.project(refitLatLngBounds.getSouthWest())
+	);
+
+	return { refitLatLngBounds, refitBounds, refitPixelBounds };
 }

@@ -14,6 +14,7 @@ import {
 	LandfireFuelVegetationType,
 	LandfireVegetationCondition,
 } from '@core/getdata/rasterSources';
+import { EsriRasterDataSource } from '@core/utils/esri-utils';
 
 export class Extent {
 	/**
@@ -21,9 +22,13 @@ export class Extent {
 	 */
 	readonly latLngBounds: L.LatLngBounds;
 	/**
-	 * The projected bounds of the extend (after refitting)
+	 * The projected bounds of the extent (after refitting)
 	 */
 	readonly bounds: L.Bounds;
+	/**
+	 * The pixel / layer bounds of the extent after refitting
+	 */
+	readonly pixelBounds: L.Bounds;
 	/**
 	 * The width of the projected bounds
 	 */
@@ -36,6 +41,12 @@ export class Extent {
 	 * The top left corner origin of the projected bounds
 	 */
 	readonly origin: L.Point;
+	/**
+	 * Data sources for the extent
+	 */
+	public data: {
+		[data: string]: EsriRasterDataSource;
+	};
 	/**
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
@@ -55,16 +66,19 @@ export class Extent {
 		const {
 			refitBounds: bounds,
 			refitLatLngBounds: llbounds,
+			refitPixelBounds: pixelBounds,
 		} = refitBoundsToMapTiles(latLngBounds);
 		/**
 		 * Keep all values available on instance:
 		 */
 		this.bounds = bounds;
 		this.latLngBounds = llbounds;
-		this.width = bounds.getSize().x;
-		this.height = bounds.getSize().y;
+		this.pixelBounds = pixelBounds;
+		this.width = pixelBounds.getSize().x;
+		this.height = pixelBounds.getSize().y;
 		this.origin = bounds.getTopLeft();
 		this.burnMatrix = math.zeros(this.width, this.height, 'sparse') as Matrix;
+		this.data = {};
 	}
 
 	/**
@@ -79,14 +93,31 @@ export class Extent {
 		 *  Get Groundcover Vegetation Condition
 		 */
 		await LandfireVegetationCondition.fetchImage(this.latLngBounds);
+		this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
 		/**
 		 * Get groundcover vegetation type
 		 */
 		await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
+		this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
+	}
+
+	/**
+	 *
+	 */
+	getPixelValuesAt(latlng: L.LatLng) {
+		const vegetationCondition = this.data.LandfireVegetationCondition.getPixelAt(
+			latlng,
+			this.bounds,
+			this.origin
+		);
+
+		console.log(vegetationCondition);
 	}
 
 	/**
 	 * Returns data sources for the extent
 	 */
-	public getData() {}
+	public getData() {
+		return this.data;
+	}
 }
