@@ -76,7 +76,7 @@ export class Extent {
 		this.pixelBounds = pixelBounds;
 		this.width = pixelBounds.getSize().x;
 		this.height = pixelBounds.getSize().y;
-		this.origin = bounds.getTopLeft();
+		this.origin = pixelBounds.getTopLeft();
 		this.burnMatrix = math.zeros(this.width, this.height, 'sparse') as Matrix;
 		this.data = {};
 	}
@@ -88,17 +88,35 @@ export class Extent {
 		/**
 		 *  Generate Digital Elevation Model for extent:
 		 */
-		await createDEM(this.latLngBounds);
+		console.log('🐕 Fetching DEM. . .');
+		try {
+			await createDEM(this.latLngBounds);
+			console.log('✅ DEM Loaded');
+		} catch (e) {
+			console.log('❌', e);
+		}
 		/**
 		 *  Get Groundcover Vegetation Condition
 		 */
-		await LandfireVegetationCondition.fetchImage(this.latLngBounds);
-		this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
+		console.log('🐕 Fetching Vegetation Condition . . .');
+		try {
+			await LandfireVegetationCondition.fetchImage(this.latLngBounds);
+			this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
+			console.log('✅ Vegetation Condition Loaded');
+		} catch (e) {
+			console.log('❌', e);
+		}
 		/**
 		 * Get groundcover vegetation type
 		 */
-		await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
-		this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
+		console.log('🐕 Fetching Vegetation Type . . .');
+		try {
+			await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
+			this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
+			console.log('✅ Vegetation Type Loaded');
+		} catch (e) {
+			console.log('❌', e);
+		}
 	}
 
 	/**
@@ -107,7 +125,7 @@ export class Extent {
 	getPixelValuesAt(latlng: L.LatLng) {
 		const vegetationCondition = this.data.LandfireVegetationCondition.getPixelAt(
 			latlng,
-			this.bounds
+			this.origin
 		);
 
 		console.log(vegetationCondition);

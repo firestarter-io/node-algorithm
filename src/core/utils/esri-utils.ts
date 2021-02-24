@@ -205,26 +205,34 @@ export class EsriRasterDataSource {
 	 * Function to get the pixel value of the esri image at the given latlng
 	 * @param latLng | LatLng
 	 */
-	public getPixelAt(latLng: L.LatLngLiteral, bounds: L.Bounds) {
-		const projectedPoint = L.CRS.EPSG3857.project(latLng);
+	// public getPixelAt(latLng: L.LatLngLiteral, bounds: L.Bounds) {
+	// 	const projectedPoint = L.CRS.EPSG3857.project(latLng);
 
-		const size = bounds.getSize();
-		const position = projectedPoint.subtract(bounds.getBottomLeft());
+	// 	const size = bounds.getSize();
+	// 	const position = projectedPoint.subtract(bounds.getBottomLeft());
 
-		const xRatio = Math.abs(position.x / size.x);
-		const yRatio = Math.abs(position.y / size.y);
+	// 	const xRatio = Math.abs(position.x / size.x);
+	// 	const yRatio = Math.abs(position.y / size.y);
 
+	// 	const imageData = this.cache.data;
+
+	// 	const xPositionOnImage = Math.floor(xRatio * imageData.width);
+	// 	const yPositionOnImage = Math.floor(yRatio * imageData.height);
+
+	// 	const RGBA = getRGBfromImgData(
+	// 		imageData,
+	// 		xPositionOnImage,
+	// 		yPositionOnImage
+	// 	);
+
+	// 	return RGBA;
+	// }
+
+	public getPixelAt(latLng: L.LatLngLiteral, origin: L.Point) {
+		const layerPoint = L.CRS.EPSG3857.latLngToPoint(latLng, scale);
+		const { x, y } = layerPoint.subtract(origin).round();
 		const imageData = this.cache.data;
-
-		const xPositionOnImage = Math.floor(xRatio * imageData.width);
-		const yPositionOnImage = Math.floor(yRatio * imageData.height);
-
-		const RGBA = getRGBfromImgData(
-			imageData,
-			xPositionOnImage,
-			yPositionOnImage
-		);
-
+		const RGBA = getRGBfromImgData(imageData, x, y);
 		return RGBA;
 	}
 
