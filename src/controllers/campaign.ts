@@ -24,7 +24,7 @@ export const campaign = async (req, res) => {
 	mapBounds &&
 		createDEM(L.latLngBounds(mapBounds._southWest, mapBounds._northEast));
 	if (latlng) {
-		// const topo = await getTopography(latlng);
+		// const topo = await getTopography(L.latLng(latlng));
 		// console.log(topo);
 		if (!camp) {
 			console.log('Initializing campaign');

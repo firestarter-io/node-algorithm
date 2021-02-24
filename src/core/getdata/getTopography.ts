@@ -47,11 +47,22 @@ export async function getElevation(point: PointLiteral): Promise<number> {
  * @param userOptions | user options
  */
 export async function getTopography(
-	latlng: LatLngLiteral,
+	coord: L.LatLng | L.Point,
 	zoom = scale,
 	spread: number = 4
 ): Promise<Topography> {
-	const point: PointLiteral = L.CRS.EPSG3857.latLngToPoint(latlng, zoom);
+	let point;
+	if (coord instanceof L.LatLng) {
+		point = L.CRS.EPSG3857.latLngToPoint(coord, zoom);
+	} else if (coord instanceof L.Point) {
+		point = coord;
+	} else {
+		console.log(
+			'Something is wrong with the coordinate type fed to getTopography'
+		);
+	}
+
+	console.log(point);
 
 	const pixelDiff = spread;
 

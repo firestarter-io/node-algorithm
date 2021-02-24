@@ -197,40 +197,25 @@ export class EsriRasterDataSource {
 		const exportType = this.options?.exportType || 'exportImage';
 		const params = this.buildExportParams(latLngBounds);
 		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
-		console.log(fullUrl);
+		// console.log(fullUrl);
 		return fullUrl;
 	}
 
 	/**
-	 * Function to get the pixel value of the esri image at the given latlng
-	 * @param latLng | LatLng
+	 * Function which returns the RGBA value of a pixel at a given coordinate on
+	 * a raster image data source with a given pixel bounds origin
+	 * @param coord | Coordinate to get picel at - L.LatLng or L.Point
+	 * @param origin | Pixel origin of raster image to get pixel value from
 	 */
-	// public getPixelAt(latLng: L.LatLngLiteral, bounds: L.Bounds) {
-	// 	const projectedPoint = L.CRS.EPSG3857.project(latLng);
+	public getPixelAt(coord: L.LatLngLiteral, origin: L.Point) {
+		let point;
+		if (coord instanceof L.LatLng) {
+			point = L.CRS.EPSG3857.latLngToPoint(coord, scale);
+		} else if (coord instanceof L.Point) {
+			point = coord;
+		}
 
-	// 	const size = bounds.getSize();
-	// 	const position = projectedPoint.subtract(bounds.getBottomLeft());
-
-	// 	const xRatio = Math.abs(position.x / size.x);
-	// 	const yRatio = Math.abs(position.y / size.y);
-
-	// 	const imageData = this.cache.data;
-
-	// 	const xPositionOnImage = Math.floor(xRatio * imageData.width);
-	// 	const yPositionOnImage = Math.floor(yRatio * imageData.height);
-
-	// 	const RGBA = getRGBfromImgData(
-	// 		imageData,
-	// 		xPositionOnImage,
-	// 		yPositionOnImage
-	// 	);
-
-	// 	return RGBA;
-	// }
-
-	public getPixelAt(latLng: L.LatLngLiteral, origin: L.Point) {
-		const layerPoint = L.CRS.EPSG3857.latLngToPoint(latLng, scale);
-		const { x, y } = layerPoint.subtract(origin).round();
+		const { x, y } = point.subtract(origin).round();
 		const imageData = this.cache.data;
 		const RGBA = getRGBfromImgData(imageData, x, y);
 		return RGBA;
@@ -306,7 +291,7 @@ export class EsriRasterDataSource {
 			rgbValues = symbolImages.map((image) => {
 				ctx.drawImage(image, 0, 0);
 				const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
-				console.log({ R, G, B, A });
+				// console.log({ R, G, B, A });
 				return { R, G, B, A };
 			});
 			return rgbValues;

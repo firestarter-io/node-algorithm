@@ -111,6 +111,7 @@ export async function createDEM(
 					saveTile(name, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
+			// .then(() => console.log('Dem tiles loaded and saved to cache'))
 			.catch((e) => console.log(e));
 	}
 }
