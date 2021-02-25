@@ -42,8 +42,18 @@ global.L = require('leaflet');
 //           Configuration options for the algorithm               //
 // ----------------------------------------------------------------//
 
+/**
+ * The map scale to be used in retrieving tiles and performing calculations
+ */
 export const scale: number = 12;
+/**
+ * Global DEM tile cache
+ */
 export const tileCache = DEMtiles;
+/**
+ * Default extent size to use when creating new extents, in meters
+ */
+export const extentSize = 8000;
 
 /**
  * Saves tile image data to specified storage location

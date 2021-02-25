@@ -62,8 +62,6 @@ export async function getTopography(
 		);
 	}
 
-	console.log(point);
-
 	const pixelDiff = spread;
 
 	const projectedN = { ...point, y: point.y - pixelDiff },

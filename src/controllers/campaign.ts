@@ -32,7 +32,9 @@ export const campaign = async (req, res) => {
 			await camp.initialize();
 			// @ts-ignore
 			global.camp = camp;
-			console.log('Campaign created:', camp);
+			console.log('Campaign created:\n\n  ', camp);
+		} else {
+			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
@@ -70,7 +72,7 @@ export const campaign = async (req, res) => {
 			).refitLatLngBounds
 		);
 
-	latlng && camp && camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+	// latlng && camp && camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 
 	res.send('good job ahole');
 };

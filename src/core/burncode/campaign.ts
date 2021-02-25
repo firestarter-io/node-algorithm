@@ -5,6 +5,8 @@
  * its relevant properties and methods
  */
 
+import * as L from 'leaflet';
+import { scale, extentSize } from '@config';
 import { Extent } from './extent';
 
 export class Campaign {
@@ -26,17 +28,36 @@ export class Campaign {
 	 * Initialize a new campaign
 	 */
 	async initialize() {
-		const bounds = this.seedLatLng.toBounds(16000);
-		const extent = new Extent(bounds);
-		this.extents.push(extent);
-		await extent.fetchData();
+		const bounds = this.seedLatLng.toBounds(extentSize);
+		await this.createExtent(bounds);
 	}
 
 	/**
-	 * Return all active extents of the campaign
+	 * Creates a new extent from a LatLngBounds. Automatically resizes the bounds to nearest
+	 * surroundings bounds of tiles contained within the LatLngBounds, and fetches all data
+	 * for the extent
+	 * @param bounds | Bounds to create a new extent from
 	 */
-	public getExtents() {
-		return this.extents;
+	async createExtent(bounds: L.LatLngBounds) {
+		const extent = new Extent(bounds);
+		this.extents.push(extent);
+		await extent.fetchData();
+		return extent;
+	}
+
+	/**
+	 * Starts a fire at the latlng.  Creates a new extent if necessary,
+	 * or grows an existing one if necessary
+	 * @param latLng | The latlng location to start the fire
+	 */
+	async startFire(latLng: L.LatLng) {
+		const bounds = this.seedLatLng.toBounds(extentSize);
+		let extent = this.extents.find((extent) =>
+			extent.latLngBounds.contains(latLng)
+		);
+		if (!extent) {
+			extent = await this.createExtent(bounds);
+		}
 	}
 
 	/**
@@ -44,4 +65,10 @@ export class Campaign {
 	 * called when a new extent is created or when an existing extent grows
 	 */
 	compareExents() {}
+
+	/**
+	 * Checks how far a point is from the edge of its surrounding extent,
+	 * and grows the extent if necessary
+	 */
+	checkPointInExtent(point: L.Point) {}
 }
