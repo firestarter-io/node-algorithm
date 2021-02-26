@@ -12,6 +12,7 @@ import { Extent } from './extent';
 export class Campaign {
 	seedLatLng: L.LatLng;
 	extents: Extent[];
+	timesteps: TimeStep[];
 
 	/**
 	 * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -51,13 +52,18 @@ export class Campaign {
 	 * @param latLng | The latlng location to start the fire
 	 */
 	async startFire(latLng: L.LatLng) {
+		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale);
 		const bounds = this.seedLatLng.toBounds(extentSize);
+
 		let extent = this.extents.find((extent) =>
 			extent.latLngBounds.contains(latLng)
 		);
+
 		if (!extent) {
 			extent = await this.createExtent(bounds);
 		}
+
+		extent.burnMatrix.set([point.x, point.y], 1);
 	}
 
 	/**
