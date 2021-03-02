@@ -4,7 +4,7 @@
  * List of raster data sources
  */
 
-import { EsriRasterDataSource } from '@utils/esri-utils';
+import { EsriRasterDataSource } from '@utils/EsriRasterDataSource';
 import {
 	vegetationClassCache,
 	groundcoverCache,

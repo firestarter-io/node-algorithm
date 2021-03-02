@@ -14,7 +14,7 @@ import {
 	LandfireFuelVegetationType,
 	LandfireVegetationCondition,
 } from '@core/getdata/rasterSources';
-import { EsriRasterDataSource } from '@core/utils/esri-utils';
+import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 
 export class Extent {
 	/**

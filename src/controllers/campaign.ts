@@ -11,8 +11,7 @@ import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import { LandfireFuelVegetationType } from '@getdata/rasterSources';
-import { MapBounds } from 'typings/gis';
-import { Campaign } from '@core/burncode/campaign';
+import { Campaign } from '@core/burncode/Campaign';
 
 let camp: Campaign;
 
