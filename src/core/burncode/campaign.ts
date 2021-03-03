@@ -7,7 +7,7 @@
 
 import * as L from 'leaflet';
 import { scale, extentSize } from '@config';
-import { Extent } from './extent';
+import { Extent } from './Extent';
 import { TimeStep } from '../../typings/firestarter';
 
 export class Campaign {
