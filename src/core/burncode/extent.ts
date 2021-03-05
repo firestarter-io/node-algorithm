@@ -27,6 +27,8 @@ export class Extent {
 	readonly bounds: L.Bounds;
 	/**
 	 * The pixel / layer bounds of the extent after refitting
+	 * pixel bounds refer to latlng bounds transformed into
+	 * leaflet [layer point]{@link https://leafletjs.com/reference-1.7.1.html#map-latlngtolayerpoint}
 	 */
 	readonly pixelBounds: L.Bounds;
 	/**
@@ -55,7 +57,7 @@ export class Extent {
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
 	 * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
-	 * and it creates a burn matrix with coordinates corresponding the the extend bounds
+	 * and it creates a burn matrix with coordinates corresponding the the extent pixel bounds
 	 * @param latLngBounds | LatLngBounds to create area for
 	 */
 	constructor(latLngBounds: L.LatLngBounds) {

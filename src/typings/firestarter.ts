@@ -36,25 +36,3 @@ export interface FireStarterEvent {
 		placename: string;
 	};
 }
-
-/**
- * Describes a single timestep in the continuum of timesteps in a Campaign
- */
-export interface TimeStep {
-	/**
-	 * Index of timestep in the campaign
-	 */
-	index: number;
-	/**
-	 * Dat and time timestamp of the timestep
-	 */
-	timestamp: Date;
-	/**
-	 * The burnmatrices of the timestep
-	 */
-	burnMatrices: Matrix[];
-	/**
-	 * Any events that may have ocurred in the timestep
-	 */
-	events?: FireStarterEvent[];
-}

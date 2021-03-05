@@ -8,7 +8,7 @@
 import * as L from 'leaflet';
 import { scale, extentSize } from '@config';
 import { Extent } from './Extent';
-import { TimeStep } from '../../typings/firestarter';
+import TimeStep from './Timestep';
 
 export class Campaign {
 	seedLatLng: L.LatLng;
@@ -22,8 +22,18 @@ export class Campaign {
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
 	constructor(latlng: L.LatLng) {
+		/**
+		 * Campaign must be constructed from a first seed latlng
+		 */
 		this.seedLatLng = latlng;
+		/**
+		 * Initialize array of extents
+		 */
 		this.extents = [];
+		/**
+		 * Initialize array of timesteps
+		 */
+		this.timesteps = [];
 	}
 
 	/**
