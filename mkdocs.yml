@@ -1,0 +1,12 @@
+site_name: Firestarter.io Algorithm
+nav:
+  - About: index.md
+  - Components:
+      - Campaign: algorithm/campaign.md
+      - Extent: algorithm/extent.md
+  - Algorithm:
+      - Overview: algorithm/overview.md
+      - Data: algorithm/overview.md
+theme: material
+extra_css:
+  - stylesheets/extra.css
