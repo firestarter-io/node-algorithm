@@ -72,10 +72,16 @@ export const retrieveTile = (tileName: string): ImageData =>
 	tileCache[tileName];
 
 /**
+ * Amount of time elapsed between timesteps on a Campaign
+ */
+export const timestepSize = 1000 * 60 * 60; // 1 hour
+
+/**
  * Default configuration for algorithm
  */
 export default {
 	scale,
+	timestepSize,
 	tileCache,
 	saveTile,
 	retrieveTile,

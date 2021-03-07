@@ -13,6 +13,7 @@ import TimeStep from './Timestep';
 export class Campaign {
 	seedLatLng: L.LatLng;
 	extents: Extent[];
+	startTime: number;
 	timesteps: TimeStep[];
 
 	/**
@@ -21,7 +22,7 @@ export class Campaign {
 	 * timesteps, and writing campaign data to the database
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
-	constructor(latlng: L.LatLng) {
+	constructor(latlng: L.LatLng, startTime: number = new Date().getTime()) {
 		/**
 		 * Campaign must be constructed from a first seed latlng
 		 */
@@ -30,6 +31,10 @@ export class Campaign {
 		 * Initialize array of extents
 		 */
 		this.extents = [];
+		/**
+		 * Timestamp at the start of the campaign
+		 */
+		this.startTime = startTime;
 		/**
 		 * Initialize array of timesteps
 		 */

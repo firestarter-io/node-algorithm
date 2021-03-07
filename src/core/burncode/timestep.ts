@@ -6,6 +6,7 @@
 
 import { Matrix } from 'mathjs';
 import { FireStarterEvent } from 'typings/firestarter';
+import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
 
 class TimeStep {
@@ -20,7 +21,7 @@ class TimeStep {
 	/**
 	 * The timestamp of the time step
 	 */
-	timestamp: Date;
+	timestamp: number;
 	/**
 	 * Array of burn matrices, cloned from the Campaigns extent
 	 */
@@ -38,6 +39,10 @@ class TimeStep {
 	 */
 	constructor(campaign: Campaign) {
 		this.campaign = campaign;
+
+		const { timesteps, startTime } = this.campaign;
+		this.index = timesteps.length;
+		this.timestamp = startTime + this.index * timestepSize;
 	}
 }
 
