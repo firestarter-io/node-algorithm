@@ -68,7 +68,7 @@ export class Campaign {
 	 * @param latLng | The latlng location to start the fire
 	 */
 	async startFire(latLng: L.LatLng) {
-		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale);
+		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
 		let extent = this.extents.find((extent) =>
@@ -80,6 +80,8 @@ export class Campaign {
 		}
 
 		extent.burnMatrix.set([point.x, point.y], 1);
+
+		console.log(`🔥 Fire started at  [${latLng.lat}, ${latLng.lng}]`);
 	}
 
 	/**

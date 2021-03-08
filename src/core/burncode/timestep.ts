@@ -39,10 +39,8 @@ class TimeStep {
 	 */
 	constructor(campaign: Campaign) {
 		this.campaign = campaign;
-
-		const { timesteps, startTime } = this.campaign;
-		this.index = timesteps.length;
-		this.timestamp = startTime + this.index * timestepSize;
+		this.index = this.campaign.timesteps.length;
+		this.timestamp = this.campaign.startTime + this.index * timestepSize;
 	}
 }
 
