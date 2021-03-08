@@ -1,3 +1,7 @@
 # Firestarter.io - Algorithm Documentation
 
-This is some docs stuff right here
+## About
+
+These documents give a general description of the core fire-prediction algorithm that lies at the heart of firestarter.
+
+## Philosophy
