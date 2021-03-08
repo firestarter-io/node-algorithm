@@ -8,6 +8,7 @@
 import * as L from 'leaflet';
 import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
+import { Logger } from '@core/utils/Logger';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@core/getdata/dem';
 import {
@@ -90,34 +91,34 @@ export class Extent {
 		/**
 		 *  Generate Digital Elevation Model for extent:
 		 */
-		console.log('🐕 Fetching DEM. . .');
+		Logger.log(`${Logger.emojis.fetch} Fetching DEM . . .`);
 		try {
 			await createDEM(this.latLngBounds);
-			console.log('✅ DEM Loaded');
+			Logger.log(`${Logger.emojis.successCheck} DEM Loaded`);
 		} catch (e) {
-			console.log('❌', e);
+			Logger.log(`${Logger.emojis.errorX}`, e);
 		}
 		/**
 		 *  Get Groundcover Vegetation Condition
 		 */
-		console.log('🐕 Fetching Vegetation Condition . . .');
+		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Condition . . .`);
 		try {
 			await LandfireVegetationCondition.fetchImage(this.latLngBounds);
 			this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
-			console.log('✅ Vegetation Condition Loaded');
+			Logger.log(`${Logger.emojis.successCheck} Vegetation Condition Loaded`);
 		} catch (e) {
-			console.log('❌', e);
+			Logger.log(`${Logger.emojis.errorX}`, e);
 		}
 		/**
 		 * Get groundcover vegetation type
 		 */
-		console.log('🐕 Fetching Vegetation Type . . .');
+		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Type . . .`);
 		try {
 			await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
 			this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
-			console.log('✅ Vegetation Type Loaded');
+			Logger.log(`${Logger.emojis.successCheck} Vegetation Type Loaded`);
 		} catch (e) {
-			console.log('❌', e);
+			Logger.log(`${Logger.emojis.errorX}`, e);
 		}
 	}
 
