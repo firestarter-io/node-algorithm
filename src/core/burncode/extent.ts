@@ -16,8 +16,9 @@ import {
 	LandfireVegetationCondition,
 } from '@core/getdata/rasterSources';
 import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
+import BurnMatrix from './BurnMatrix';
 
-export class Extent {
+class Extent {
 	/**
 	 * The latLngBounds of the extent (after refitting)
 	 */
@@ -53,7 +54,7 @@ export class Extent {
 	/**
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
-	public burnMatrix: Matrix;
+	public burnMatrix: BurnMatrix;
 
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
@@ -80,7 +81,7 @@ export class Extent {
 		this.width = pixelBounds.getSize().x;
 		this.height = pixelBounds.getSize().y;
 		this.origin = pixelBounds.getTopLeft();
-		this.burnMatrix = math.zeros(this.width, this.height, 'sparse') as Matrix;
+		this.burnMatrix = new BurnMatrix(this.width, this.height);
 		this.data = {};
 	}
 
@@ -141,3 +142,5 @@ export class Extent {
 		return this.data;
 	}
 }
+
+export default Extent;

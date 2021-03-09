@@ -7,7 +7,7 @@
 
 import * as L from 'leaflet';
 import { scale, extentSize } from '@config';
-import { Extent } from './Extent';
+import Extent from './Extent';
 import TimeStep from './Timestep';
 import { Logger } from '@core/utils/Logger';
 
@@ -80,7 +80,7 @@ export class Campaign {
 			extent = await this.createExtent(bounds);
 		}
 
-		extent.burnMatrix.set([point.x, point.y], 1);
+		extent.burnMatrix.setBurnStatus([point.x, point.y], 1);
 
 		Logger.log(
 			`${Logger.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
@@ -99,3 +99,5 @@ export class Campaign {
 	 */
 	checkPointInExtent(point: L.Point) {}
 }
+
+export default Campaign;

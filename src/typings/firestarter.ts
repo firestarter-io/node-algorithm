@@ -4,7 +4,10 @@
  * Commonly used constants, enums, and type definitions
  */
 
-import { Matrix } from 'mathjs';
+export enum BurnStatuses {
+	BURNING = 1,
+	BURNED_OUT = -1,
+}
 
 /**
  * Different types of events that can be triggered / attached to a timestep
