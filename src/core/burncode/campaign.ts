@@ -9,6 +9,7 @@ import * as L from 'leaflet';
 import { scale, extentSize } from '@config';
 import { Extent } from './Extent';
 import TimeStep from './Timestep';
+import { Logger } from '@core/utils/Logger';
 
 export class Campaign {
 	seedLatLng: L.LatLng;
@@ -81,7 +82,9 @@ export class Campaign {
 
 		extent.burnMatrix.set([point.x, point.y], 1);
 
-		console.log(`🔥 Fire started at  [${latLng.lat}, ${latLng.lng}]`);
+		Logger.log(
+			`${Logger.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
+		);
 	}
 
 	/**
