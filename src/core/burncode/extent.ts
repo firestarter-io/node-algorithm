@@ -6,8 +6,6 @@
  */
 
 import * as L from 'leaflet';
-import { Matrix } from 'mathjs';
-import { math } from '@utils/math';
 import { Logger } from '@core/utils/Logger';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@core/getdata/dem';
@@ -81,7 +79,7 @@ class Extent {
 		this.width = pixelBounds.getSize().x;
 		this.height = pixelBounds.getSize().y;
 		this.origin = pixelBounds.getTopLeft();
-		this.burnMatrix = new BurnMatrix(this.width, this.height);
+		this.burnMatrix = new BurnMatrix(this.width, this.height, this);
 		this.data = {};
 	}
 

@@ -8,7 +8,11 @@
 import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
 import { BurnStatuses } from 'typings/firestarter';
+import Extent from './Extent';
 
+/**
+ * Cell is a number tuple representing the [x. y] position of a cell in a matrix
+ */
 type Cell = [number, number];
 
 class BurnMatrix {
@@ -16,6 +20,10 @@ class BurnMatrix {
 	 * The mathjs matrix at the core of the BurnMatrix instance
 	 */
 	matrix: Matrix;
+	/**
+	 * The Extent instance that the BurnMatrix instance belongs to
+	 */
+	extent: Extent;
 	/**
 	 * Cells that are currently burning
 	 */
@@ -35,8 +43,9 @@ class BurnMatrix {
 	 * burn status.
 	 * @param size | The x and y dimensions of the burn matrix
 	 */
-	constructor(width: number, height: number) {
+	constructor(width: number, height: number, extent: Extent) {
 		this.matrix = math.zeros(width, height, 'sparse') as Matrix;
+		this.extent = extent;
 		this.burning = [];
 		this.burnedOut = [];
 		this.supressed = [];
