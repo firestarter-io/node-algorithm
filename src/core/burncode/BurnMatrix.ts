@@ -62,9 +62,40 @@ class BurnMatrix {
 				break;
 		}
 	}
-}
 
-// @ts-ignore
-global.BurnMatrix = BurnMatrix;
+	/**
+	 * Direct access method to set the matrix value at a certain position
+	 * @param position | [x, y] position in array
+	 * @param value | Value to set at that position
+	 */
+	set(position: Cell, value: any): void {
+		this.matrix.set(position, value);
+	}
+
+	/**
+	 * Direct access method to get the value in the matrix at an [x, y] position
+	 * @param position | [x, y] position in array
+	 */
+	get(position: Cell) {
+		this.matrix.get(position);
+	}
+
+	/**
+	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
+	 * @param position | [x, y] position of cell in matrix
+	 */
+	neighbors(position: Cell): Cell[] {
+		const [x, y] = position;
+		let neighbors = [];
+		for (let i = -1; i <= 1; i++) {
+			for (let j = -1; j <= 1; j++) {
+				if (!(i === 0 && j === 0)) {
+					neighbors.push([x + i, y + j]);
+				}
+			}
+		}
+		return neighbors;
+	}
+}
 
 export default BurnMatrix;
