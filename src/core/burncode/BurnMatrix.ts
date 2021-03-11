@@ -90,6 +90,13 @@ class BurnMatrix {
 	}
 
 	/**
+	 * Returns cloned copy of underlying matrix
+	 */
+	clone() {
+		return this.matrix.clone();
+	}
+
+	/**
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
 	 */

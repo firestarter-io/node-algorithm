@@ -122,6 +122,18 @@ class Extent {
 	}
 
 	/**
+	 * Compare all extents in the campaign and merge them when they overlap,
+	 * called when a new extent is created or when an existing extent grows
+	 */
+	compareExents() {}
+
+	/**
+	 * Checks how far a point is from the edge of its surrounding extent,
+	 * and grows the extent if necessary
+	 */
+	checkPointInExtent(point: L.Point) {}
+
+	/**
 	 *
 	 */
 	getPixelValuesAt(latlng: L.LatLng) {

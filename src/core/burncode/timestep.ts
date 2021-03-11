@@ -37,7 +37,8 @@ class TimeStep {
 	 * their derived polygons, any events for the timestep, etc.
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
-	constructor(campaign: Campaign) {
+	constructor(matrixSnapshots: Matrix[], campaign: Campaign) {
+		this.burnMatrices = matrixSnapshots;
 		this.campaign = campaign;
 		this.index = this.campaign.timesteps.length;
 		this.timestamp = this.campaign.startTime + this.index * timestepSize;

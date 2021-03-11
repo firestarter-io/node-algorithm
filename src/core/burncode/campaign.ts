@@ -43,14 +43,6 @@ export class Campaign {
 	}
 
 	/**
-	 * Initialize a new campaign
-	 */
-	async initialize() {
-		const bounds = this.seedLatLng.toBounds(extentSize);
-		await this.createExtent(bounds);
-	}
-
-	/**
 	 * Creates a new extent from a LatLngBounds. Automatically resizes the bounds to nearest
 	 * surroundings bounds of tiles contained within the LatLngBounds, and fetches all data
 	 * for the extent
@@ -61,6 +53,25 @@ export class Campaign {
 		this.extents.push(extent);
 		await extent.fetchData();
 		return extent;
+	}
+
+	/**
+	 * Initialize a new campaign
+	 */
+	async initialize() {
+		const bounds = this.seedLatLng.toBounds(extentSize);
+		await this.createExtent(bounds);
+
+		await this.startFire(this.seedLatLng);
+
+		this.timesteps.push(
+			new TimeStep(
+				this.extents.map((extent) => extent.burnMatrix.clone()),
+				this
+			)
+		);
+
+		this.propagateTimestep();
 	}
 
 	/**
@@ -78,6 +89,7 @@ export class Campaign {
 
 		if (!extent) {
 			extent = await this.createExtent(bounds);
+			this.extents.push(extent);
 		}
 
 		extent.burnMatrix.setBurnStatus([point.x, point.y], 1);
@@ -87,17 +99,15 @@ export class Campaign {
 		);
 	}
 
-	/**
-	 * Compare all extents in the campaign and merge them when they overlap,
-	 * called when a new extent is created or when an existing extent grows
-	 */
-	compareExents() {}
-
-	/**
-	 * Checks how far a point is from the edge of its surrounding extent,
-	 * and grows the extent if necessary
-	 */
-	checkPointInExtent(point: L.Point) {}
+	propagateTimestep() {
+		this.extents.forEach((extent) => {
+			extent.burnMatrix.burning.forEach((burningCell) => {
+				extent.burnMatrix.neighbors(burningCell).forEach((neightbor) => {
+					console.log(neightbor);
+				});
+			});
+		});
+	}
 }
 
 export default Campaign;
