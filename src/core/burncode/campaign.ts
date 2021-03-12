@@ -10,6 +10,7 @@ import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
 import { Logger } from '@core/utils/Logger';
+import { Cell } from 'typings/firestarter';
 
 export class Campaign {
 	seedLatLng: L.LatLng;
@@ -101,10 +102,14 @@ export class Campaign {
 
 	/**
 	 * Propagates the Campaign to the next timestep.  Contains all central algorithm logic
-	 * to determine wildfire spread and any associated FireStarterEvents
+	 * to determine wildfire spread and any associated FireStarterEvents.
 	 */
 	propagateTimestep() {
 		this.extents.forEach((extent) => {
+			/**
+			 * Keep track of which cells have already been worked on
+			 */
+			const done: Cell[] = [];
 			extent.burnMatrix.burning.forEach((burningCell) => {
 				extent.burnMatrix.neighbors(burningCell).forEach((neightbor) => {
 					console.log(neightbor);
