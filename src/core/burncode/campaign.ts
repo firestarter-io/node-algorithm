@@ -10,7 +10,7 @@ import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
 import { Logger } from '@core/utils/Logger';
-import { Cell } from 'typings/firestarter';
+import Cell from './Cell';
 
 export class Campaign {
 	seedLatLng: L.LatLng;
@@ -93,7 +93,9 @@ export class Campaign {
 			this.extents.push(extent);
 		}
 
-		extent.burnMatrix.setBurnStatus([point.x, point.y], 1);
+		const burningCell = new Cell([point.x, point.y], extent);
+
+		burningCell.setBurnStatus(1);
 
 		Logger.log(
 			`${Logger.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
@@ -111,7 +113,7 @@ export class Campaign {
 			 */
 			const done: Cell[] = [];
 			extent.burnMatrix.burning.forEach((burningCell) => {
-				extent.burnMatrix.neighbors(burningCell).forEach((neightbor) => {
+				burningCell.neighbors().forEach((neightbor) => {
 					console.log(neightbor);
 				});
 			});

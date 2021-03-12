@@ -7,8 +7,9 @@
 
 import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
-import { BurnStatuses, Cell } from 'typings/firestarter';
+import { CellPosition } from 'typings/firestarter';
 import Extent from './Extent';
+import Cell from './Cell';
 
 class BurnMatrix {
 	/**
@@ -51,23 +52,23 @@ class BurnMatrix {
 	 * @param position | The position of the cell in the matrix
 	 * @param burnStatus | The burn status to set the cell to
 	 */
-	setBurnStatus(position: Cell, burnStatus: number) {
-		this.matrix.set(position, burnStatus);
-		const ind = this.burning.indexOf(position);
+	setBurnStatus(cell: Cell, burnStatus: number) {
+		this.matrix.set(cell.position, burnStatus);
+		const ind = this.burning.indexOf(cell);
 
 		switch (true) {
 			// BURNING
 			case burnStatus >= 1:
-				this.burning.push(position);
+				this.burning.push(cell);
 				break;
 			// BURNED_OUT
 			case burnStatus === -1:
-				this.burnedOut.push(position);
+				this.burnedOut.push(cell);
 				this.burning.splice(ind, 1);
 				break;
 			// SUPRESSED
 			case burnStatus === -2:
-				this.burnedOut.push(position);
+				this.burnedOut.push(cell);
 				this.burning.splice(ind, 1);
 				break;
 			default:
@@ -80,7 +81,7 @@ class BurnMatrix {
 	 * @param position | [x, y] position in array
 	 * @param value | Value to set at that position
 	 */
-	set(position: Cell, value: any): void {
+	set(position: CellPosition, value: any): void {
 		this.matrix.set(position, value);
 	}
 
@@ -88,7 +89,7 @@ class BurnMatrix {
 	 * Direct access method to get the value in the matrix at an [x, y] position
 	 * @param position | [x, y] position in array
 	 */
-	get(position: Cell) {
+	get(position: CellPosition) {
 		this.matrix.get(position);
 	}
 
@@ -97,23 +98,6 @@ class BurnMatrix {
 	 */
 	clone() {
 		return this.matrix.clone();
-	}
-
-	/**
-	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
-	 * @param position | [x, y] position of cell in matrix
-	 */
-	neighbors(position: Cell): Cell[] {
-		const [x, y] = position;
-		let neighbors = [];
-		for (let i = -1; i <= 1; i++) {
-			for (let j = -1; j <= 1; j++) {
-				if (!(i === 0 && j === 0)) {
-					neighbors.push([x + i, y + j]);
-				}
-			}
-		}
-		return neighbors;
 	}
 }
 

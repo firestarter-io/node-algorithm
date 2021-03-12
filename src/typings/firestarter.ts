@@ -7,7 +7,7 @@
 /**
  * Cell is a number tuple representing the [x. y] position of a cell in a matrix
  */
-export type Cell = [number, number];
+export type CellPosition = [number, number];
 
 /**
  * Burn status integers - not in use for now as TS does not allow number ranges
