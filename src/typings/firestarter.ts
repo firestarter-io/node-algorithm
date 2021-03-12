@@ -4,10 +4,24 @@
  * Commonly used constants, enums, and type definitions
  */
 
-export enum BurnStatuses {
-	BURNING = 1,
-	BURNED_OUT = -1,
-}
+/**
+ * Cell is a number tuple representing the [x. y] position of a cell in a matrix
+ */
+export type Cell = [number, number];
+
+/**
+ * Burn status integers - not in use for now as TS does not allow number ranges
+ * 1 or great is BURNING
+ * 0 is UNBURNED / UNTOUCHED
+ * -1 BURNED_OUT
+ * -2 SUPRESSED
+ * May need to adjust burned out and supressed to allow for them to evolve over time
+ */
+export enum BurnStatuses {}
+// BURNING >= 1,
+// UNBURNED = 0,
+// BURNED_OUT = -1,
+// SUPRESSED = -2
 
 /**
  * Different types of events that can be triggered / attached to a timestep

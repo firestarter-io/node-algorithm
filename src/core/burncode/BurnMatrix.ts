@@ -7,13 +7,8 @@
 
 import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
-import { BurnStatuses } from 'typings/firestarter';
+import { BurnStatuses, Cell } from 'typings/firestarter';
 import Extent from './Extent';
-
-/**
- * Cell is a number tuple representing the [x. y] position of a cell in a matrix
- */
-type Cell = [number, number];
 
 class BurnMatrix {
 	/**
@@ -56,15 +51,23 @@ class BurnMatrix {
 	 * @param position | The position of the cell in the matrix
 	 * @param burnStatus | The burn status to set the cell to
 	 */
-	setBurnStatus(position: Cell, burnStatus: BurnStatuses) {
+	setBurnStatus(position: Cell, burnStatus: number) {
 		this.matrix.set(position, burnStatus);
-		switch (burnStatus) {
-			case BurnStatuses.BURNING:
+		const ind = this.burning.indexOf(position);
+
+		switch (true) {
+			// BURNING
+			case burnStatus >= 1:
 				this.burning.push(position);
 				break;
-			case BurnStatuses.BURNED_OUT:
+			// BURNED_OUT
+			case burnStatus === -1:
 				this.burnedOut.push(position);
-				const ind = this.burning.indexOf(position);
+				this.burning.splice(ind, 1);
+				break;
+			// SUPRESSED
+			case burnStatus === -2:
+				this.burnedOut.push(position);
 				this.burning.splice(ind, 1);
 				break;
 			default:

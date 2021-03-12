@@ -99,6 +99,10 @@ export class Campaign {
 		);
 	}
 
+	/**
+	 * Propagates the Campaign to the next timestep.  Contains all central algorithm logic
+	 * to determine wildfire spread and any associated FireStarterEvents
+	 */
 	propagateTimestep() {
 		this.extents.forEach((extent) => {
 			extent.burnMatrix.burning.forEach((burningCell) => {
