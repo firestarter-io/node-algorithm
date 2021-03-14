@@ -53,7 +53,7 @@ class BurnMatrix {
 	 * @param burnStatus | The burn status to set the cell to
 	 */
 	setBurnStatus(cell: Cell, burnStatus: number) {
-		this.matrix.set(cell.position, burnStatus);
+		this.set(cell.position, burnStatus);
 		const ind = this.burning.indexOf(cell);
 
 		switch (true) {

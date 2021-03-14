@@ -93,7 +93,7 @@ export class Campaign {
 			this.extents.push(extent);
 		}
 
-		const burningCell = new Cell([point.x, point.y], extent);
+		const burningCell = new Cell(point, extent);
 
 		burningCell.setBurnStatus(1);
 
