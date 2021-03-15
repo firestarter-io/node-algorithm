@@ -5,9 +5,11 @@
  */
 
 import * as L from 'leaflet';
-import { CellPosition } from 'typings/firestarter';
+import { tileSize } from '@config';
+import { getTopography } from '@core/getData/getTopography';
 import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
+import { CellPosition } from 'typings/firestarter';
 
 class Cell {
 	/**
@@ -48,14 +50,9 @@ class Cell {
 		let neighbors = [];
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				if (!(i === 0 && j === 0)) {
-					neighbors.push(
-						new Cell(
-							this.matrixPositionToLayerPoint([x + i, y + j]),
-							this.extent
-						)
-					);
-				}
+				neighbors.push(
+					new Cell(this.matrixPositionToLayerPoint([x + i, y + j]), this.extent)
+				);
 			}
 		}
 		return neighbors;
@@ -103,6 +100,46 @@ class Cell {
 	 */
 	calculateBurnStatus() {
 		const burnStatus = this.getBurnStatus();
+	}
+
+	/**
+	 * Returns data for all data types for the Cell
+	 */
+	async getData() {
+		const { slope, aspect } = getTopography(this.layerPoint);
+		// console.log({ slope, aspect });
+	}
+
+	/**
+	 * If a Cell is too close to the edge of its Extent, it will tigger the Extent
+	 * to expand in the direction of the side it is closest to.  A Cell is determined
+	 * to be too close if it is within @param buffer tiles of the edge of its extent
+	 * @param buffer | Number of tiles to use as buffer
+	 */
+	checkDistanceToEdge(buffer: number = 1) {
+		const [x, y] = this.position;
+
+		// Get distances from cell to 4 edges of extent
+		const dLeft = x;
+		const dRight = this.extent.width - x;
+		const dTop = y;
+		const dBottom = this.extent.height - y;
+
+		if (dLeft < tileSize * buffer) {
+			// extent.expandLeft
+		}
+
+		if (dRight < tileSize * buffer) {
+			// extent.expandLeft
+		}
+
+		if (dTop < tileSize * buffer) {
+			// extent.expandLeft
+		}
+
+		if (dBottom < tileSize * buffer) {
+			// extent.expandLeft
+		}
 	}
 }
 

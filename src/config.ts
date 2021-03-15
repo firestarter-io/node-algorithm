@@ -47,6 +47,10 @@ global.L = require('leaflet');
  */
 export const scale: number = 12;
 /**
+ * Size of tiles used throughout the program
+ */
+export const tileSize = 256;
+/**
  * Global DEM tile cache
  */
 export const tileCache = DEMtiles;
@@ -81,6 +85,7 @@ export const timestepSize = 1000 * 60 * 60; // 1 hour
  */
 export default {
 	scale,
+	tileSize,
 	timestepSize,
 	tileCache,
 	saveTile,

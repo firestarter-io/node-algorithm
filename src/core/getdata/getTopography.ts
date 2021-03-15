@@ -14,16 +14,13 @@ import { getRGBfromImgData } from '@utils/rgba';
 
 /**
  * Takes in a projected point and returns an elevation
+ * This synchronous function assumes a DEM has already been
+ * downloaded for the extent
  * @param {Object} point | L.Point
  */
-export async function getElevation(point: PointLiteral): Promise<number> {
+export function getElevation(point: PointLiteral): number {
 	const { X, Y, Z } = getTileCoord(point);
 	const tileName = `${Z}/${X}/${Y}`;
-
-	if (!tileCache[tileName]) {
-		console.log(`Fetching tile ${tileName}`);
-		await fetchDEMTile({ X, Y, Z });
-	}
 
 	const xyPositionOnTile = {
 		x: Math.floor(point.x) - X * 256,
@@ -46,11 +43,11 @@ export async function getElevation(point: PointLiteral): Promise<number> {
  * @param {Object} latlng | L.LatLng
  * @param userOptions | user options
  */
-export async function getTopography(
+export function getTopography(
 	coord: L.LatLng | L.Point,
 	zoom = scale,
 	spread: number = 4
-): Promise<Topography> {
+): Topography {
 	let point;
 	if (coord instanceof L.LatLng) {
 		point = L.CRS.EPSG3857.latLngToPoint(coord, zoom);
@@ -74,11 +71,11 @@ export async function getTopography(
 	const E = L.CRS.EPSG3857.pointToLatLng(projectedE as Point, zoom);
 	const W = L.CRS.EPSG3857.pointToLatLng(projectedW as Point, zoom);
 
-	const elevation = await getElevation({ x: point.x, y: point.y }),
-		eleN = await getElevation(projectedN),
-		eleS = await getElevation(projectedS),
-		eleE = await getElevation(projectedE),
-		eleW = await getElevation(projectedW);
+	const elevation = getElevation({ x: point.x, y: point.y }),
+		eleN = getElevation(projectedN),
+		eleS = getElevation(projectedS),
+		eleE = getElevation(projectedE),
+		eleW = getElevation(projectedW);
 
 	const dx = Earth.distance(E, W),
 		dy = Earth.distance(N, S);

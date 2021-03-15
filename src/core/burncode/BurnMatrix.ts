@@ -49,6 +49,7 @@ class BurnMatrix {
 
 	/**
 	 * Sets the burn status of a cell in the matrix and maintains
+	 * quickly searchable lists of cells currently in each BurnStatuses category
 	 * @param position | The position of the cell in the matrix
 	 * @param burnStatus | The burn status to set the cell to
 	 */

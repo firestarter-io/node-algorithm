@@ -113,8 +113,9 @@ export class Campaign {
 			 */
 			const done: Cell[] = [];
 			extent.burnMatrix.burning.forEach((burningCell) => {
+				burningCell.calculateBurnStatus();
 				burningCell.neighbors().forEach((neightbor) => {
-					console.log(neightbor);
+					neightbor.calculateBurnStatus();
 				});
 			});
 		});
