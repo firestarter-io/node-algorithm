@@ -7,8 +7,9 @@
 
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import { getTileCoords } from '@utils/geometry/Bounds';
-import { saveTile, tileCache, scale } from '@config';
-import { TileCoord, MapBounds, PointLiteral } from 'typings/gis';
+import { saveTile, scale } from '@config';
+import { TileCoord, PointLiteral } from 'typings/gis';
+import { DataGroups, tileCache } from '@data';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -47,7 +48,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 	const { X, Y, Z } = coord;
 	const name = `${Z}/${X}/${Y}`;
 
-	if (!tileCache[name]) {
+	if (!tileCache.DEM[name]) {
 		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
 
 		try {
@@ -55,7 +56,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 			const canvas: Canvas = createCanvas(256, 256);
 			const ctx: RenderingContext = canvas.getContext('2d');
 			ctx.drawImage(image, 0, 0, 256, 256);
-			saveTile(name, ctx.getImageData(0, 0, 256, 256));
+			saveTile(DataGroups.DEM, name, ctx.getImageData(0, 0, 256, 256));
 			console.log(`tile ${name} saved succesfully`);
 		} catch (e) {
 			console.log(e);
@@ -82,7 +83,7 @@ export async function createDEM(
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
 		const name = `${Z}/${X}/${Y}`;
-		if (Object.keys(tileCache).includes(name)) {
+		if (Object.keys(tileCache.DEM).includes(name)) {
 			return false;
 		} else {
 			return true;
@@ -108,7 +109,7 @@ export async function createDEM(
 					ctx.drawImage(image, 0, 0, 256, 256);
 					const { X, Y, Z } = tileCoords[index];
 					const name = `${Z}/${X}/${Y}`;
-					saveTile(name, ctx.getImageData(0, 0, 256, 256));
+					saveTile(DataGroups.DEM, name, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
 			// .then(() => console.log('Dem tiles loaded and saved to cache'))

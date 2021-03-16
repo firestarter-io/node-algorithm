@@ -4,12 +4,8 @@
  * List of raster data sources
  */
 
+import { tileCache } from '@data';
 import { EsriRasterDataSource } from '@utils/EsriRasterDataSource';
-import {
-	vegetationClassCache,
-	groundcoverCache,
-	fuelVegetationType,
-} from '@data';
 
 export const LandfireVegetationCondition = new EsriRasterDataSource({
 	url:
@@ -20,7 +16,7 @@ export const LandfireVegetationCondition = new EsriRasterDataSource({
 	sr: '102100',
 	sublayer: '30',
 	dpi: '96',
-	dataCache: vegetationClassCache,
+	dataCache: tileCache.LandfireVegetationCondition,
 });
 // @ts-ignore
 global.LandfireVegetationCondition = LandfireVegetationCondition;
@@ -34,7 +30,7 @@ export const LandfireFuelVegetationType = new EsriRasterDataSource({
 	sr: '102100',
 	sublayer: '25',
 	dpi: '96',
-	dataCache: fuelVegetationType,
+	dataCache: tileCache.LandfireFuelVegetationType,
 });
 // @ts-ignore
 global.LandfireFuelVegetationType = LandfireFuelVegetationType;
@@ -42,5 +38,5 @@ global.LandfireFuelVegetationType = LandfireFuelVegetationType;
 export const GroundcoverRequest = new EsriRasterDataSource({
 	url:
 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
-	dataCache: groundcoverCache,
+	dataCache: tileCache.GroundCover,
 });

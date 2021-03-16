@@ -4,7 +4,7 @@
  * Setup and configuration
  */
 
-import { DEMtiles } from './data';
+import { DataGroups, tileCache } from './data';
 
 // --------------------------------------------------------- //
 //             Get leaflet working in node                   //
@@ -50,10 +50,7 @@ export const scale: number = 12;
  * Size of tiles used throughout the program
  */
 export const tileSize = 256;
-/**
- * Global DEM tile cache
- */
-export const tileCache = DEMtiles;
+
 /**
  * Default extent size to use when creating new extents, in meters
  */
@@ -64,16 +61,22 @@ export const extentSize = 8000;
  * @param {String} tileName | Name of tile in the format of X<X>Y<Y>Z<Z>
  * @param {ImageData} tileData | ImageData for tile
  */
-export const saveTile = (tileName: string, tileData: ImageData): void => {
-	tileCache[tileName] = tileData;
+export const saveTile = (
+	dataGroup: DataGroups,
+	tileName: string,
+	tileData: ImageData
+): void => {
+	tileCache[dataGroup][tileName] = tileData;
 };
 
 /**
  * Given the tile name, retrieves the tile ImageData
  * @param {String} tileName | Name of tile in the format of X<X>Y<Y>Z<Z>
  */
-export const retrieveTile = (tileName: string): ImageData =>
-	tileCache[tileName];
+export const retrieveTile = (
+	dataGroup: DataGroups,
+	tileName: string
+): ImageData => tileCache[dataGroup][tileName];
 
 /**
  * Amount of time elapsed between timesteps on a Campaign
