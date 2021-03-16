@@ -14,6 +14,7 @@ import { ImageRequestOptions } from '../../typings/esri';
 import { loadImage, Image, createCanvas } from 'canvas';
 import { ImageDataCache } from '@data';
 import { getRGBfromImgData } from './rgba';
+import { getTileCoords } from './geometry/bounds';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	url: string;
@@ -79,6 +80,16 @@ export class EsriRasterDataSource {
 		const imageData = ctx.getImageData(0, 0, image.width, image.height);
 		this.cache.data = imageData;
 		return imageData;
+	}
+
+	/**
+	 * Requests raster data source in the form of tiles.  EsriRasterDataSource.fetchTiles will determine
+	 * what standard tiles from a tileLayer would fit within the given LatLngBounds, get the bounds for
+	 * each of those tiles, download each tile, and save it to the tileCache
+	 * @param latLngBounds | LatLngBounds where tiles are desired
+	 */
+	public async fetchTiles(latLngBounds: L.LatLngBounds) {
+		const tileCoords = getTileCoords(latLngBounds, scale);
 	}
 
 	/**

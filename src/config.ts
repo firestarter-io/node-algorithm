@@ -6,9 +6,9 @@
 
 import { DataGroups, tileCache } from './data';
 
-// --------------------------------------------------------- //
-//             Get leaflet working in node                   //
-// --------------------------------------------------------- //
+// --------------------------------------------------------------------------------------- //
+//                                Get leaflet working in node                              //
+// --------------------------------------------------------------------------------------- //
 
 // Create globals so leaflet can load
 global.window = {
@@ -38,14 +38,15 @@ global.navigator = {
 };
 global.L = require('leaflet');
 
-// ----------------------------------------------------------------//
-//           Configuration options for the algorithm               //
-// ----------------------------------------------------------------//
+// --------------------------------------------------------------------------------------- //
+//                         Configuration options for the algorithm                         //
+// --------------------------------------------------------------------------------------- //
 
 /**
  * The map scale to be used in retrieving tiles and performing calculations
  */
 export const scale: number = 12;
+
 /**
  * Size of tiles used throughout the program
  */
