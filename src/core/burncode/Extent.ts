@@ -102,8 +102,9 @@ class Extent {
 		 */
 		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Condition . . .`);
 		try {
-			await LandfireVegetationCondition.fetchImage(this.latLngBounds);
-			this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
+			// await LandfireVegetationCondition.fetchImage(this.latLngBounds);
+			// this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
+			await LandfireVegetationCondition.fetchTiles(this.latLngBounds);
 			Logger.log(`${Logger.emojis.successCheck} Vegetation Condition Loaded`);
 		} catch (e) {
 			Logger.log(`${Logger.emojis.errorX}`, e);
@@ -113,8 +114,9 @@ class Extent {
 		 */
 		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Type . . .`);
 		try {
-			await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
-			this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
+			// await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
+			// this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
+			await LandfireFuelVegetationType.fetchTiles(this.latLngBounds);
 			Logger.log(`${Logger.emojis.successCheck} Vegetation Type Loaded`);
 		} catch (e) {
 			Logger.log(`${Logger.emojis.errorX}`, e);

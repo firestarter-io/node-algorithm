@@ -8,7 +8,7 @@
 import * as L from 'leaflet';
 import * as xyz from 'xyz-affair';
 import { MapBounds, TileCoord } from 'typings/gis';
-import { scale } from '@config';
+import { scale, tileSize } from '@config';
 
 /**
  * Takes in array of LatLngBounds objects and returns array of XYZ coordinate objects
@@ -51,6 +51,26 @@ export function getTileCoords(
 	);
 
 	return filteredTileCoords.map((c) => ({ X: c.x, Y: c.y, Z: c.z }));
+}
+
+/**
+ * Convert a slippy map tile coord to the LatLngBounds of that tile
+ * @param tileCoord | TileCoord { X, Y, Z }
+ */
+export function tileCoordToBounds(tileCoord: TileCoord): L.LatLngBounds {
+	const { X, Y } = tileCoord;
+
+	const topLeftLayerPoint = new L.Point(X * tileSize, Y * tileSize);
+
+	const bottomRightLayerPoint = new L.Point(
+		(X + 1) * tileSize,
+		(Y + 1) * tileSize
+	);
+
+	return L.latLngBounds(
+		L.CRS.EPSG3857.pointToLatLng(topLeftLayerPoint, scale),
+		L.CRS.EPSG3857.pointToLatLng(bottomRightLayerPoint, scale)
+	);
 }
 
 /**

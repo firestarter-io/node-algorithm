@@ -4,18 +4,42 @@
  * In memory data for a given user session
  */
 
-// Cheat to add properties to global for debugging purposes:
-const globalAny: any = global;
+/**
+ * Types of data required for the algorithm
+ */
+export enum DataGroups {
+	DEM = 'DEM',
+	LandfireVegetationCondition = 'LandfireVegetationCondition',
+	LandfireFuelVegetationType = 'LandfireFuelVegetationType',
+	GroundCover = 'GroundCover',
+}
 
+/**
+ * The shape of a given data type will be of the format
+ * {
+ *    tileName: <tile_image_data>,
+ * }
+ */
 export interface ImageDataCache {
 	[key: string]: ImageData;
 }
 
-export const DEMtiles: ImageDataCache = {};
-export const vegetationClassCache: ImageDataCache = {};
-export const groundcoverCache: ImageDataCache = {};
-export const fuelVegetationType: ImageDataCache = {};
+/**
+ * The data cache must be a group of ImageDataCaches, one for each data type
+ */
+export type DataCache = {
+	[key in DataGroups]: ImageDataCache;
+};
 
-globalAny.DEMtiles = DEMtiles;
-globalAny.vegetationClassCache = vegetationClassCache;
-globalAny.groundcoverCache = groundcoverCache;
+/**
+ * Global tile cache
+ */
+export const tileCache: DataCache = {
+	DEM: {},
+	LandfireVegetationCondition: {},
+	LandfireFuelVegetationType: {},
+	GroundCover: {},
+};
+
+// @ts-ignore
+global.tileCache = tileCache;

@@ -5,12 +5,13 @@
  */
 
 import * as L from 'leaflet';
-import { LatLngLiteral, Point } from 'leaflet';
-import { retrieveTile, tileCache, scale } from '@config';
-import { getTileCoord, fetchDEMTile } from './dem';
+import { Point } from 'leaflet';
+import { retrieveTile, scale } from '@config';
+import { getTileCoord } from './dem';
 import { PointLiteral, Topography } from 'typings/gis';
 import { Earth } from '@utils/geometry/CRS.Earth';
 import { getRGBfromImgData } from '@utils/rgba';
+import { DataGroups } from '@data';
 
 /**
  * Takes in a projected point and returns an elevation
@@ -28,7 +29,7 @@ export function getElevation(point: PointLiteral): number {
 	};
 
 	const RGBA = getRGBfromImgData(
-		retrieveTile(tileName),
+		retrieveTile(DataGroups.DEM, tileName),
 		xyPositionOnTile.x,
 		xyPositionOnTile.y
 	);

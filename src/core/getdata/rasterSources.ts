@@ -4,14 +4,11 @@
  * List of raster data sources
  */
 
+import { DataGroups, tileCache } from '@data';
 import { EsriRasterDataSource } from '@utils/EsriRasterDataSource';
-import {
-	vegetationClassCache,
-	groundcoverCache,
-	fuelVegetationType,
-} from '@data';
 
 export const LandfireVegetationCondition = new EsriRasterDataSource({
+	datagroup: DataGroups.LandfireVegetationCondition,
 	url:
 		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
 	exportType: 'export',
@@ -20,12 +17,13 @@ export const LandfireVegetationCondition = new EsriRasterDataSource({
 	sr: '102100',
 	sublayer: '30',
 	dpi: '96',
-	dataCache: vegetationClassCache,
+	dataCache: tileCache.LandfireVegetationCondition,
 });
 // @ts-ignore
 global.LandfireVegetationCondition = LandfireVegetationCondition;
 
 export const LandfireFuelVegetationType = new EsriRasterDataSource({
+	datagroup: DataGroups.LandfireFuelVegetationType,
 	url:
 		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
 	exportType: 'export',
@@ -34,13 +32,14 @@ export const LandfireFuelVegetationType = new EsriRasterDataSource({
 	sr: '102100',
 	sublayer: '25',
 	dpi: '96',
-	dataCache: fuelVegetationType,
+	dataCache: tileCache.LandfireFuelVegetationType,
 });
 // @ts-ignore
 global.LandfireFuelVegetationType = LandfireFuelVegetationType;
 
 export const GroundcoverRequest = new EsriRasterDataSource({
+	datagroup: DataGroups.GroundCover,
 	url:
 		'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
-	dataCache: groundcoverCache,
+	dataCache: tileCache.GroundCover,
 });

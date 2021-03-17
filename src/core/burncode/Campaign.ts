@@ -116,6 +116,7 @@ export class Campaign {
 				burningCell.calculateBurnStatus();
 				burningCell.neighbors().forEach((neightbor) => {
 					neightbor.calculateBurnStatus();
+					neightbor.getData();
 				});
 			});
 		});
