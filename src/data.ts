@@ -4,9 +4,6 @@
  * In memory data for a given user session
  */
 
-// Cheat to add properties to global for debugging purposes:
-const globalAny: any = global;
-
 /**
  * Types of data required for the algorithm
  */
@@ -43,3 +40,6 @@ export const tileCache: DataCache = {
 	LandfireFuelVegetationType: {},
 	GroundCover: {},
 };
+
+// @ts-ignore
+global.tileCache = tileCache;
