@@ -8,15 +8,17 @@
 
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
-import { scale } from '@config';
+import { retrieveTile, saveTile, scale } from '@config';
 import { Bounds, bounds, Point } from 'leaflet';
 import { ImageRequestOptions } from '../../typings/esri';
-import { loadImage, Image, createCanvas } from 'canvas';
-import { ImageDataCache } from '@data';
+import { loadImage, Image, createCanvas, Canvas } from 'canvas';
+import { DataGroups, ImageDataCache, tileCache } from '@data';
 import { getRGBfromImgData } from './rgba';
 import { getTileCoords } from './geometry/bounds';
+import { TileCoord } from 'typings/gis';
 
 interface NewRequestOptions extends ImageRequestOptions {
+	datagroup: DataGroups;
 	url: string;
 }
 
@@ -24,6 +26,10 @@ interface NewRequestOptions extends ImageRequestOptions {
  * Util class for requesting and interpereting esri raster data sources
  */
 export class EsriRasterDataSource {
+	/**
+	 * Name of the data source
+	 */
+	readonly datagroup: DataGroups;
 	/**
 	 * Url of the data source
 	 */
@@ -46,7 +52,8 @@ export class EsriRasterDataSource {
 	public cache: ImageDataCache;
 
 	constructor(options: NewRequestOptions) {
-		const { url, ...rest } = options;
+		const { datagroup, url, ...rest } = options;
+		this.datagroup = datagroup;
 		this.url = options.url;
 		this.options = rest;
 		this.cache = options.dataCache;
@@ -89,7 +96,38 @@ export class EsriRasterDataSource {
 	 * @param latLngBounds | LatLngBounds where tiles are desired
 	 */
 	public async fetchTiles(latLngBounds: L.LatLngBounds) {
-		const tileCoords = getTileCoords(latLngBounds, scale);
+		let tileCoords: any = getTileCoords(latLngBounds, scale);
+
+		tileCoords = tileCoords.filter((coord: TileCoord) => {
+			const { X, Y, Z } = coord;
+			const tilename = `${Z}/${X}/${Y}`;
+			if (Object.keys(tileCache[this.datagroup]).includes(tilename)) {
+				return false;
+			} else {
+				return true;
+			}
+		});
+
+		await Promise.all<CanvasImageSource>(
+			tileCoords.map((coord: TileCoord) => {
+				const url = this.buildImageUrl(latLngBounds);
+				return loadImage(url);
+			})
+		)
+			.then((images: CanvasImageSource[]): void => {
+				images.forEach((image: CanvasImageSource, index: number) => {
+					const canvas: Canvas = createCanvas(256, 256);
+					const ctx: RenderingContext = canvas.getContext('2d');
+					ctx.drawImage(image, 0, 0, 256, 256);
+					const { X, Y, Z } = tileCoords[index];
+					const tilename = `${Z}/${X}/${Y}`;
+					saveTile(this.datagroup, tilename, ctx.getImageData(0, 0, 256, 256));
+				});
+			})
+			.then(() =>
+				console.log(`${this.datagroup} tiles loaded and saved to cache`)
+			)
+			.catch((e) => console.log(e));
 	}
 
 	/**

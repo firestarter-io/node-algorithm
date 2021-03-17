@@ -57,14 +57,14 @@ export function getTileCoords(
  * Convert a slippy map tile coord to the LatLngBounds of that tile
  * @param tileCoord | TileCoord { X, Y, Z }
  */
-export function tileCoordToBounds(tileCoord: TileCoord) {
+export function tileCoordToBounds(tileCoord: TileCoord): L.LatLngBounds {
 	const { X, Y } = tileCoord;
 
 	const topLeftLayerPoint = new L.Point(X * tileSize, Y * tileSize);
 
 	const bottomRightLayerPoint = new L.Point(
-		X * tileSize + 255,
-		Y * tileSize + 255
+		(X + 1) * tileSize,
+		(Y + 1) * tileSize
 	);
 
 	return L.latLngBounds(
