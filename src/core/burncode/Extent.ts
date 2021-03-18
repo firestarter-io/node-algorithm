@@ -8,13 +8,16 @@
 import * as L from 'leaflet';
 import { Logger } from '@core/utils/Logger';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
-import { createDEM } from '@core/getdata/dem';
+import { createDEM, getTileCoord } from '@core/getdata/dem';
 import {
 	LandfireFuelVegetationType,
 	LandfireVegetationCondition,
 } from '@core/getdata/rasterSources';
 import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 import BurnMatrix from './BurnMatrix';
+import { tileCache } from '@data';
+import { getRGBfromImgData } from '@core/utils/rgba';
+import { scale } from '@config';
 
 class Extent {
 	/**
@@ -138,10 +141,31 @@ class Extent {
 	/**
 	 *
 	 */
-	getPixelValuesAt(latlng: L.LatLng) {
-		const vegetationCondition = this.data.LandfireVegetationCondition.getPixelAt(
-			latlng,
-			this.origin
+	getPixelValuesAt(coord: L.LatLng | L.Point) {
+		let point: L.Point;
+		if (coord instanceof L.LatLng) {
+			point = L.CRS.EPSG3857.latLngToPoint(coord, scale).round();
+		} else if (coord instanceof L.Point) {
+			point = coord;
+		} else {
+			console.log(
+				'Something is wrong with the coordinate type fed to getPixelValuesAt'
+			);
+		}
+
+		const { X, Y, Z } = getTileCoord(point);
+		const tileName = `${Z}/${X}/${Y}`;
+		const tile = tileCache.LandfireVegetationCondition[tileName];
+
+		const xyPositionOnTile = {
+			x: point.x - X * 256,
+			y: point.y - Y * 256,
+		};
+
+		const vegetationCondition = getRGBfromImgData(
+			tile,
+			xyPositionOnTile.x,
+			xyPositionOnTile.y
 		);
 
 		console.log(vegetationCondition);

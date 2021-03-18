@@ -2,6 +2,7 @@
  * Firestarter.io
  *
  * In memory data for a given user session
+ * Will likely need to be redesigned to use an actual database
  */
 
 /**
@@ -40,6 +41,18 @@ export const tileCache: DataCache = {
 	LandfireFuelVegetationType: {},
 	GroundCover: {},
 };
+
+/**
+ * Shape of object containing legends
+ */
+export type Legends = {
+	[key in Exclude<DataGroups, 'DEM'>]?: object;
+};
+
+/**
+ * Globally available object containing legend JSONs for raster data sources
+ */
+export const legends = {};
 
 // @ts-ignore
 global.tileCache = tileCache;

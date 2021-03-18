@@ -12,13 +12,20 @@ import { retrieveTile, saveTile, scale } from '@config';
 import { Bounds, bounds, Point } from 'leaflet';
 import { ImageRequestOptions } from '../../typings/esri';
 import { loadImage, Image, createCanvas, Canvas } from 'canvas';
-import { DataGroups, ImageDataCache, tileCache } from '@data';
+import { DataGroups, ImageDataCache, legends, tileCache } from '@data';
 import { getRGBfromImgData } from './rgba';
-import { getTileCoords } from './geometry/bounds';
+import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
 
 interface NewRequestOptions extends ImageRequestOptions {
+	/**
+	 * The name of the data group, used to tell EsriRasterDataSource where to store its
+	 * data in the tileCache / database
+	 */
 	datagroup: DataGroups;
+	/**
+	 * The location of the data resource, should be an arcgis server raster data source url
+	 */
 	url: string;
 }
 
@@ -110,7 +117,8 @@ export class EsriRasterDataSource {
 
 		await Promise.all<CanvasImageSource>(
 			tileCoords.map((coord: TileCoord) => {
-				const url = this.buildImageUrl(latLngBounds);
+				const coordBounds = tileCoordToBounds(coord);
+				const url = this.buildImageUrl(coordBounds);
 				return loadImage(url);
 			})
 		)
@@ -287,6 +295,8 @@ export class EsriRasterDataSource {
 			...symbol,
 			rgbvalue: rgbValues[ind],
 		}));
+
+		legends[this.datagroup] = legend;
 
 		return legend;
 	}
