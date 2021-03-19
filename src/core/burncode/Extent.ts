@@ -167,9 +167,18 @@ class Extent {
 		console.log(vegetationCondition);
 	}
 
+	/**
+	 * Expands Extent downward, performs all resizing and data fetching of new data
+	 * @param {Number} noOfTiles | Number of tiles to expand extent by
+	 */
 	expandDown(noOfTiles: number = 2) {
 		const morePixels = noOfTiles * tileSize;
+
+		// Adjust height, resize burn matrix:
 		this.height = this.height + morePixels;
+		this.burnMatrix.matrix.resize([this.width, this.height]);
+
+		// Determine new bounds and latLngBounds:
 		this.pixelBounds = this.pixelBounds.extend(
 			L.point(
 				this.pixelBounds.getBottomLeft().x,
@@ -177,6 +186,34 @@ class Extent {
 			)
 		);
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
+
+		// Fetch data for new bounds:
+		Logger.log('Expanding Extent:');
+		this.fetchData();
+	}
+
+	/**
+	 * Expands Extent to the right, performs all resizing and data fetching of new data
+	 * @param {Number} noOfTiles | Number of tiles to expand extent by
+	 */
+	expandRight(noOfTiles: number = 2) {
+		const morePixels = noOfTiles * tileSize;
+
+		// Adjust height, resize burn matrix:
+		this.width = this.width + morePixels;
+		this.burnMatrix.matrix.resize([this.width, this.height]);
+
+		// Determine new bounds and latLngBounds:
+		this.pixelBounds = this.pixelBounds.extend(
+			L.point(
+				this.pixelBounds.getBottomLeft().x + morePixels,
+				this.pixelBounds.getBottomLeft().y
+			)
+		);
+		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
+
+		// Fetch data for new bounds:
+		this.fetchData();
 	}
 }
 
