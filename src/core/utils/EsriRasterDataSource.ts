@@ -132,9 +132,6 @@ export class EsriRasterDataSource {
 					saveTile(this.datagroup, tilename, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
-			.then(() =>
-				console.log(`${this.datagroup} tiles loaded and saved to cache`)
-			)
 			.catch((e) => console.log(e));
 	}
 

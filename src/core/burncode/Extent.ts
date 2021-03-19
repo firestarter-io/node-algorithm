@@ -7,7 +7,10 @@
 
 import * as L from 'leaflet';
 import { Logger } from '@core/utils/Logger';
-import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
+import {
+	pixelBoundsToLatLngBounds,
+	refitBoundsToMapTiles,
+} from '@utils/geometry/bounds';
 import { createDEM, getTileCoord } from '@core/getdata/dem';
 import {
 	LandfireFuelVegetationType,
@@ -17,45 +20,45 @@ import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 import BurnMatrix from './BurnMatrix';
 import { tileCache } from '@data';
 import { getRGBfromImgData } from '@core/utils/rgba';
-import { scale } from '@config';
+import { scale, tileSize } from '@config';
 
 class Extent {
 	/**
 	 * The latLngBounds of the extent (after refitting)
 	 */
-	readonly latLngBounds: L.LatLngBounds;
+	latLngBounds: L.LatLngBounds;
 	/**
 	 * The projected bounds of the extent (after refitting)
 	 */
-	readonly bounds: L.Bounds;
+	bounds: L.Bounds;
 	/**
 	 * The pixel / layer bounds of the extent after refitting
 	 * pixel bounds refer to latlng bounds transformed into
 	 * leaflet [layer point]{@link https://leafletjs.com/reference-1.7.1.html#map-latlngtolayerpoint}
 	 */
-	readonly pixelBounds: L.Bounds;
+	pixelBounds: L.Bounds;
 	/**
 	 * The width of the projected bounds
 	 */
-	readonly width: number;
+	width: number;
 	/**
 	 * The height of the projected bounds
 	 */
-	readonly height: number;
+	height: number;
 	/**
 	 * The top left corner origin of the projected bounds
 	 */
-	readonly origin: L.Point;
+	origin: L.Point;
 	/**
 	 * Data sources for the extent
 	 */
-	public data: {
+	data: {
 		[data: string]: EsriRasterDataSource;
 	};
 	/**
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
-	public burnMatrix: BurnMatrix;
+	burnMatrix: BurnMatrix;
 
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
@@ -76,7 +79,6 @@ class Extent {
 		/**
 		 * Keep all values available on instance:
 		 */
-		this.bounds = bounds;
 		this.latLngBounds = llbounds;
 		this.pixelBounds = pixelBounds;
 		this.width = pixelBounds.getSize().x;
@@ -133,13 +135,7 @@ class Extent {
 	compareExents() {}
 
 	/**
-	 * Checks how far a point is from the edge of its surrounding extent,
-	 * and grows the extent if necessary
-	 */
-	checkPointInExtent(point: L.Point) {}
-
-	/**
-	 *
+	 * Returns data values f
 	 */
 	getPixelValuesAt(coord: L.LatLng | L.Point) {
 		let point: L.Point;
@@ -171,11 +167,16 @@ class Extent {
 		console.log(vegetationCondition);
 	}
 
-	/**
-	 * Returns data sources for the extent
-	 */
-	public getData() {
-		return this.data;
+	expandDown(noOfTiles: number = 2) {
+		const morePixels = noOfTiles * tileSize;
+		this.height = this.height + morePixels;
+		this.pixelBounds = this.pixelBounds.extend(
+			L.point(
+				this.pixelBounds.getBottomLeft().x,
+				this.pixelBounds.getBottomLeft().y + morePixels
+			)
+		);
+		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 	}
 }
 

@@ -146,3 +146,31 @@ export function refitBoundsToMapTiles(
 
 	return { refitLatLngBounds, refitBounds, refitPixelBounds };
 }
+
+/**
+ * Transforms layerpoint pixel bounds to latLngBounds
+ * @param pixelBounds | L.Bounds object
+ */
+export function pixelBoundsToLatLngBounds(pixelBounds: L.Bounds) {
+	const topLeft = pixelBounds.getTopLeft();
+	const bottomRight = pixelBounds.getBottomRight();
+
+	return L.latLngBounds(
+		L.CRS.EPSG3857.pointToLatLng(topLeft, scale),
+		L.CRS.EPSG3857.pointToLatLng(bottomRight, scale)
+	);
+}
+
+/**
+ * Transforms latLngBounds to layerpoint pixel bounds
+ * @param latLngBounds | L.LatLngBounds object
+ */
+export function latLngBoundsToPixelBounds(latLngBounds: L.LatLngBounds) {
+	const nw = latLngBounds.getNorthWest();
+	const se = latLngBounds.getSouthEast();
+
+	return L.bounds(
+		L.CRS.EPSG3857.latLngToPoint(nw, scale),
+		L.CRS.EPSG3857.latLngToPoint(se, scale)
+	);
+}
