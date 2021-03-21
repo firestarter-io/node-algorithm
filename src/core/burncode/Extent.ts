@@ -230,7 +230,7 @@ class Extent {
 
 		// Adjust height and origin
 		this.height = this.height + morePixels;
-		this.origin = L.point(this.origin.x - morePixels, this.origin.y);
+		this.origin = L.point(this.origin.x, this.origin.y - morePixels);
 
 		// Resize burn matrix and clone old version to correct position:
 		const newArea = math.zeros(this.width, morePixels, 'sparse');
@@ -239,13 +239,50 @@ class Extent {
 			this.burnMatrix.matrix,
 			0
 		) as Matrix;
-		// Adjust origin
-		this.origin = L.point(this.origin.x, this.origin.y - morePixels);
 
 		// Reposition all burning / burned out / supressed cells relative to new origin
 		this.burnMatrix.trackedCells.forEach((cellType: Cell[]) => {
 			cellType.forEach((cell: Cell) => {
 				cell.position = [cell.position[0], cell.position[1] + morePixels];
+			});
+		});
+
+		// Determine new bounds and latLngBounds:
+		this.pixelBounds = this.pixelBounds.extend(
+			L.point(
+				this.pixelBounds.getBottomLeft().x,
+				this.pixelBounds.getBottomLeft().y - morePixels
+			)
+		);
+		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
+
+		// Fetch data for new bounds:
+		this.fetchData();
+	}
+
+	/**
+	 * Expands Extent to the left, performs all resizing and data fetching of new data
+	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
+	 * @param {Number} noOfTiles | Number of tiles to expand extent by
+	 */
+	expandLeft(noOfTiles: number = 2) {
+		const morePixels = noOfTiles * tileSize;
+
+		// Adjust height and origin
+		this.width = this.width + morePixels;
+		this.origin = L.point(this.origin.x - morePixels, this.origin.y);
+
+		// Resize burn matrix and clone old version to correct position:
+		const newArea = math.zeros(morePixels, this.height, 'sparse');
+		this.burnMatrix.matrix = math.concat(
+			newArea,
+			this.burnMatrix.matrix
+		) as Matrix;
+
+		// Reposition all burning / burned out / supressed cells relative to new origin
+		this.burnMatrix.trackedCells.forEach((cellType: Cell[]) => {
+			cellType.forEach((cell: Cell) => {
+				cell.position = [cell.position[0] + morePixels, cell.position[1]];
 			});
 		});
 
