@@ -21,6 +21,10 @@ import BurnMatrix from './BurnMatrix';
 import { tileCache } from '@data';
 import { getRGBfromImgData } from '@core/utils/rgba';
 import { scale, tileSize } from '@config';
+import { math } from '@core/utils/math';
+import { Matrix } from 'mathjs';
+import { CellPosition } from 'typings/firestarter';
+import Cell from './Cell';
 
 class Extent {
 	/**
@@ -207,6 +211,48 @@ class Extent {
 		this.pixelBounds = this.pixelBounds.extend(
 			L.point(
 				this.pixelBounds.getBottomLeft().x + morePixels,
+				this.pixelBounds.getBottomLeft().y
+			)
+		);
+		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
+
+		// Fetch data for new bounds:
+		this.fetchData();
+	}
+
+	/**
+	 * Expands Extent upwards, performs all resizing and data fetching of new data
+	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
+	 * @param {Number} noOfTiles | Number of tiles to expand extent by
+	 */
+	expandUp(noOfTiles: number = 2) {
+		const morePixels = noOfTiles * tileSize;
+
+		// Adjust height and origin
+		this.height = this.height + morePixels;
+		this.origin = L.point(this.origin.x - morePixels, this.origin.y);
+
+		// Resize burn matrix and clone old version to correct position:
+		const newArea = math.zeros(this.width, morePixels, 'sparse');
+		this.burnMatrix.matrix = math.concat(
+			newArea,
+			this.burnMatrix.matrix,
+			0
+		) as Matrix;
+		// Adjust origin
+		this.origin = L.point(this.origin.x, this.origin.y - morePixels);
+
+		// Reposition all burning / burned out / supressed cells relative to new origin
+		this.burnMatrix.trackedCells.forEach((cellType: Cell[]) => {
+			cellType.forEach((cell: Cell) => {
+				cell.position = [cell.position[0], cell.position[1] + morePixels];
+			});
+		});
+
+		// Determine new bounds and latLngBounds:
+		this.pixelBounds = this.pixelBounds.extend(
+			L.point(
+				this.pixelBounds.getBottomLeft().x - morePixels,
 				this.pixelBounds.getBottomLeft().y
 			)
 		);

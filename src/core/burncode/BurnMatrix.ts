@@ -32,6 +32,10 @@ class BurnMatrix {
 	 * Cells where fire has been supressed
 	 */
 	supressed: Cell[];
+	/**
+	 * Array containing all tracked cell arrays
+	 */
+	trackedCells: Cell[][];
 
 	/**
 	 * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
@@ -45,6 +49,7 @@ class BurnMatrix {
 		this.burning = [];
 		this.burnedOut = [];
 		this.supressed = [];
+		this.trackedCells = [this.burning, this.supressed, this.burnedOut];
 	}
 
 	/**
