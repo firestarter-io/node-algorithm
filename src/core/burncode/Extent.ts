@@ -20,10 +20,9 @@ import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 import BurnMatrix from './BurnMatrix';
 import { tileCache } from '@data';
 import { getRGBfromImgData } from '@core/utils/rgba';
-import { scale, tileSize } from '@config';
+import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
 import { Matrix } from 'mathjs';
-import { CellPosition } from 'typings/firestarter';
 import Cell from './Cell';
 
 class Extent {
@@ -175,7 +174,7 @@ class Extent {
 	 * Expands Extent downward, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandDown(noOfTiles: number = 2) {
+	expandDown(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -200,7 +199,7 @@ class Extent {
 	 * Expands Extent to the right, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandRight(noOfTiles: number = 2) {
+	expandRight(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -225,7 +224,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandUp(noOfTiles: number = 2) {
+	expandUp(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -234,10 +233,9 @@ class Extent {
 
 		// Resize burn matrix and clone old version to correct position:
 		const newArea = math.zeros(this.width, morePixels, 'sparse');
-		this.burnMatrix.matrix = math.concat(
-			newArea,
-			this.burnMatrix.matrix,
-			0
+		const oldArea = this.burnMatrix.clone();
+		this.burnMatrix.matrix = math.sparse(
+			math.concat(newArea, oldArea, 0)
 		) as Matrix;
 
 		// Reposition all burning / burned out / supressed cells relative to new origin
@@ -265,7 +263,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandLeft(noOfTiles: number = 2) {
+	expandLeft(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -274,9 +272,8 @@ class Extent {
 
 		// Resize burn matrix and clone old version to correct position:
 		const newArea = math.zeros(morePixels, this.height, 'sparse');
-		this.burnMatrix.matrix = math.concat(
-			newArea,
-			this.burnMatrix.matrix
+		this.burnMatrix.matrix = math.sparse(
+			math.concat(newArea, this.burnMatrix.matrix)
 		) as Matrix;
 
 		// Reposition all burning / burned out / supressed cells relative to new origin

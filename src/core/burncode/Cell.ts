@@ -107,7 +107,7 @@ class Cell {
 	 */
 	async getData() {
 		const { slope, aspect } = getTopography(this.layerPoint);
-		console.log({ slope, aspect });
+		// console.log({ slope, aspect });
 	}
 
 	/**

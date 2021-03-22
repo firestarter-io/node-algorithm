@@ -53,6 +53,11 @@ export const scale: number = 12;
 export const tileSize = 256;
 
 /**
+ * Number of tiles to expand an extent when it grows
+ */
+export const tilesToExpand = 2;
+
+/**
  * Default extent size to use when creating new extents, in meters
  */
 export const extentSize = 8000;
