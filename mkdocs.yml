@@ -1,0 +1,19 @@
+site_name: Firestarter.io Algorithm
+nav:
+  - About: index.md
+  - Components:
+      - Campaign: algorithm/campaign.md
+      - Extent: algorithm/extent/extent.md
+  - Algorithm:
+      - Overview: algorithm/overview.md
+      - Data: algorithm/overview.md
+theme:
+  name: material
+  logo: assets/flame.png
+  highlightjs: true
+extra_css:
+  - stylesheets/extra.css
+markdown_extensions:
+  - attr_list
+  - pymdownx.highlight:
+      use_pygments: true
