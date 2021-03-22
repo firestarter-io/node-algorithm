@@ -179,7 +179,7 @@ class Extent {
 
 		// Adjust height, resize burn matrix:
 		this.height = this.height + morePixels;
-		this.burnMatrix.matrix.resize([this.width, this.height]);
+		this.burnMatrix.resize(this.width, this.height);
 
 		// Determine new bounds and latLngBounds:
 		this.pixelBounds = this.pixelBounds.extend(
@@ -204,7 +204,7 @@ class Extent {
 
 		// Adjust height, resize burn matrix:
 		this.width = this.width + morePixels;
-		this.burnMatrix.matrix.resize([this.width, this.height]);
+		this.burnMatrix.resize(this.width, this.height);
 
 		// Determine new bounds and latLngBounds:
 		this.pixelBounds = this.pixelBounds.extend(
@@ -232,7 +232,7 @@ class Extent {
 		this.origin = L.point(this.origin.x, this.origin.y - morePixels);
 
 		// Resize burn matrix and clone old version to correct position:
-		const newArea = math.zeros(this.width, morePixels, 'sparse');
+		const newArea = math.zeros(morePixels, this.width, 'sparse');
 		const oldArea = this.burnMatrix.clone();
 		this.burnMatrix.matrix = math.sparse(
 			math.concat(newArea, oldArea, 0)
@@ -271,9 +271,10 @@ class Extent {
 		this.origin = L.point(this.origin.x - morePixels, this.origin.y);
 
 		// Resize burn matrix and clone old version to correct position:
-		const newArea = math.zeros(morePixels, this.height, 'sparse');
+		const newArea = math.zeros(this.height, morePixels, 'sparse');
+		const oldArea = this.burnMatrix.clone();
 		this.burnMatrix.matrix = math.sparse(
-			math.concat(newArea, this.burnMatrix.matrix)
+			math.concat(newArea, oldArea)
 		) as Matrix;
 
 		// Reposition all burning / burned out / supressed cells relative to new origin

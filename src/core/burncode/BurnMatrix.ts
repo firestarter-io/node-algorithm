@@ -44,7 +44,7 @@ class BurnMatrix {
 	 * @param size | The x and y dimensions of the burn matrix
 	 */
 	constructor(width: number, height: number, extent: Extent) {
-		this.matrix = math.zeros(width, height, 'sparse') as Matrix;
+		this.matrix = math.zeros(height, width, 'sparse') as Matrix;
 		this.extent = extent;
 		this.burning = [];
 		this.burnedOut = [];
@@ -88,7 +88,7 @@ class BurnMatrix {
 	 * @param value | Value to set at that position
 	 */
 	set(position: CellPosition, value: any): void {
-		this.matrix.set(position, value);
+		this.matrix.set([...position].reverse(), value);
 	}
 
 	/**
@@ -96,7 +96,17 @@ class BurnMatrix {
 	 * @param position | [x, y] position in array
 	 */
 	get(position: CellPosition) {
-		this.matrix.get(position);
+		this.matrix.get([...position].reverse());
+	}
+
+	/**
+	 * Direct method to resize the burn matrix
+	 * @param width | Width of resultant matrix in pixels
+	 * @param height | Height of resultant matrix in pixels
+	 */
+	resize(width: number, height: number) {
+		const newmatrix = this.matrix.resize([height, width]);
+		this.matrix = math.sparse(newmatrix);
 	}
 
 	/**
