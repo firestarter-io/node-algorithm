@@ -4,6 +4,8 @@ nav:
   - Components:
       - Campaign: algorithm/campaign.md
       - Extent: algorithm/extent/extent.md
+      - BurnMatrix: algorithm/burnmatrix.md
+      - Cell: algorithm/Cell.md
   - Algorithm:
       - Overview: algorithm/overview.md
       - Data: algorithm/overview.md
