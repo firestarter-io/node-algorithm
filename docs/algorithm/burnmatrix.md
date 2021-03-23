@@ -19,4 +19,4 @@ const matrix = math.zeros(2, 3)
 ];
 ```
 
-While visually it appears as though each inner array is a row within the matrix, it actually represents a column. This means that if you wish to set the first
+While visually it appears as though each inner array is a row within the matrix, it actually represents a column. While the above `math.zeros(2, 3)` seems like it should produce a matrix that is two units wide by three units tall,
