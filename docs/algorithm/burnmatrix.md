@@ -19,4 +19,4 @@ const matrix = math.zeros(2, 3)
 ];
 ```
 
-While visually it appears as though each inner array is a row within the matrix, it actually represents a column. While the above `math.zeros(2, 3)` seems like it should produce a matrix that is two units wide by three units tall,
+Note that [the coordinates for all matrix operations are in `[y, x]` format](https://github.com/josdejong/mathjs/issues/2142#issuecomment-805653872). A `BurnMatrix` redefines any necessary matrix methods to use `[x, y]` coordinates for consistency with canvas data methods. For example, [`CanvasRenderingContext2D.getImageData()`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData) takes coordinates in `[x, y]` order. This is the reason that certain `BurnMatrix` and `Extent` methods use `[y, x]` coordinates.
