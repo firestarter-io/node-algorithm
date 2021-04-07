@@ -9,7 +9,7 @@ import * as L from 'leaflet';
 import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
-import { Logger } from '@core/utils/Logger';
+import { log } from '@core/utils/Logger';
 import Cell from './Cell';
 
 export class Campaign {
@@ -97,9 +97,7 @@ export class Campaign {
 
 		burningCell.setBurnStatus(1);
 
-		Logger.log(
-			`${Logger.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
-		);
+		log(`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`);
 	}
 
 	/**

@@ -16,3 +16,24 @@ export class Logger {
 		fire: '🔥',
 	};
 }
+
+interface F {
+	(...args: any[]): any;
+	emojis: {
+		fetch: '🐕';
+		successCheck: '✅';
+		errorX: '❌';
+		fire: '🔥';
+	};
+}
+
+export const log = <F>function (...args: any[]) {
+	console.log(...args);
+};
+
+log.emojis = {
+	fetch: '🐕',
+	successCheck: '✅',
+	errorX: '❌',
+	fire: '🔥',
+};

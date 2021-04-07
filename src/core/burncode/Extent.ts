@@ -6,7 +6,7 @@
  */
 
 import * as L from 'leaflet';
-import { Logger } from '@core/utils/Logger';
+import { log } from '@core/utils/Logger';
 import {
 	pixelBoundsToLatLngBounds,
 	refitBoundsToMapTiles,
@@ -53,12 +53,6 @@ class Extent {
 	 */
 	origin: L.Point;
 	/**
-	 * Data sources for the extent
-	 */
-	data: {
-		[data: string]: EsriRasterDataSource;
-	};
-	/**
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
 	burnMatrix: BurnMatrix;
@@ -88,7 +82,6 @@ class Extent {
 		this.height = pixelBounds.getSize().y;
 		this.origin = pixelBounds.getTopLeft();
 		this.burnMatrix = new BurnMatrix(this.width, this.height, this);
-		this.data = {};
 	}
 
 	/**
@@ -98,36 +91,32 @@ class Extent {
 		/**
 		 *  Generate Digital Elevation Model for extent:
 		 */
-		Logger.log(`${Logger.emojis.fetch} Fetching DEM . . .`);
+		log(`${log.emojis.fetch} Fetching DEM . . .`);
 		try {
 			await createDEM(this.latLngBounds);
-			Logger.log(`${Logger.emojis.successCheck} DEM Loaded`);
+			log(`${log.emojis.successCheck} DEM Loaded`);
 		} catch (e) {
-			Logger.log(`${Logger.emojis.errorX}`, e);
+			log(`${log.emojis.errorX}`, e);
 		}
 		/**
 		 *  Get Groundcover Vegetation Condition
 		 */
-		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Condition . . .`);
+		log(`${log.emojis.fetch} Fetching Vegetation Condition . . .`);
 		try {
-			// await LandfireVegetationCondition.fetchImage(this.latLngBounds);
-			// this.data['LandfireVegetationCondition'] = LandfireVegetationCondition;
 			await LandfireVegetationCondition.fetchTiles(this.latLngBounds);
-			Logger.log(`${Logger.emojis.successCheck} Vegetation Condition Loaded`);
+			log(`${log.emojis.successCheck} Vegetation Condition Loaded`);
 		} catch (e) {
-			Logger.log(`${Logger.emojis.errorX}`, e);
+			log(`${log.emojis.errorX}`, e);
 		}
 		/**
 		 * Get groundcover vegetation type
 		 */
-		Logger.log(`${Logger.emojis.fetch} Fetching Vegetation Type . . .`);
+		log(`${log.emojis.fetch} Fetching Vegetation Type . . .`);
 		try {
-			// await LandfireFuelVegetationType.fetchImage(this.latLngBounds);
-			// this.data['LandfireFuelVegetationType'] = LandfireVegetationCondition;
 			await LandfireFuelVegetationType.fetchTiles(this.latLngBounds);
-			Logger.log(`${Logger.emojis.successCheck} Vegetation Type Loaded`);
+			log(`${log.emojis.successCheck} Vegetation Type Loaded`);
 		} catch (e) {
-			Logger.log(`${Logger.emojis.errorX}`, e);
+			log(`${log.emojis.errorX}`, e);
 		}
 	}
 
@@ -191,7 +180,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		Logger.log('Expanding Extent:');
+		log('Expanding Extent:');
 		this.fetchData();
 	}
 
