@@ -8,7 +8,7 @@ nav:
       - Cell: algorithm/Cell.md
   - Algorithm:
       - Overview: algorithm/overview.md
-      - Data: algorithm/overview.md
+      - Data: algorithm/data.md
 theme:
   name: material
   logo: assets/flame.png

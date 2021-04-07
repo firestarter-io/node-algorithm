@@ -30,7 +30,7 @@ export interface ImageDataCache {
  */
 export type DataCache = {
 	[key in DataGroups]: ImageDataCache;
-};
+} & { datagroups: string[] };
 
 /**
  * Global tile cache
@@ -40,6 +40,7 @@ export const tileCache: DataCache = {
 	LandfireVegetationCondition: {},
 	LandfireFuelVegetationType: {},
 	GroundCover: {},
+	datagroups: Object.values(DataGroups),
 };
 
 /**
