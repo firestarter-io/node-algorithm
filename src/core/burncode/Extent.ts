@@ -24,6 +24,7 @@ import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
 import { Matrix } from 'mathjs';
 import Cell from './Cell';
+import { getTopography } from '@core/getData/getTopography';
 
 class Extent {
 	/**
@@ -143,7 +144,6 @@ class Extent {
 
 		const { X, Y, Z } = getTileCoord(point);
 		const tileName = `${Z}/${X}/${Y}`;
-		const tile = tileCache.LandfireVegetationCondition[tileName];
 
 		const xyPositionOnTile = {
 			x: point.x - X * 256,
@@ -151,12 +151,29 @@ class Extent {
 		};
 
 		const vegetationCondition = getRGBfromImgData(
-			tile,
+			tileCache.LandfireVegetationCondition[tileName],
 			xyPositionOnTile.x,
 			xyPositionOnTile.y
 		);
 
-		console.log(vegetationCondition);
+		const fuelVegetationType = getRGBfromImgData(
+			tileCache.LandfireFuelVegetationType[tileName],
+			xyPositionOnTile.x,
+			xyPositionOnTile.y
+		);
+
+		const { slope, aspect } = getTopography(point);
+
+		const data = {
+			slope,
+			aspect,
+			vegetationCondition,
+			fuelVegetationType,
+		};
+
+		console.log(data);
+
+		return data;
 	}
 
 	/**
