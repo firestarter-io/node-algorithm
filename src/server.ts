@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
+import * as chalk from 'chalk';
 import '@config';
 import router from './router';
 dotenv.config();
@@ -19,6 +20,15 @@ app.use(cors());
 app.use('/', router);
 
 // Start server
-app.listen(port, () => {
-	console.log(`App is listening on port ${port}`);
+const server = app.listen(port, () => {
+	console.log(chalk.blue(`\n\nFirestarter is listening on port ${port} 🎧\n`));
+});
+
+// Perform cleanup
+process.on('SIGINT', function () {
+	server.close(() => {
+		console.log(chalk.blue('\n\nShutting down Firestarter'));
+
+		process.exit();
+	});
 });
