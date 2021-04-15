@@ -13,9 +13,10 @@ import { Bounds, bounds, Point } from 'leaflet';
 import { ImageRequestOptions } from '../../typings/esri';
 import { loadImage, Image, createCanvas, Canvas } from 'canvas';
 import { DataGroups, ImageDataCache, legends, tileCache } from '@data';
-import { getRGBfromImgData } from './rgba';
+import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
+import { log } from './Logger';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	/**
@@ -103,6 +104,16 @@ export class EsriRasterDataSource {
 	 * @param latLngBounds | LatLngBounds where tiles are desired
 	 */
 	public async fetchTiles(latLngBounds: L.LatLngBounds) {
+		if (!legends[this.datagroup]) {
+			log(`${log.emojis.fetch} Fetching ${this.datagroup} legend . . .`);
+			try {
+				await this.generateLegend();
+				log(`${log.emojis.notepad} Legend for ${this.datagroup} ready`);
+			} catch (e) {
+				log(`${log.emojis.errorX} Legend failed to fetch`, e);
+			}
+		}
+
 		let tileCoords: any = getTileCoords(latLngBounds, scale);
 
 		tileCoords = tileCoords.filter((coord: TileCoord) => {
@@ -198,7 +209,7 @@ export class EsriRasterDataSource {
 	 * @param coord | Coordinate to get picel at - L.LatLng or L.Point
 	 * @param origin | Pixel origin of raster image to get pixel value from
 	 */
-	public getPixelAt(coord: L.LatLngLiteral, origin: L.Point) {
+	public getPixelValueAt(coord: L.LatLng | L.Point, origin: L.Point) {
 		let point;
 		if (coord instanceof L.LatLng) {
 			point = L.CRS.EPSG3857.latLngToPoint(coord, scale);
@@ -210,6 +221,28 @@ export class EsriRasterDataSource {
 		const imageData = this.cache.data;
 		const RGBA = getRGBfromImgData(imageData, x, y);
 		return RGBA;
+	}
+
+	/**
+	 * Function to compare a raster RGBA pixel value against the legend to get its
+	 * symbol value
+	 * @param RGBA | The RGBA value of the raster to decode
+	 */
+	decode(RGBA: RGBA) {
+		const legend = legends[this.datagroup];
+		const symbol = legend.find((symbol) => RGBA.matches(symbol.rgbvalue));
+		return symbol.label;
+	}
+
+	/**
+	 * Takes in a point and returns the raster data's value for the point
+	 * according the legend of the layer
+	 * @param coord | L.LatLng or L.Point
+	 * @param origin | pixelbounds origin of the
+	 */
+	public getValueAt(coord: L.LatLng | L.Point, origin: L.Point) {
+		const RGBA = this.getPixelValueAt(coord, origin);
+		return this.decode(RGBA);
 	}
 
 	/**
@@ -292,6 +325,8 @@ export class EsriRasterDataSource {
 			...symbol,
 			rgbvalue: rgbValues[ind],
 		}));
+
+		console.log(legend);
 
 		legends[this.datagroup] = legend;
 

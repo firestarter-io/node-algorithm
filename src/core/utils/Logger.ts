@@ -24,6 +24,7 @@ interface F {
 		successCheck: '✅';
 		errorX: '❌';
 		fire: '🔥';
+		notepad: '🗒️';
 	};
 }
 
@@ -36,4 +37,5 @@ log.emojis = {
 	successCheck: '✅',
 	errorX: '❌',
 	fire: '🔥',
+	notepad: '🗒️',
 };
