@@ -8,15 +8,16 @@
 
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
-import { retrieveTile, saveTile, scale } from '@config';
 import { Bounds, bounds, Point } from 'leaflet';
-import { ImageRequestOptions } from '../../typings/esri';
 import { loadImage, Image, createCanvas, Canvas } from 'canvas';
+import { saveTile, scale } from '@config';
 import { DataGroups, ImageDataCache, legends, tileCache } from '@data';
 import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
+import { ImageRequestOptions } from 'typings/esri';
 import { log } from './Logger';
+import { getTileCoord } from '@core/getdata/dem';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	/**
@@ -53,7 +54,7 @@ export class EsriRasterDataSource {
 	/**
 	 * The JSON of the ESRI layer
 	 */
-	layerJSON: any;
+	layerJSON: object;
 	/**
 	 * The in-memory database for the processed image data
 	 */
@@ -64,7 +65,7 @@ export class EsriRasterDataSource {
 		this.datagroup = datagroup;
 		this.url = options.url;
 		this.options = rest;
-		this.cache = options.dataCache;
+		this.cache = tileCache[datagroup];
 	}
 
 	/**
@@ -93,7 +94,6 @@ export class EsriRasterDataSource {
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(image, 0, 0, image.width, image.height);
 		const imageData = ctx.getImageData(0, 0, image.width, image.height);
-		this.cache.data = imageData;
 		return imageData;
 	}
 
@@ -212,14 +212,26 @@ export class EsriRasterDataSource {
 	public getPixelValueAt(coord: L.LatLng | L.Point, origin: L.Point) {
 		let point;
 		if (coord instanceof L.LatLng) {
-			point = L.CRS.EPSG3857.latLngToPoint(coord, scale);
+			point = L.CRS.EPSG3857.latLngToPoint(coord, scale).round();
 		} else if (coord instanceof L.Point) {
 			point = coord;
 		}
 
-		const { x, y } = point.subtract(origin).round();
-		const imageData = this.cache.data;
-		const RGBA = getRGBfromImgData(imageData, x, y);
+		const { X, Y, Z } = getTileCoord(point);
+		const tileName = `${Z}/${X}/${Y}`;
+
+		const xyPositionOnTile = {
+			x: point.x - X * 256,
+			y: point.y - Y * 256,
+		};
+
+		const imageData = this.cache[tileName];
+
+		const RGBA = getRGBfromImgData(
+			imageData,
+			xyPositionOnTile.x,
+			xyPositionOnTile.y
+		);
 		return RGBA;
 	}
 
@@ -315,7 +327,6 @@ export class EsriRasterDataSource {
 			rgbValues = symbolImages.map((image) => {
 				ctx.drawImage(image, 0, 0);
 				const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
-				// console.log({ R, G, B, A });
 				return { R, G, B, A };
 			});
 			return rgbValues;
@@ -325,8 +336,6 @@ export class EsriRasterDataSource {
 			...symbol,
 			rgbvalue: rgbValues[ind],
 		}));
-
-		console.log(legend);
 
 		legends[this.datagroup] = legend;
 

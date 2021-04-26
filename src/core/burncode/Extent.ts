@@ -142,26 +142,6 @@ class Extent {
 			);
 		}
 
-		// const { X, Y, Z } = getTileCoord(point);
-		// const tileName = `${Z}/${X}/${Y}`;
-
-		// const xyPositionOnTile = {
-		// 	x: point.x - X * 256,
-		// 	y: point.y - Y * 256,
-		// };
-
-		// const vegetationCondition = getRGBfromImgData(
-		// 	tileCache.LandfireVegetationCondition[tileName],
-		// 	xyPositionOnTile.x,
-		// 	xyPositionOnTile.y
-		// );
-
-		// const fuelVegetationType = getRGBfromImgData(
-		// 	tileCache.LandfireFuelVegetationType[tileName],
-		// 	xyPositionOnTile.x,
-		// 	xyPositionOnTile.y
-		// );
-
 		const vegetationCondition = LandfireVegetationCondition.getPixelValueAt(
 			coord,
 			this.origin
