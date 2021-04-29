@@ -142,15 +142,9 @@ class Extent {
 			);
 		}
 
-		const vegetationCondition = LandfireVegetationCondition.getPixelValueAt(
-			coord,
-			this.origin
-		);
+		const vegetationCondition = LandfireVegetationCondition.getValueAt(coord);
 
-		const fuelVegetationType = LandfireFuelVegetationType.getPixelValueAt(
-			coord,
-			this.origin
-		);
+		const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
 		const { slope, aspect } = getTopography(point);
 

@@ -5,6 +5,16 @@
  * Will likely need to be redesigned to use an actual database
  */
 
+import Campaign from '@core/burncode/Campaign';
+
+/**
+ * Object containing all Campaigns currently in memory
+ */
+export const campaigns: { [key: string]: Campaign } = {};
+
+// @ts-ignore
+globalThis.campaigns = campaigns;
+
 /**
  * Types of data required for the algorithm
  */
@@ -56,4 +66,4 @@ export type Legends = {
 export const legends = {};
 
 // @ts-ignore
-global.tileCache = tileCache;
+globalThis.tileCache = tileCache;

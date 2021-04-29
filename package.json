@@ -67,6 +67,7 @@
 		"module-alias": "^2.2.2",
 		"node-fetch": "^2.6.1",
 		"tsconfig-paths": "^3.9.0",
+		"uuid": "^8.3.2",
 		"xyz-affair": "^0.9.1"
 	}
 }

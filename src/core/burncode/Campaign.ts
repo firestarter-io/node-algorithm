@@ -6,6 +6,8 @@
  */
 
 import * as L from 'leaflet';
+import { v4 as uuid } from 'uuid';
+import * as data from '@data';
 import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
@@ -13,9 +15,25 @@ import { log } from '@core/utils/Logger';
 import Cell from './Cell';
 
 export class Campaign {
+	/**
+	 * Unique id of the campaign
+	 */
+	id: string;
+	/**
+	 * Campaign must be constructed from a first seed latlng
+	 */
 	seedLatLng: L.LatLng;
+	/**
+	 * Array of extents in Campaign
+	 */
 	extents: Extent[];
+	/**
+	 * Timestamp at the start of the campaign
+	 */
 	startTime: number;
+	/**
+	 * Array of TimeSteps in the Campaign
+	 */
 	timesteps: TimeStep[];
 
 	/**
@@ -25,22 +43,12 @@ export class Campaign {
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
 	constructor(latlng: L.LatLng, startTime: number = new Date().getTime()) {
-		/**
-		 * Campaign must be constructed from a first seed latlng
-		 */
 		this.seedLatLng = latlng;
-		/**
-		 * Initialize array of extents
-		 */
 		this.extents = [];
-		/**
-		 * Timestamp at the start of the campaign
-		 */
 		this.startTime = startTime;
-		/**
-		 * Initialize array of timesteps
-		 */
 		this.timesteps = [];
+		this.id = uuid();
+		data.campaigns[this.id] = this;
 	}
 
 	/**

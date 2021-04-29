@@ -209,7 +209,7 @@ export class EsriRasterDataSource {
 	 * @param coord | Coordinate to get picel at - L.LatLng or L.Point
 	 * @param origin | Pixel origin of raster image to get pixel value from
 	 */
-	public getPixelValueAt(coord: L.LatLng | L.Point, origin: L.Point) {
+	public getRGBValueAt(coord: L.LatLng | L.Point) {
 		let point;
 		if (coord instanceof L.LatLng) {
 			point = L.CRS.EPSG3857.latLngToPoint(coord, scale).round();
@@ -252,8 +252,8 @@ export class EsriRasterDataSource {
 	 * @param coord | L.LatLng or L.Point
 	 * @param origin | pixelbounds origin of the
 	 */
-	public getValueAt(coord: L.LatLng | L.Point, origin: L.Point) {
-		const RGBA = this.getPixelValueAt(coord, origin);
+	public getValueAt(coord: L.LatLng | L.Point) {
+		const RGBA = this.getRGBValueAt(coord);
 		return this.decode(RGBA);
 	}
 
