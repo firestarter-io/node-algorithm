@@ -12,9 +12,6 @@ import Campaign from '@core/burncode/Campaign';
  */
 export const campaigns: { [key: string]: Campaign } = {};
 
-// @ts-ignore
-globalThis.campaigns = campaigns;
-
 /**
  * Types of data required for the algorithm
  */
@@ -65,6 +62,8 @@ export type Legends = {
  */
 export const legends = {};
 
+// @ts-ignore
+globalThis.campaigns = campaigns;
 // @ts-ignore
 globalThis.tileCache = tileCache;
 // @ts-ignore
