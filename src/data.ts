@@ -20,7 +20,7 @@ globalThis.campaigns = campaigns;
  */
 export enum DataGroups {
 	DEM = 'DEM',
-	LandfireVegetationCondition = 'LandfireVegetationCondition',
+	FBFuelModels13 = 'FBFuelModels13',
 	LandfireFuelVegetationType = 'LandfireFuelVegetationType',
 	GroundCover = 'GroundCover',
 }
@@ -47,7 +47,7 @@ export type DataCache = {
  */
 export const tileCache: DataCache = {
 	DEM: {},
-	LandfireVegetationCondition: {},
+	FBFuelModels13: {},
 	LandfireFuelVegetationType: {},
 	GroundCover: {},
 	datagroups: Object.values(DataGroups),
@@ -67,3 +67,5 @@ export const legends = {};
 
 // @ts-ignore
 globalThis.tileCache = tileCache;
+// @ts-ignore
+globalThis.legends = legends;

@@ -14,7 +14,7 @@ import {
 import { createDEM, getTileCoord } from '@core/getdata/dem';
 import {
 	LandfireFuelVegetationType,
-	LandfireVegetationCondition,
+	FBFuelModels13,
 } from '@core/getdata/rasterSources';
 import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 import BurnMatrix from './BurnMatrix';
@@ -104,7 +104,7 @@ class Extent {
 		 */
 		log(`${log.emojis.fetch} Fetching Vegetation Condition . . .`);
 		try {
-			await LandfireVegetationCondition.fetchTiles(this.latLngBounds);
+			await FBFuelModels13.fetchTiles(this.latLngBounds);
 			log(`${log.emojis.successCheck} Vegetation Condition Loaded`);
 		} catch (e) {
 			log(`${log.emojis.errorX}`, e);
@@ -142,7 +142,7 @@ class Extent {
 			);
 		}
 
-		const vegetationCondition = LandfireVegetationCondition.getValueAt(coord);
+		const fuelModel = FBFuelModels13.getValueAt(coord);
 
 		const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
@@ -151,7 +151,7 @@ class Extent {
 		const data = {
 			slope,
 			aspect,
-			vegetationCondition,
+			fuelModel,
 			fuelVegetationType,
 		};
 

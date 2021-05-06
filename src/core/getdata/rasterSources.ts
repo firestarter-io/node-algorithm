@@ -7,20 +7,20 @@
 import { DataGroups, tileCache } from '@data';
 import { EsriRasterDataSource } from '@utils/EsriRasterDataSource';
 
-export const LandfireVegetationCondition = new EsriRasterDataSource({
-	datagroup: DataGroups.LandfireVegetationCondition,
+export const FBFuelModels13 = new EsriRasterDataSource({
+	datagroup: DataGroups.FBFuelModels13,
 	url:
 		'https://landfire.cr.usgs.gov/arcgis/rest/services/Landfire/US_200/MapServer',
 	exportType: 'export',
 	f: 'image',
 	format: 'png32',
 	sr: '102100',
-	sublayer: '30',
+	sublayer: '21',
 	dpi: '96',
-	dataCache: tileCache.LandfireVegetationCondition,
+	dataCache: tileCache.FBFuelModels13,
 });
 // @ts-ignore
-global.LandfireVegetationCondition = LandfireVegetationCondition;
+global.FBFuelModels13 = FBFuelModels13;
 
 export const LandfireFuelVegetationType = new EsriRasterDataSource({
 	datagroup: DataGroups.LandfireFuelVegetationType,

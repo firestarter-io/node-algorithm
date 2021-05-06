@@ -21,6 +21,7 @@ app.use('/', router);
 
 // Start server
 const server = app.listen(port, () => {
+	console.clear();
 	console.log(chalk.blue(`\n\nFirestarter is listening on port ${port} 🎧\n`));
 });
 

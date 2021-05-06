@@ -242,7 +242,7 @@ export class EsriRasterDataSource {
 	 */
 	decode(RGBA: RGBA) {
 		const legend = legends[this.datagroup];
-		const symbol = legend.find((symbol) => RGBA.matches(symbol.rgbvalue));
+		const symbol = legend.find((symbol) => RGBA.matches(symbol.rgbvalue, 10));
 		return symbol.label;
 	}
 

@@ -126,19 +126,19 @@ class Cell {
 		const dBottom = this.extent.height - y;
 
 		if (dLeft < tileSize * buffer) {
-			// extent.expandLeft
+			this.extent.expandLeft();
 		}
 
 		if (dRight < tileSize * buffer) {
-			// extent.expandLeft
+			this.extent.expandRight();
 		}
 
 		if (dTop < tileSize * buffer) {
-			// extent.expandLeft
+			this.extent.expandUp();
 		}
 
 		if (dBottom < tileSize * buffer) {
-			// extent.expandLeft
+			this.extent.expandDown();
 		}
 	}
 }
