@@ -200,8 +200,10 @@ class NeighborCell extends Cell {
 	directionFromOrigin: Directions;
 
 	/**
-	 * NeightCell is a specialized Cell type when referring to a Cell's neighbors.  It has additionak properties
-	 * that make calculation of fire spread probability easier, like the distance from the origin cell
+	 * NeighCell is a specialized Cell type when referring to a Cell's neighbors.  It has additional properties
+	 * and methods that make calculation of fire spread probability easier, such as:
+	 * - Slope calculator between origin cell and this cell
+	 * - Fire spread probability calculator based on ground fuel of origin and this cell
 	 * @param {Cell} originCell | Cell that this NeighborCell is in reference to
 	 * @param {DistanceCoefficients} distanceCoefficient | What to multiply the average Extent distance by
 	 * @param {Directions} directionFromOrigin | Name to help identify NeighborCell position relative to cell
@@ -219,9 +221,19 @@ class NeighborCell extends Cell {
 		this.directionFromOrigin = directionFromOrigin;
 	}
 
+	/**
+	 * Calculates the slope between the origin Cell of the Moore neighborhood
+	 * and this NeighborCell in that neighborhood
+	 * @returns Slope between origin Cell to this NeighborCell
+	 */
 	getSlopeFromOriginCell() {
 		const elevation = getElevation(this.layerPoint);
 		const originCellElevation = getElevation(this.originCell.layerPoint);
+
+		const dElev = elevation - originCellElevation;
+		const distance = this.extent.averageDistance;
+
+		return Math.atan(dElev / distance);
 	}
 }
 
