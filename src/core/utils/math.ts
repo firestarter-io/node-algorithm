@@ -6,6 +6,8 @@
 
 import { create, all } from 'mathjs';
 
+export const ROOT2 = 1.4142135623730951 as const;
+
 export const math = create(all, {});
 
 /**

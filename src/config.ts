@@ -7,6 +7,26 @@
 import { DataGroups, tileCache } from './data';
 
 // --------------------------------------------------------------------------------------- //
+//                                Language Configurations                                  //
+// --------------------------------------------------------------------------------------- //
+
+// Add round method to number prototype, because it should be native in JS already!
+declare global {
+	interface Number {
+		round;
+	}
+}
+
+if (!Number.prototype.round) {
+	Number.prototype.round = function (decimals) {
+		if (typeof decimals === 'undefined') {
+			decimals = 0;
+		}
+		return Math.round(this * Math.pow(10, decimals)) / Math.pow(10, decimals);
+	};
+}
+
+// --------------------------------------------------------------------------------------- //
 //                                Get leaflet working in node                              //
 // --------------------------------------------------------------------------------------- //
 

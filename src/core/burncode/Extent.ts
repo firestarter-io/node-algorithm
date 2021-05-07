@@ -57,6 +57,10 @@ class Extent {
 	 * Matrix with the same size as the bounds of the extent representing burn status of each pixel
 	 */
 	burnMatrix: BurnMatrix;
+	/**
+	 * Average distance between pixels in the Extent, in meters
+	 */
+	averageDistance: number;
 
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
@@ -83,6 +87,7 @@ class Extent {
 		this.height = pixelBounds.getSize().y;
 		this.origin = pixelBounds.getTopLeft();
 		this.burnMatrix = new BurnMatrix(this.width, this.height, this);
+		this.averageDistance = this.getAverageDistance();
 	}
 
 	/**
@@ -128,6 +133,24 @@ class Extent {
 	compareExents() {}
 
 	/**
+	 * Computed the distance in meters between pixels, as measure from the extent's
+	 * center pixel to a neighbor pixel.  Saves having to compute distances between every
+	 * pair of pixels between a Cell and NeighborCell, as those distances will not be
+	 * significantly different within a given Extent
+	 * @returns | Distance in meters
+	 */
+	getAverageDistance(): number {
+		const center = this.pixelBounds.getCenter().round();
+		const centerLatLng = L.CRS.EPSG3857.pointToLatLng(center, scale);
+		const onePixelAway = L.point(center.x + 1, center.y);
+		const onePixelAwayLatLng = L.CRS.EPSG3857.pointToLatLng(
+			onePixelAway,
+			scale
+		);
+		return centerLatLng.distanceTo(onePixelAwayLatLng).round(2);
+	}
+
+	/**
 	 * Returns data values f
 	 */
 	getPixelValuesAt(coord: L.LatLng | L.Point) {
@@ -146,11 +169,12 @@ class Extent {
 
 		const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
-		const { slope, aspect } = getTopography(point);
+		const { slope, aspect, elevation } = getTopography(point);
 
 		const data = {
 			slope,
 			aspect,
+			elevation,
 			fuelModel,
 			fuelVegetationType,
 		};

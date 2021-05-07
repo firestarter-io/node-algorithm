@@ -6,10 +6,24 @@
 
 import * as L from 'leaflet';
 import { tileSize } from '@config';
-import { getTopography } from '@core/getData/getTopography';
+import { getElevation, getTopography } from '@core/getData/getTopography';
 import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
+import { ROOT2 } from '@core/utils/math';
+
+export enum Directions {
+	N = 'N',
+	S = 'S',
+	E = 'E',
+	W = 'W',
+	NE = 'NE',
+	NW = 'NW',
+	SE = 'SE',
+	SW = 'SW',
+}
+export type Bearings = 0 | 45 | 90 | 135 | 180 | 225 | 270 | 315;
+export type DistanceCoefficients = 1 | typeof ROOT2;
 
 class Cell {
 	/**
@@ -41,6 +55,17 @@ class Cell {
 		this.position = this.layerPointToMatrixPosition(layerPoint);
 	}
 
+	static neighborsMap = {
+		'[-1,-1]': Directions.NW,
+		'[-1,0]': Directions.N,
+		'[-1,1]': Directions.NE,
+		'[0,-1]': Directions.W,
+		'[0,1]': Directions.E,
+		'[1,-1]': Directions.SW,
+		'[1,0]': Directions.S,
+		'[1,1]': Directions.SE,
+	};
+
 	/**
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
@@ -50,9 +75,18 @@ class Cell {
 		let neighbors = [];
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				neighbors.push(
-					new Cell(this.matrixPositionToLayerPoint([x + i, y + j]), this.extent)
-				);
+				if (i !== 0 && j !== 0) {
+					const distanceTo = i * j === 0 ? 1 : ROOT2;
+					neighbors.push(
+						new NeighborCell(
+							this.matrixPositionToLayerPoint([x + i, y + j]),
+							this.extent,
+							this,
+							distanceTo,
+							Cell.neighborsMap[JSON.stringify([i, j])]
+						)
+					);
+				}
 			}
 		}
 		return neighbors;
@@ -106,8 +140,7 @@ class Cell {
 	 * Returns data for all data types for the Cell
 	 */
 	async getData() {
-		const { slope, aspect } = getTopography(this.layerPoint);
-		// console.log({ slope, aspect });
+		const { elevation } = this.extent.getPixelValuesAt(this.layerPoint);
 	}
 
 	/**
@@ -140,6 +173,55 @@ class Cell {
 		if (dBottom < tileSize * buffer) {
 			this.extent.expandDown();
 		}
+	}
+}
+
+/**
+ * NeightCell is a specialized Cell type when referring to a Cell's neighbors
+ * Must be in same file due to cicular class reference issues
+ * See constructor comments for more detail
+ */
+class NeighborCell extends Cell {
+	/**
+	 * Central cell in the Moore neighborhood
+	 */
+	originCell: Cell;
+	/**
+	 * Bearing from the origin cell to this neighbor
+	 */
+	bearing: Bearings;
+	/**
+	 * Coefficient to multiply average distance by
+	 */
+	distanceCoefficient: DistanceCoefficients;
+	/**
+	 * Direction of neighbor relative to origin cell
+	 */
+	directionFromOrigin: Directions;
+
+	/**
+	 * NeightCell is a specialized Cell type when referring to a Cell's neighbors.  It has additionak properties
+	 * that make calculation of fire spread probability easier, like the distance from the origin cell
+	 * @param {Cell} originCell | Cell that this NeighborCell is in reference to
+	 * @param {DistanceCoefficients} distanceCoefficient | What to multiply the average Extent distance by
+	 * @param {Directions} directionFromOrigin | Name to help identify NeighborCell position relative to cell
+	 */
+	constructor(
+		layerPoint: L.Point,
+		extent: Extent,
+		originCell: Cell,
+		distanceCoefficient: DistanceCoefficients,
+		directionFromOrigin: Directions
+	) {
+		super(layerPoint, extent);
+		this.originCell = originCell;
+		this.distanceCoefficient = distanceCoefficient;
+		this.directionFromOrigin = directionFromOrigin;
+	}
+
+	getSlopeFromOriginCell() {
+		const elevation = getElevation(this.layerPoint);
+		const originCellElevation = getElevation(this.originCell.layerPoint);
 	}
 }
 
