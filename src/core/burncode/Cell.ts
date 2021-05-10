@@ -73,9 +73,9 @@ class Cell {
 	neighbors(): Cell[] {
 		const [x, y] = this.position;
 		let neighbors = [];
-		for (let i = -1; i <= 1; i++) {
-			for (let j = -1; j <= 1; j++) {
-				if (i !== 0 && j !== 0) {
+		for (let j = -1; j <= 1; j++) {
+			for (let i = -1; i <= 1; i++) {
+				if (!(i === 0 && j === 0)) {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
 						new NeighborCell(
@@ -139,8 +139,10 @@ class Cell {
 	/**
 	 * Returns data for all data types for the Cell
 	 */
-	async getData() {
-		const { elevation } = this.extent.getPixelValuesAt(this.layerPoint);
+	getData() {
+		// const { elevation } = this.extent.getPixelValuesAt(this.layerPoint);
+		const elevation = getElevation(this.layerPoint);
+		return { elevation };
 	}
 
 	/**

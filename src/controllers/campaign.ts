@@ -28,12 +28,12 @@ export const campaign = async (req, res) => {
 		if (!camp) {
 			console.log('Initializing campaign');
 			camp = new Campaign(L.latLng(latlng));
-			await camp.initialize();
 			// @ts-ignore
-			global.camp = camp;
+			globalThis.camp = camp;
+			await camp.initialize();
 			console.log('Campaign created:\n\n  ', camp);
 		} else {
-			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			// camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
 		}
 	}

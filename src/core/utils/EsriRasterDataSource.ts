@@ -143,7 +143,9 @@ export class EsriRasterDataSource {
 					saveTile(this.datagroup, tilename, ctx.getImageData(0, 0, 256, 256));
 				});
 			})
-			.catch((e) => console.log(e));
+			.catch((e) => {
+				throw e;
+			});
 	}
 
 	/**
