@@ -13,15 +13,15 @@ import { DataGroups, tileCache } from './data';
 // Add round method to number prototype, because it should be native in JS already!
 declare global {
 	interface Number {
+		/**
+		 * Rounds the number to the specified number of decimals, or to 0 decimals if unspecified
+		 */
 		round;
 	}
 }
 
 if (!Number.prototype.round) {
-	Number.prototype.round = function (decimals) {
-		if (typeof decimals === 'undefined') {
-			decimals = 0;
-		}
+	Number.prototype.round = function (decimals: number = 0) {
 		return Math.round(this * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	};
 }

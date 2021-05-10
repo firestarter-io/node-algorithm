@@ -235,7 +235,7 @@ class NeighborCell extends Cell {
 		const dElev = elevation - originCellElevation;
 		const distance = this.extent.averageDistance;
 
-		return Math.atan(dElev / distance);
+		return Math.atan(dElev / distance).round();
 	}
 }
 

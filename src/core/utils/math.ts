@@ -57,3 +57,31 @@ export function compareObjectWithTolerance<T>(
 	});
 	return !sames.some((c) => !c);
 }
+
+/**
+ * A moore neighborhood is a 3 x 3 grid composed of a central cell and its 8 neighbors
+ * This class offers some utilities for working with moore neighborhoods in javascript
+ */
+export class MooreNeighborhood {
+	static prettyprint(spec: any[]) {
+		const row1 = JSON.stringify(spec.slice(0, 3));
+		if (spec.length === 9) {
+			const row2 = JSON.stringify(spec.slice(3, 6));
+			const row3 = JSON.stringify(spec.slice(6, 9));
+			console.log(`${row1}\n${row2}\n${row3}`);
+		} else if (spec.length === 8) {
+			const centerWidth = JSON.stringify(spec[1]).length;
+			const row2 = `[${JSON.stringify(spec[3])}${' '.repeat(
+				centerWidth + 2
+			)}${JSON.stringify(spec[4])}]`;
+			const row3 = JSON.stringify(spec.slice(5, 8));
+			console.log(`${row1}\n${row2}\n${row3}`);
+		} else {
+			console.log(
+				`Array size fed to prettyprint incorrect.  Length is ${spec.length}, should be 8 or 9`
+			);
+		}
+	}
+}
+
+globalThis.MooreNeighborhood = MooreNeighborhood;
