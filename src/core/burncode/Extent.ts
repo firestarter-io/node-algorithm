@@ -107,23 +107,11 @@ class Extent {
 		/**
 		 *  Get Groundcover Vegetation Condition
 		 */
-		log(`${log.emojis.fetch} Fetching Vegetation Condition . . .`);
 		try {
 			await FBFuelModels13.fetchTiles(this.latLngBounds);
-			log(`${log.emojis.successCheck} Vegetation Condition Loaded`);
 		} catch (e) {
-			log(`${log.emojis.errorX}`, e);
+			throw e;
 		}
-		/**
-		 * Get groundcover vegetation type
-		 */
-		// log(`${log.emojis.fetch} Fetching Vegetation Type . . .`);
-		// try {
-		// 	await LandfireFuelVegetationType.fetchTiles(this.latLngBounds);
-		// 	log(`${log.emojis.successCheck} Vegetation Type Loaded`);
-		// } catch (e) {
-		// 	log(`${log.emojis.errorX}`, e);
-		// }
 	}
 
 	/**

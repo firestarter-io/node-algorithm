@@ -6,6 +6,7 @@
  * https://github.com/Esri/esri-leaflet
  */
 
+import * as path from 'path';
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { Bounds, bounds, Point } from 'leaflet';
@@ -18,13 +19,18 @@ import { TileCoord } from 'typings/gis';
 import { ImageRequestOptions } from 'typings/esri';
 import { log } from './Logger';
 import { getTileCoord } from '@core/getdata/dem';
+import { downloadImage } from '@utils/downloadImage';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	/**
-	 * The name of the data group, used to tell EsriRasterDataSource where to store its
-	 * data in the tileCache / database
+	 * The shortname of the data group, used to tell EsriRasterDataSource where
+	 * to store its data in the tileCache / database
 	 */
 	datagroup: DataGroups;
+	/**
+	 * Human readable name of the data source for logging purposes
+	 */
+	name: string;
 	/**
 	 * The location of the data resource, should be an arcgis server raster data source url
 	 */
@@ -36,9 +42,13 @@ interface NewRequestOptions extends ImageRequestOptions {
  */
 export class EsriRasterDataSource {
 	/**
-	 * Name of the data source
+	 * Shortname of the data source
 	 */
 	readonly datagroup: DataGroups;
+	/**
+	 * Long name of the data source
+	 */
+	readonly name: string;
 	/**
 	 * Url of the data source
 	 */
@@ -61,8 +71,9 @@ export class EsriRasterDataSource {
 	public cache: ImageDataCache;
 
 	constructor(options: NewRequestOptions) {
-		const { datagroup, url, ...rest } = options;
+		const { datagroup, url, name, ...rest } = options;
 		this.datagroup = datagroup;
+		this.name = name;
 		this.url = options.url;
 		this.options = rest;
 		this.cache = tileCache[datagroup];
@@ -105,54 +116,91 @@ export class EsriRasterDataSource {
 	 */
 	public async fetchTiles(latLngBounds: L.LatLngBounds) {
 		if (!legends[this.datagroup]) {
-			log(`${log.emojis.fetch} Fetching ${this.datagroup} legend . . .`);
+			console.log(`${log.emojis.fetch} Fetching ${this.name} legend . . .`);
 			try {
 				await this.generateLegend();
-				log(`${log.emojis.notepad} Legend for ${this.datagroup} ready`);
+				console.log(`${log.emojis.notepad} Legend for ${this.name} ready`);
 			} catch (e) {
-				log(`${log.emojis.errorX} Legend failed to fetch`, e);
+				console.log(`${log.emojis.errorX} Legend failed to fetch`, e);
 			}
 		}
 
-		let tileCoords = getTileCoords(latLngBounds, scale);
+		console.log(`${log.emojis.fetch} Fetching ${this.name} Tiles . . .`);
 
-		tileCoords = tileCoords.filter((coord: TileCoord) => {
-			const { X, Y, Z } = coord;
-			const tilename = `${Z}/${X}/${Y}`;
-			if (Object.keys(tileCache[this.datagroup]).includes(tilename)) {
-				return false;
-			} else {
-				return true;
-			}
-		});
+		try {
+			let tileCoords = getTileCoords(latLngBounds, scale);
 
-		await Promise.all<Image>(
-			tileCoords.map((coord: TileCoord) => {
-				const coordBounds = tileCoordToBounds(coord);
-				const url = this.buildImageUrl(coordBounds);
-				console.log(url);
-				return loadImage(url);
-			})
-		)
-			.then((images: Image[]): void => {
-				images.forEach((image: Image, index: number) => {
-					const canvas: Canvas = createCanvas(256, 256);
-					const ctx: RenderingContext = canvas.getContext('2d');
-					ctx.drawImage(
-						(image as unknown) as CanvasImageSource,
-						0,
-						0,
-						256,
-						256
-					);
-					const { X, Y, Z } = tileCoords[index];
-					const tilename = `${Z}/${X}/${Y}`;
-					saveTile(this.datagroup, tilename, ctx.getImageData(0, 0, 256, 256));
-				});
-			})
-			.catch((e) => {
-				throw e;
+			/* Filter any tile coordinates that are already in tile cache */
+			tileCoords = tileCoords.filter((coord: TileCoord) => {
+				const { X, Y, Z } = coord;
+				const tilename = `${Z}/${X}/${Y}`;
+				if (Object.keys(tileCache[this.datagroup]).includes(tilename)) {
+					return false;
+				} else {
+					return true;
+				}
 			});
+
+			/* Download tiles as PNGs to local directory */
+			await Promise.all(
+				tileCoords.map((coord: TileCoord) => {
+					const { X, Y, Z } = coord;
+					const tilename = `${Z}.${X}.${Y}`;
+					const coordBounds = tileCoordToBounds(coord);
+					const url = this.buildImageUrl(coordBounds);
+					const downloadInstructions = {
+						tilename,
+						tiledir: this.datagroup,
+						body: {
+							url,
+							responseType: 'stream',
+						},
+					};
+					return downloadImage(downloadInstructions);
+				})
+			);
+
+			/* Read local PNG tiles into a canvas and save imagedata to tileCache object */
+			await Promise.all<Image>(
+				tileCoords.map((coord: TileCoord) => {
+					const { X, Y, Z } = coord;
+					const tilename = `${Z}.${X}.${Y}`;
+
+					const url = path.resolve(
+						__dirname,
+						`../../tileimages/${this.datagroup}/${tilename}.png`
+					);
+					return loadImage(url);
+				})
+			)
+				.then((images: Image[]): void => {
+					images.forEach((image: Image, index: number) => {
+						const canvas: Canvas = createCanvas(256, 256);
+						const ctx: RenderingContext = canvas.getContext('2d');
+						ctx.drawImage(
+							(image as unknown) as CanvasImageSource,
+							0,
+							0,
+							256,
+							256
+						);
+						const { X, Y, Z } = tileCoords[index];
+						const tilename = `${Z}/${X}/${Y}`;
+						saveTile(
+							this.datagroup,
+							tilename,
+							ctx.getImageData(0, 0, 256, 256)
+						);
+					});
+				})
+				.catch((e) => {
+					throw e;
+				});
+
+			console.log(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
+		} catch (e) {
+			console.log(`${log.emojis.errorX}`, e);
+		}
 	}
 
 	/**
