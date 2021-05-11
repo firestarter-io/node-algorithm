@@ -114,7 +114,7 @@ export class EsriRasterDataSource {
 			}
 		}
 
-		let tileCoords: any = getTileCoords(latLngBounds, scale);
+		let tileCoords = getTileCoords(latLngBounds, scale);
 
 		tileCoords = tileCoords.filter((coord: TileCoord) => {
 			const { X, Y, Z } = coord;
@@ -126,18 +126,25 @@ export class EsriRasterDataSource {
 			}
 		});
 
-		await Promise.all<CanvasImageSource>(
+		await Promise.all<Image>(
 			tileCoords.map((coord: TileCoord) => {
 				const coordBounds = tileCoordToBounds(coord);
 				const url = this.buildImageUrl(coordBounds);
+				console.log(url);
 				return loadImage(url);
 			})
 		)
-			.then((images: CanvasImageSource[]): void => {
-				images.forEach((image: CanvasImageSource, index: number) => {
+			.then((images: Image[]): void => {
+				images.forEach((image: Image, index: number) => {
 					const canvas: Canvas = createCanvas(256, 256);
 					const ctx: RenderingContext = canvas.getContext('2d');
-					ctx.drawImage(image, 0, 0, 256, 256);
+					ctx.drawImage(
+						(image as unknown) as CanvasImageSource,
+						0,
+						0,
+						256,
+						256
+					);
 					const { X, Y, Z } = tileCoords[index];
 					const tilename = `${Z}/${X}/${Y}`;
 					saveTile(this.datagroup, tilename, ctx.getImageData(0, 0, 256, 256));

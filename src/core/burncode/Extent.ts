@@ -117,13 +117,13 @@ class Extent {
 		/**
 		 * Get groundcover vegetation type
 		 */
-		log(`${log.emojis.fetch} Fetching Vegetation Type . . .`);
-		try {
-			await LandfireFuelVegetationType.fetchTiles(this.latLngBounds);
-			log(`${log.emojis.successCheck} Vegetation Type Loaded`);
-		} catch (e) {
-			log(`${log.emojis.errorX}`, e);
-		}
+		// log(`${log.emojis.fetch} Fetching Vegetation Type . . .`);
+		// try {
+		// 	await LandfireFuelVegetationType.fetchTiles(this.latLngBounds);
+		// 	log(`${log.emojis.successCheck} Vegetation Type Loaded`);
+		// } catch (e) {
+		// 	log(`${log.emojis.errorX}`, e);
+		// }
 	}
 
 	/**

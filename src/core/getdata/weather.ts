@@ -44,7 +44,7 @@ interface WeatherForecast {
 	visibility: number;
 	winddir: number;
 	windgust: number;
-	windspeed: number;
+	windspeed: number; // In degrees, clockwise from 0 deg N, coming FROM the degree listed
 }
 
 interface WeatherForecastResponse {
@@ -62,6 +62,9 @@ interface WeatherForecastResponse {
 	tzoffset: number;
 }
 
+const baseurl =
+	'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
+
 /**
  * API call to get weather
  * @param latlng | LatLng location of forecast / historyical date
@@ -71,7 +74,7 @@ export const getWeather = async (
 ): Promise<WeatherForecastResponse> => {
 	const key = process.env.VISUALCROSSING_KEY;
 	const { lat, lng } = latlng;
-	const url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${lat},${lng}?key=${key}`;
+	const url = `${baseurl}/${lat},${lng}?unitGroup=metric&key=${key}`;
 
 	return fetch(url)
 		.then((r) => r.json())

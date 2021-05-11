@@ -4,6 +4,8 @@
  * Setup and configuration
  */
 
+import * as http from 'http';
+import * as https from 'https';
 import { DataGroups, tileCache } from './data';
 
 // --------------------------------------------------------------------------------------- //
@@ -25,6 +27,9 @@ if (!Number.prototype.round) {
 		return Math.round(this * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	};
 }
+
+http.globalAgent.maxSockets = 1;
+https.globalAgent.maxSockets = 1;
 
 // --------------------------------------------------------------------------------------- //
 //                                Get leaflet working in node                              //

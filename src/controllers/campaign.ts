@@ -65,16 +65,5 @@ export const campaign = async (req, res) => {
 	// 	GroundcoverRequest.fetchImage(paddedBounds, { token });
 	// });
 
-	// LANDFIRE VEGETATION CONDITION CLASS REQUEST ---------------------------------
-
-	mapBounds &&
-		LandfireFuelVegetationType.fetchImage(
-			refitBoundsToMapTiles(
-				L.latLngBounds([mapBounds._southWest, mapBounds._northEast])
-			).refitLatLngBounds
-		);
-
-	// latlng && camp && camp.extents[0].getPixelValuesAt(L.latLng(latlng));
-
 	res.send('good job ahole');
 };
