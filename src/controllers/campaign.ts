@@ -12,6 +12,7 @@ import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import { LandfireFuelVegetationType } from '@getdata/rasterSources';
 import Campaign from '@core/burncode/Campaign';
+import { getWeather } from '@core/getdata/weather';
 
 let camp: Campaign;
 
@@ -35,6 +36,7 @@ export const campaign = async (req, res) => {
 		} else {
 			// camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
+			await getWeather(latlng);
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
