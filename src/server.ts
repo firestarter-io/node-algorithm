@@ -36,3 +36,9 @@ process.on('SIGINT', function () {
 		process.exit();
 	});
 });
+
+// process.on('unhandledRejection', (reason, p) => {
+// 	console.log(reason);
+// 	console.log(chalk.blue('Goodbye!\n\n'));
+// 	process.exit();
+// });

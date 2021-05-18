@@ -178,7 +178,7 @@ export class EsriRasterDataSource {
 						const canvas: Canvas = createCanvas(256, 256);
 						const ctx: RenderingContext = canvas.getContext('2d');
 						ctx.drawImage(
-							(image as unknown) as CanvasImageSource,
+							image as unknown as CanvasImageSource,
 							0,
 							0,
 							256,
@@ -283,6 +283,7 @@ export class EsriRasterDataSource {
 		};
 
 		const imageData = this.cache[tileName];
+		console.log('this.cache', this);
 
 		const RGBA = getRGBfromImgData(
 			imageData,

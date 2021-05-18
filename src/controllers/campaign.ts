@@ -10,7 +10,6 @@ import * as L from 'leaflet';
 import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
-import { LandfireFuelVegetationType } from '@getdata/rasterSources';
 import Campaign from '@core/burncode/Campaign';
 import { getWeather } from '@core/getdata/weather';
 
@@ -34,9 +33,9 @@ export const campaign = async (req, res) => {
 			await camp.initialize();
 			console.log('Campaign created:\n\n  ', camp);
 		} else {
-			// camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
-			await getWeather(latlng);
+			// await getWeather(latlng);
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));

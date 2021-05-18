@@ -12,10 +12,7 @@ import {
 	refitBoundsToMapTiles,
 } from '@utils/geometry/bounds';
 import { createDEM, getTileCoord } from '@core/getdata/dem';
-import {
-	LandfireFuelVegetationType,
-	FBFuelModels13,
-} from '@core/getdata/rasterSources';
+import { FBFuelModels13 } from '@core/getdata/rasterSources';
 import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
 import BurnMatrix from './BurnMatrix';
 import { tileCache } from '@data';
@@ -155,7 +152,7 @@ class Extent {
 
 		const fuelModel = FBFuelModels13.getValueAt(coord);
 
-		const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
+		// const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
 		const { slope, aspect, elevation } = getTopography(point);
 
@@ -164,7 +161,7 @@ class Extent {
 			aspect,
 			elevation,
 			fuelModel,
-			fuelVegetationType,
+			// fuelVegetationType,
 		};
 
 		console.log(data);

@@ -70,7 +70,7 @@ class Cell {
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
 	 */
-	neighbors(): Cell[] {
+	neighbors(): NeighborCell[] {
 		const [x, y] = this.position;
 		let neighbors = [];
 		for (let j = -1; j <= 1; j++) {
@@ -179,9 +179,8 @@ class Cell {
 }
 
 /**
- * NeightCell is a specialized Cell type when referring to a Cell's neighbors
- * Must be in same file due to cicular class reference issues
- * See constructor comments for more detail
+ * NeightCell is a specialized Cell type used when referring to a Cell's neighbors.
+ * See constructor comments for more detail.
  */
 class NeighborCell extends Cell {
 	/**
