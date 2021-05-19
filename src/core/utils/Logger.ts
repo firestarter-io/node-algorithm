@@ -17,7 +17,7 @@
 // 	};
 // }
 
-const emojis = {
+export const emojis = {
 	fetch: '🐕',
 	successCheck: '✅',
 	errorX: '❌',

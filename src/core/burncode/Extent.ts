@@ -6,7 +6,7 @@
  */
 
 import * as L from 'leaflet';
-import { log } from '@core/utils/Logger';
+import { emojis } from '@core/utils/Logger';
 import {
 	pixelBoundsToLatLngBounds,
 	refitBoundsToMapTiles,
@@ -94,12 +94,12 @@ class Extent {
 		/**
 		 *  Generate Digital Elevation Model for extent:
 		 */
-		log(`${log.emojis.fetch} Fetching DEM . . .`);
+		console.log(`${emojis.fetch} Fetching DEM . . .`);
 		try {
 			await createDEM(this.latLngBounds);
-			log(`${log.emojis.successCheck} DEM Loaded`);
+			console.log(`${emojis.successCheck} DEM Loaded`);
 		} catch (e) {
-			log(`${log.emojis.errorX}`, e);
+			console.log(`${emojis.errorX}`, e);
 		}
 		/**
 		 *  Get Groundcover Vegetation Condition
@@ -190,7 +190,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		log('Expanding Extent:');
+		console.log('Expanding Extent:');
 		this.fetchData();
 	}
 

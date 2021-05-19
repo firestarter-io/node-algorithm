@@ -13,6 +13,7 @@ import Extent from './Extent';
 import TimeStep from './Timestep';
 import { log } from '@core/utils/Logger';
 import Cell from './Cell';
+import chalk = require('chalk');
 
 export class Campaign {
 	/**
@@ -68,8 +69,10 @@ export class Campaign {
 	 * Initialize a new campaign
 	 */
 	async initialize() {
+		console.log(chalk.bold('Initializing campaign'));
 		const bounds = this.seedLatLng.toBounds(extentSize);
 		await this.createExtent(bounds);
+		console.log(chalk.bold('Campaign created'));
 
 		await this.startFire(this.seedLatLng);
 

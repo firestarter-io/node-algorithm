@@ -256,7 +256,6 @@ export class EsriRasterDataSource {
 		const exportType = this.options?.exportType || 'exportImage';
 		const params = this.buildExportParams(latLngBounds);
 		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
-		// console.log(fullUrl);
 		return fullUrl;
 	}
 
@@ -283,7 +282,6 @@ export class EsriRasterDataSource {
 		};
 
 		const imageData = this.cache[tileName];
-		console.log('this.cache', this);
 
 		const RGBA = getRGBfromImgData(
 			imageData,

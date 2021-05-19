@@ -22,7 +22,7 @@ app.use('/', router);
 
 // Start server
 const server = app.listen(port, () => {
-	console.clear();
+	// console.clear();
 	console.log(chalk.blue(`\n\nFirestarter is listening on port ${port} 🎧\n`));
 });
 
@@ -36,9 +36,3 @@ process.on('SIGINT', function () {
 		process.exit();
 	});
 });
-
-// process.on('unhandledRejection', (reason, p) => {
-// 	console.log(reason);
-// 	console.log(chalk.blue('Goodbye!\n\n'));
-// 	process.exit();
-// });

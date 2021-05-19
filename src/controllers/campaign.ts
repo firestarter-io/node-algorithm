@@ -12,6 +12,7 @@ import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import Campaign from '@core/burncode/Campaign';
 import { getWeather } from '@core/getdata/weather';
+import chalk = require('chalk');
 
 let camp: Campaign;
 
@@ -26,12 +27,10 @@ export const campaign = async (req, res) => {
 		// const topo = await getTopography(L.latLng(latlng));
 		// console.log(topo);
 		if (!camp) {
-			console.log('Initializing campaign');
 			camp = new Campaign(L.latLng(latlng));
 			// @ts-ignore
 			globalThis.camp = camp;
 			await camp.initialize();
-			console.log('Campaign created:\n\n  ', camp);
 		} else {
 			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
