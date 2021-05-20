@@ -18,7 +18,7 @@ export const campaigns: { [key: string]: Campaign } = {};
 export enum DataGroups {
 	DEM = 'DEM',
 	FBFuelModels13 = 'FBFuelModels13',
-	LandfireFuelVegetationType = 'LandfireFuelVegetationType',
+	WildfireRisk = 'WildfireRisk',
 	GroundCover = 'GroundCover',
 }
 
@@ -45,7 +45,7 @@ export type DataCache = {
 export const tileCache: DataCache = {
 	DEM: {},
 	FBFuelModels13: {},
-	LandfireFuelVegetationType: {},
+	WildfireRisk: {},
 	GroundCover: {},
 	datagroups: Object.values(DataGroups),
 };

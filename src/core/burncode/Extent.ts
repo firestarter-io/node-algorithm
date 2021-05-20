@@ -11,12 +11,9 @@ import {
 	pixelBoundsToLatLngBounds,
 	refitBoundsToMapTiles,
 } from '@utils/geometry/bounds';
-import { createDEM, getTileCoord } from '@core/getdata/dem';
-import { FBFuelModels13 } from '@core/getdata/rasterSources';
-import { EsriRasterDataSource } from '@core/utils/EsriRasterDataSource';
+import { createDEM } from '@core/getdata/dem';
+import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
 import BurnMatrix from './BurnMatrix';
-import { tileCache } from '@data';
-import { getRGBfromImgData } from '@core/utils/rgba';
 import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
 import { Matrix } from 'mathjs';
@@ -102,10 +99,19 @@ class Extent {
 			console.log(`${emojis.errorX}`, e);
 		}
 		/**
-		 *  Get Groundcover Vegetation Condition
+		 *  Get Anderson Ground Cover Fuel Models
 		 */
 		try {
 			await FBFuelModels13.fetchTiles(this.latLngBounds);
+		} catch (e) {
+			throw e;
+		}
+
+		/**
+		 * Get Probabalistic Wildfire Risk raster
+		 */
+		try {
+			await WildfireRisk.fetchTiles(this.latLngBounds);
 		} catch (e) {
 			throw e;
 		}
@@ -151,6 +157,7 @@ class Extent {
 		}
 
 		const fuelModel = FBFuelModels13.getValueAt(coord);
+		const fireRisk = WildfireRisk.getValueAt(coord);
 
 		// const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
@@ -161,7 +168,7 @@ class Extent {
 			aspect,
 			elevation,
 			fuelModel,
-			// fuelVegetationType,
+			fireRisk,
 		};
 
 		console.log(data);

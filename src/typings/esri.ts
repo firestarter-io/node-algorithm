@@ -16,5 +16,4 @@ export interface ImageRequestOptions {
 	sr?: string;
 	sublayer?: string;
 	dpi?: string;
-	dataCache: ImageDataCache;
 }

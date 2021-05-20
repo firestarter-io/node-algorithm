@@ -17,12 +17,19 @@ export const FBFuelModels13 = new EsriRasterDataSource({
 	sr: '102100',
 	sublayer: '21',
 	dpi: '96',
-	dataCache: tileCache.FBFuelModels13,
+});
+
+export const WildfireRisk = new EsriRasterDataSource({
+	datagroup: DataGroups.WildfireRisk,
+	url: 'https://apps.fs.usda.gov/arcx/rest/services/RDW_Wildfire/ProbabilisticWildfireRisk/MapServer',
+	name: 'USFS Probabalistic Wildfire Risk',
+	format: 'png32',
+	f: 'image',
+	exportType: 'export',
 });
 
 export const GroundcoverRequest = new EsriRasterDataSource({
 	datagroup: DataGroups.GroundCover,
 	name: 'ESRI Ground Cover',
 	url: 'https://landscape6.arcgis.com/arcgis/rest/services/World_Land_Cover_30m_BaseVue_2013/ImageServer',
-	dataCache: tileCache.GroundCover,
 });
