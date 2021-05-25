@@ -63,6 +63,11 @@ export function compareObjectWithTolerance<T>(
  * This class offers some utilities for working with moore neighborhoods in javascript
  */
 export class MooreNeighborhood {
+	/**
+	 * Convenience print function which will take an array of length 8 or 9 and print it
+	 * in an easy-to-ready readout
+	 * @param spec Array of 8 or 9 values to print in Moore formation
+	 */
 	static prettyprint(spec: any[]) {
 		const row1 = JSON.stringify(spec.slice(0, 3));
 		if (spec.length === 9) {
