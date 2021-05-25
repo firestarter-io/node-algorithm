@@ -31,6 +31,7 @@ export const campaign = async (req, res) => {
 			// @ts-ignore
 			globalThis.camp = camp;
 			await camp.initialize();
+			res.send({ extentBounds: camp.extents[0].latLngBounds });
 		} else {
 			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));

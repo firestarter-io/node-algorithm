@@ -5,6 +5,7 @@
  */
 
 import * as L from 'leaflet';
+import * as lodash from 'lodash';
 import { tileSize } from '@config';
 import { getElevation, getTopography } from '@core/getData/getTopography';
 import BurnMatrix from './BurnMatrix';
@@ -140,9 +141,10 @@ class Cell {
 	 * Returns data for all data types for the Cell
 	 */
 	getData() {
-		// const { elevation } = this.extent.getPixelValuesAt(this.layerPoint);
-		const elevation = getElevation(this.layerPoint);
-		return { elevation };
+		const { fireRisk } = this.extent.getPixelValuesAt(this.layerPoint);
+		const [minRisk, maxRisk] = fireRisk.replace(' - ', ',').split(',');
+		const pFire = lodash.random(minRisk, maxRisk);
+		return { pFire };
 	}
 
 	/**
