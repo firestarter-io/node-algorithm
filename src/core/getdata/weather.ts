@@ -67,6 +67,9 @@ const baseurl =
 
 /**
  * API call to get weather
+ *
+ * Currently using [weather.visualcrossing.com](weather.visualcrossing.com)
+ *
  * @param latlng | LatLng location of forecast / historyical date
  */
 export const getWeather = async (
