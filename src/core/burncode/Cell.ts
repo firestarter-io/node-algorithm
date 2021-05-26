@@ -7,7 +7,7 @@
 import * as L from 'leaflet';
 import * as lodash from 'lodash';
 import { tileSize } from '@config';
-import { getElevation, getTopography } from '@core/getData/getTopography';
+import { getElevation } from '@core/getdata/getTopography';
 import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
@@ -56,6 +56,9 @@ class Cell {
 		this.position = this.layerPointToMatrixPosition(layerPoint);
 	}
 
+	/**
+	 * Mapping of NeighborCell position in generation loop tp its cardinal direction name
+	 */
 	static neighborsMap = {
 		'[-1,-1]': Directions.NW,
 		'[-1,0]': Directions.N,
@@ -65,7 +68,7 @@ class Cell {
 		'[1,-1]': Directions.SW,
 		'[1,0]': Directions.S,
 		'[1,1]': Directions.SE,
-	};
+	} as const;
 
 	/**
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
@@ -138,13 +141,27 @@ class Cell {
 	}
 
 	/**
+	 * Wildfire ignition probability based solely on groundcover fuelds, not accounting
+	 * for wind, himidity, or other factors
+	 * @returns {number} P - probability, as a fraction of 1
+	 */
+	get groundcoverIgnitionP() {
+		const { fireRisk } = this.extent.getPixelValuesAt(this.layerPoint);
+		if (fireRisk === '0') {
+			return 0;
+		} else {
+			const [minRisk, maxRisk] = fireRisk.replace(' - ', ',').split(',');
+			const P = lodash.random(minRisk, maxRisk).round(3);
+			return P;
+		}
+	}
+
+	/**
 	 * Returns data for all data types for the Cell
 	 */
-	getData() {
-		const { fireRisk } = this.extent.getPixelValuesAt(this.layerPoint);
-		const [minRisk, maxRisk] = fireRisk.replace(' - ', ',').split(',');
-		const pFire = lodash.random(minRisk, maxRisk);
-		return { pFire };
+	get data() {
+		const gcP = this.groundcoverIgnitionP;
+		return gcP;
 	}
 
 	/**
@@ -234,9 +251,27 @@ class NeighborCell extends Cell {
 		const originCellElevation = getElevation(this.originCell.layerPoint);
 
 		const dElev = elevation - originCellElevation;
-		const distance = this.extent.averageDistance;
+		const distance = this.extent.averageDistance * this.distanceCoefficient;
 
 		return Math.atan(dElev / distance).round();
+	}
+
+	/**
+	 * Mapping of cardinal direction names to bearing direction from origin cell to neighbor
+	 */
+	static bearings = {
+		[Directions.N]: 0,
+		[Directions.NE]: 45,
+		[Directions.E]: 90,
+		[Directions.SE]: 135,
+		[Directions.S]: 180,
+		[Directions.SW]: 225,
+		[Directions.W]: 270,
+		[Directions.NW]: 315,
+	} as const;
+
+	getWindComponent() {
+		const bearing = NeighborCell.bearings[this.directionFromOrigin];
 	}
 }
 

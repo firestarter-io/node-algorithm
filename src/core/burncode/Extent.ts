@@ -171,6 +171,8 @@ class Extent {
 			fireRisk,
 		};
 
+		console.log(data);
+
 		return data;
 	}
 
