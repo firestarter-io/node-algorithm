@@ -12,6 +12,7 @@ import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
+import { WildfireRisk } from '@core/getdata/rasterSources';
 
 export enum Directions {
 	N = 'N',
@@ -142,11 +143,14 @@ class Cell {
 
 	/**
 	 * Wildfire ignition probability based solely on groundcover fuelds, not accounting
-	 * for wind, himidity, or other factors
+	 * for wind, himidity, or other factors.
+	 *
+	 * Currently using USFS Probabalistic Wildfire Risk raster dataset
+	 *
 	 * @returns {number} P - probability, as a fraction of 1
 	 */
 	get groundcoverIgnitionP() {
-		const { fireRisk } = this.extent.getPixelValuesAt(this.layerPoint);
+		const fireRisk = WildfireRisk.getValueAt(this.layerPoint);
 		if (fireRisk === '0') {
 			return 0;
 		} else {
