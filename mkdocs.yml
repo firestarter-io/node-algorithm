@@ -5,13 +5,14 @@ nav:
       - Campaign: algorithm/campaign.md
       - Extent: algorithm/extent/extent.md
       - BurnMatrix: algorithm/burnmatrix.md
-      - Cell: algorithm/Cell.md
+      - Cell: algorithm/cell/cell.md
   - Algorithm:
       - Overview: algorithm/overview.md
       - Data: algorithm/data.md
 theme:
   name: material
   logo: assets/flame.png
+  favicon: assets/flame-orange.png
   highlightjs: true
 extra_css:
   - stylesheets/extra.css

@@ -5,3 +5,17 @@
 
 	--md-accent-fg-color: #f78c00;
 }
+
+.md-nav__item .md-nav__link--active {
+	font-weight: bold;
+	color: var(--md-accent-fg-color);
+}
+
+.md-typeset a {
+	color: var(--md-accent-fg-color);
+}
+
+.md-typeset a:hover {
+	color: var(--md-accent-fg-color);
+	text-decoration: underline;
+}
