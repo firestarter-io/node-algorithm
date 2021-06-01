@@ -76,14 +76,8 @@ export class Campaign {
 
 		await this.startFire(this.seedLatLng);
 
-		this.timesteps.push(
-			new TimeStep(
-				this.extents.map((extent) => extent.burnMatrix.clone()),
-				this
-			)
-		);
-
-		this.propagateTimestep();
+		this.start();
+		// this.propagateTimestep();
 	}
 
 	/**
@@ -112,24 +106,34 @@ export class Campaign {
 	}
 
 	/**
+	 * Begin the Campaign by creating the first timestep
+	 */
+	start() {
+		const first = new TimeStep(
+			this.extents.map((extent) => extent.burnMatrix.clone()),
+			this
+		);
+	}
+
+	/**
 	 * Propagates the Campaign to the next timestep.  Contains all central algorithm logic
 	 * to determine wildfire spread and any associated FireStarterEvents.
 	 */
-	propagateTimestep() {
-		this.extents.forEach((extent) => {
-			/**
-			 * Keep track of which cells have already been worked on
-			 */
-			const done: Cell[] = [];
-			extent.burnMatrix.burning.forEach((burningCell) => {
-				burningCell.calculateBurnStatus();
-				burningCell.neighbors().forEach((neightbor) => {
-					neightbor.calculateBurnStatus();
-					neightbor.data;
-				});
-			});
-		});
-	}
+	// propagateTimestep() {
+	// 	this.extents.forEach((extent) => {
+	// 		/**
+	// 		 * Keep track of which cells have already been worked on
+	// 		 */
+	// 		const done: Cell[] = [];
+	// 		extent.burnMatrix.burning.forEach((burningCell) => {
+	// 			burningCell.calculateBurnStatus();
+	// 			burningCell.neighbors().forEach((neightbor) => {
+	// 				neightbor.calculateBurnStatus();
+	// 				neightbor.data;
+	// 			});
+	// 		});
+	// 	});
+	// }
 }
 
 export default Campaign;

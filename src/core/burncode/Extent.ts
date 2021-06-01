@@ -32,7 +32,7 @@ class Extent {
 	/**
 	 * The pixel / layer bounds of the extent after refitting
 	 * pixel bounds refer to latlng bounds transformed into
-	 * leaflet [layer point]{@link https://leafletjs.com/reference-1.7.1.html#map-latlngtolayerpoint}
+	 * [Leaflet layer point](https://leafletjs.com/reference-1.7.1.html#map-latlngtolayerpoint)
 	 */
 	pixelBounds: L.Bounds;
 	/**
