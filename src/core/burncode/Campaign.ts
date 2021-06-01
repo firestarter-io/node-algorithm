@@ -114,26 +114,6 @@ export class Campaign {
 			this
 		);
 	}
-
-	/**
-	 * Propagates the Campaign to the next timestep.  Contains all central algorithm logic
-	 * to determine wildfire spread and any associated FireStarterEvents.
-	 */
-	// propagateTimestep() {
-	// 	this.extents.forEach((extent) => {
-	// 		/**
-	// 		 * Keep track of which cells have already been worked on
-	// 		 */
-	// 		const done: Cell[] = [];
-	// 		extent.burnMatrix.burning.forEach((burningCell) => {
-	// 			burningCell.calculateBurnStatus();
-	// 			burningCell.neighbors().forEach((neightbor) => {
-	// 				neightbor.calculateBurnStatus();
-	// 				neightbor.data;
-	// 			});
-	// 		});
-	// 	});
-	// }
 }
 
 export default Campaign;

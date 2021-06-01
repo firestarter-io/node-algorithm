@@ -76,8 +76,7 @@ class TimeStep {
 	}
 
 	/**
-	 * Moves the Campaign forward to the next Timestep
-	 * @param prevTimestep The Timestep prior to the one about to be created
+	 * Propagates the Campaign to the next timestep.
 	 */
 	next() {
 		new TimeStep(
