@@ -8,7 +8,7 @@ import { Matrix } from 'mathjs';
 import { FireStarterEvent } from 'typings/firestarter';
 import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
-import Cell from './Cell';
+import Cell, { NeighborCell } from './Cell';
 
 class TimeStep {
 	/**
@@ -32,6 +32,10 @@ class TimeStep {
 	 */
 	burnMatrices: Matrix[];
 	/**
+	 * Cells that have been calculated in this timestep
+	 */
+	touchedCells: Set<string> = new Set<string>();
+	/**
 	 * Array of events that occurred in that timestep, if any
 	 */
 	events: FireStarterEvent[];
@@ -53,19 +57,34 @@ class TimeStep {
 	}
 
 	/**
+	 * Checks whether or not a Cell's burn status has already been calculated in this timestep.
+	 * If not, it adds it to the touchedCells array
+	 * @param cell Cell or NeighborCell
+	 * @returns Boolean - whether or not cell has already been worked on in this timestep
+	 */
+	cellTouched(cell: Cell | NeighborCell) {
+		const touched = this.touchedCells.has(cell.id);
+		if (!touched) {
+			this.touchedCells.add(cell.id);
+		}
+		return touched;
+	}
+
+	/**
 	 * Calculates and applies burn statuses for Cells in this Timestep
 	 */
 	burn() {
 		this.campaign.extents.forEach((extent) => {
-			/**
-			 * Keep track of which cells have already been worked on
-			 */
-			const done: Cell[] = [];
 			extent.burnMatrix.burning.forEach((burningCell) => {
-				burningCell.calculateBurnStatus();
-				burningCell.neighbors().forEach((neightbor) => {
-					neightbor.calculateBurnStatus();
-					neightbor.data;
+				//
+				const touched = this.cellTouched(burningCell);
+				burningCell.calculateBurnStatus(touched);
+
+				burningCell.neighbors().forEach((neighbor) => {
+					//
+					const touched = this.cellTouched(neighbor);
+					neighbor.calculateBurnStatus(touched);
+					//
 				});
 			});
 		});

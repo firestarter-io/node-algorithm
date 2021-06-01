@@ -33,9 +33,17 @@ class Cell {
 	 */
 	layerPoint: L.Point;
 	/**
+	 * The ID of the cell, which is its layerPoint stringified
+	 */
+	id: string;
+	/**
 	 * The position of the Cell in its matrix
 	 */
 	position: CellPosition;
+	/**
+	 * The position of the cell, stringified.  Used for cell tracking within an Extent
+	 */
+	pstring: string;
 	/**
 	 * The BurnMatrix that the Cell belongs to
 	 */
@@ -52,9 +60,11 @@ class Cell {
 	 */
 	constructor(layerPoint: L.Point, extent: Extent) {
 		this.layerPoint = layerPoint;
+		this.id = JSON.stringify(layerPoint);
 		this.extent = extent;
 		this.burnMatrix = extent.burnMatrix;
 		this.position = this.layerPointToMatrixPosition(layerPoint);
+		this.pstring = JSON.stringify(this.position);
 	}
 
 	/**
@@ -120,6 +130,13 @@ class Cell {
 	}
 
 	/**
+	 * Returns the burn status for the cell
+	 */
+	get burnStatus() {
+		return this.burnMatrix.get(this.position);
+	}
+
+	/**
 	 * Sets the burn status of the cell
 	 * @param burnStatus | Number representing a burn status,
 	 */
@@ -128,17 +145,20 @@ class Cell {
 	}
 
 	/**
-	 * Returns the burn status for the cell
-	 */
-	getBurnStatus() {
-		return this.burnMatrix.get(this.position);
-	}
-
-	/**
 	 * Calculates the burn status of the cell and sets it
+	 * @returns the burn status of the cell after calculation
 	 */
-	calculateBurnStatus() {
-		const burnStatus = this.getBurnStatus();
+	calculateBurnStatus(touched: boolean) {
+		/* If cell is unburned: */
+		if (this.burnStatus === 0 && Math.random() <= this.groundcoverIgnitionP) {
+			this.setBurnStatus(1);
+		}
+		/* If cell is already burning: */
+		if (this.burnStatus >= 1 && !touched) {
+			this.setBurnStatus(this.burnStatus + 1);
+		}
+
+		return this.burnStatus;
 	}
 
 	/**
@@ -205,7 +225,7 @@ class Cell {
  * NeightCell is a specialized Cell type used when referring to a Cell's neighbors.
  * See constructor comments for more detail.
  */
-class NeighborCell extends Cell {
+export class NeighborCell extends Cell {
 	/**
 	 * Central cell in the Moore neighborhood
 	 */
@@ -274,8 +294,19 @@ class NeighborCell extends Cell {
 		[Directions.NW]: 315,
 	} as const;
 
+	/**
+	 * Function to get wind component in direction from origin cell to this neighbor
+	 */
 	getWindComponent() {
 		const bearing = NeighborCell.bearings[this.directionFromOrigin];
+	}
+
+	/**
+	 * Converts the NeighborCell to a simple Cell
+	 * @returns Cell
+	 */
+	toCell() {
+		return new Cell(this.layerPoint, this.extent);
 	}
 }
 

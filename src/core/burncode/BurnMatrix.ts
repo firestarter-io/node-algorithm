@@ -9,7 +9,7 @@ import { Matrix } from 'mathjs';
 import { math } from '@utils/math';
 import { CellPosition } from 'typings/firestarter';
 import Extent from './Extent';
-import Cell from './Cell';
+import Cell, { NeighborCell } from './Cell';
 
 class BurnMatrix {
 	/**
@@ -23,19 +23,19 @@ class BurnMatrix {
 	/**
 	 * Cells that are currently burning
 	 */
-	burning: Cell[];
+	burning: Map<string, Cell>;
 	/**
 	 * Cells that are burned out
 	 */
-	burnedOut: Cell[];
+	burnedOut: Map<string, Cell>;
 	/**
 	 * Cells where fire has been supressed
 	 */
-	supressed: Cell[];
+	supressed: Map<string, Cell>;
 	/**
 	 * Array containing all tracked cell arrays
 	 */
-	trackedCells: Cell[][];
+	trackedCells: Map<string, Cell>[];
 
 	/**
 	 * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
@@ -46,9 +46,9 @@ class BurnMatrix {
 	constructor(width: number, height: number, extent: Extent) {
 		this.matrix = math.zeros(height, width, 'sparse') as Matrix;
 		this.extent = extent;
-		this.burning = [];
-		this.burnedOut = [];
-		this.supressed = [];
+		this.burning = new Map();
+		this.burnedOut = new Map();
+		this.supressed = new Map();
 		this.trackedCells = [this.burning, this.supressed, this.burnedOut];
 	}
 
@@ -58,24 +58,27 @@ class BurnMatrix {
 	 * @param position | The position of the cell in the matrix
 	 * @param burnStatus | The burn status to set the cell to
 	 */
-	setBurnStatus(cell: Cell, burnStatus: number) {
+	setBurnStatus(cell: Cell | NeighborCell, burnStatus: number) {
 		this.set(cell.position, burnStatus);
-		const ind = this.burning.indexOf(cell);
+
+		if (cell instanceof NeighborCell) {
+			cell = cell.toCell();
+		}
 
 		switch (true) {
 			// BURNING
 			case burnStatus >= 1:
-				this.burning.push(cell);
+				this.burning.set(cell.id, cell);
 				break;
 			// BURNED_OUT
 			case burnStatus === -1:
-				this.burnedOut.push(cell);
-				this.burning.splice(ind, 1);
+				this.burnedOut.set(cell.id, cell);
+				this.burning.delete(cell.id);
 				break;
 			// SUPRESSED
 			case burnStatus === -2:
-				this.burnedOut.push(cell);
-				this.burning.splice(ind, 1);
+				this.burnedOut.set(cell.id, cell);
+				this.burning.delete(cell.id);
 				break;
 			default:
 				break;
@@ -95,8 +98,8 @@ class BurnMatrix {
 	 * Direct access method to get the value in the matrix at an [x, y] position
 	 * @param position | [x, y] position in array
 	 */
-	get(position: CellPosition) {
-		this.matrix.get([...position].reverse());
+	get(position: CellPosition): number {
+		return this.matrix.get([...position].reverse());
 	}
 
 	/**
