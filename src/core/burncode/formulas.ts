@@ -26,6 +26,22 @@ const probabilityOfIgnition = (
 };
 
 /**
+ * Function which determines the alpha wind factor, which may positively or negatively
+ * affect the burn probability of a cell.  Reverse engineered from figure 6 of
+ * ["PROPAGATOR: An Operational Cellular-Automata Based Wildfire Simulator"](https://www.mdpi.com/2571-6255/3/3/26/htm)
+ *
+ * google "plot .5 + 0.75 * 1 /(e^(-(x^3 / 30000)) + 0.5 ) from -150 to 150"
+ *
+ * Could use some fine tuning
+ * @param slope Numer, slope, in percent
+ */
+const alphaSlope = (slope: number) => {
+	return (
+		0.5 + 0.75 * (1 / (Math.pow(Math.E, -Math.pow(slope, 3) / 3000) + 0.5))
+	);
+};
+
+/**
  * Function to measure intensity of fireline, Byram (1959, page 79)
  * @param H | heat yield (Btu/lb of fuel), often 8000
  * @param w | weight of available fuel (lb /ft^2)
