@@ -37,7 +37,7 @@ const probabilityOfIgnition = (
  */
 const alphaSlope = (slope: number) => {
 	return (
-		0.5 + 0.75 * (1 / (Math.pow(Math.E, -Math.pow(slope, 3) / 3000) + 0.5))
+		0.5 + 0.75 * (1 / (Math.pow(Math.E, -Math.pow(slope, 3) / 30000) + 0.5))
 	);
 };
 
@@ -47,6 +47,8 @@ const alphaSlope = (slope: number) => {
  * ["PROPAGATOR: An Operational Cellular-Automata Based Wildfire Simulator"](https://www.mdpi.com/2571-6255/3/3/26/htm)
  *
  * Describes a group of equations which each approximate a normal distribution centered at x = 0
+ *
+ * google plot   4/(e^(((x/10)^2))),   (4-3/10)/(e^(((x/20)^2))) + 0.1,  (4-3*3/10)/(e^(((x/40)^2))) + 0.3, (4-10*3/10)/(e^(((x/1600)^2))) + 1 from -200 to 200
  *
  * @param direction Wind direction i degrees, relative to angle from Cell to NeighborCell
  * @param speed Wind speed in km/h
