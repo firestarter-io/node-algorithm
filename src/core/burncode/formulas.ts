@@ -50,16 +50,31 @@ const alphaSlope = (slope: number) => {
  *
  * @param direction Wind direction i degrees, relative to angle from Cell to NeighborCell
  * @param speed Wind speed in km/h
+ * @returns Alpha wind, a unitless scaling factor which can positively or negatively affect burn probability
  */
 const alphaWind = (direction: number, speed: number) => {
 	if (speed === 0) {
 		return 1;
 	}
+	/**
+	 * Scaling factor, based on speed, helps determine bell amplitude and yShift
+	 */
 	const s = speed / 100;
-	const yShift = 1 - s;
+	/**
+	 * The 'floor' of the bell curve.  1 for speed = 0 km/h, drops to 0 for speed >= 100 km/h
+	 */
+	const yShift = speed > 100 ? 1 - s : 0;
+	/**
+	 * The amplitude of the curve. 1 for speed = 0 km/h, rises to 4+ for speed = 100 km/h
+	 */
 	const amplitude = 1 + 3 * s;
-	const spread = Math.pow(10, speed / 100) / 100;
-	return amplitude / Math.pow(Math.E, (spread * direction) ** 2) + yShift;
+	/**
+	 * The width of the bell curve, not at any specific height, determined by trial and error
+	 * Roughly 300 at speed = 0 km/h and 50-60 at speed = 100 km/h
+	 */
+	const width = Math.pow(10, speed / 100) / 100;
+
+	return amplitude / Math.pow(Math.E, (width * direction) ** 2) + yShift;
 };
 
 /**
