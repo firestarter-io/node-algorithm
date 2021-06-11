@@ -12,7 +12,8 @@ import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
-import { WildfireRisk } from '@core/getdata/rasterSources';
+import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
+import { FBFM13, FuelModel } from '@core/constants/fuelmodels';
 
 export enum Directions {
 	N = 'N',
@@ -171,6 +172,9 @@ class Cell {
 	 */
 	get groundcoverIgnitionP() {
 		const fireRisk = WildfireRisk.getValueAt(this.layerPoint);
+		if (this.fuelModel13.nonBurnable) {
+			return 0;
+		}
 		if (fireRisk === '0') {
 			return 0;
 		} else {
@@ -178,6 +182,14 @@ class Cell {
 			const P = lodash.random(minRisk, maxRisk).round(3);
 			return P;
 		}
+	}
+
+	/**
+	 * Returns Andersen Fuel Model data for this cell
+	 */
+	get fuelModel13(): FuelModel {
+		const fuelModel = FBFuelModels13.getValueAt(this.layerPoint);
+		return FBFM13[fuelModel];
 	}
 
 	/**

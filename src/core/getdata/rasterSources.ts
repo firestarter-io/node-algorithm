@@ -15,7 +15,7 @@ export const FBFuelModels13 = new EsriRasterDataSource({
 	f: 'image',
 	format: 'png32',
 	sr: '102100',
-	sublayer: '21',
+	sublayer: '19',
 	dpi: '96',
 });
 
