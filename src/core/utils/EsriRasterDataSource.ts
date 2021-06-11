@@ -199,7 +199,11 @@ export class EsriRasterDataSource {
 
 			console.log(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
 		} catch (e) {
-			console.log(`${log.emojis.errorX}`, e);
+			console.log(
+				`${log.emojis.errorX}`,
+				`Problem fetching ${this.name}:\n`,
+				e
+			);
 		}
 	}
 

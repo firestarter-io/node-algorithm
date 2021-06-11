@@ -47,11 +47,11 @@ class Cell {
 	/**
 	 * The BurnMatrix that the Cell belongs to
 	 */
-	burnMatrix: BurnMatrix;
+	_burnMatrix: BurnMatrix;
 	/**
 	 * The Extent that the Cell belongs to
 	 */
-	extent: Extent;
+	_extent: Extent;
 
 	/**
 	 * A Cell represents a single pixel in a burn matrix
@@ -61,8 +61,8 @@ class Cell {
 	constructor(layerPoint: L.Point, extent: Extent) {
 		this.layerPoint = layerPoint;
 		this.id = JSON.stringify(layerPoint);
-		this.extent = extent;
-		this.burnMatrix = extent.burnMatrix;
+		this._extent = extent;
+		this._burnMatrix = extent.burnMatrix;
 		this.position = this.layerPointToMatrixPosition(layerPoint);
 		this.pstring = JSON.stringify(this.position);
 	}
@@ -95,7 +95,7 @@ class Cell {
 					neighbors.push(
 						new NeighborCell(
 							this.matrixPositionToLayerPoint([x + i, y + j]),
-							this.extent,
+							this._extent,
 							this,
 							distanceTo,
 							Cell.neighborsMap[JSON.stringify([i, j])]
@@ -113,8 +113,8 @@ class Cell {
 	 */
 	layerPointToMatrixPosition(layerPoint: L.Point): CellPosition {
 		return [
-			layerPoint.x - this.extent.origin.x,
-			layerPoint.y - this.extent.origin.y,
+			layerPoint.x - this._extent.origin.x,
+			layerPoint.y - this._extent.origin.y,
 		];
 	}
 
@@ -124,8 +124,8 @@ class Cell {
 	 */
 	matrixPositionToLayerPoint(position: CellPosition) {
 		return new L.Point(
-			position[0] + this.extent.origin.x,
-			position[1] + this.extent.origin.y
+			position[0] + this._extent.origin.x,
+			position[1] + this._extent.origin.y
 		);
 	}
 
@@ -133,7 +133,7 @@ class Cell {
 	 * Returns the burn status for the cell
 	 */
 	get burnStatus() {
-		return this.burnMatrix.get(this.position);
+		return this._burnMatrix.get(this.position);
 	}
 
 	/**
@@ -141,7 +141,7 @@ class Cell {
 	 * @param burnStatus | Number representing a burn status,
 	 */
 	setBurnStatus(burnStatus: number) {
-		this.burnMatrix.setBurnStatus(this, burnStatus);
+		this._burnMatrix.setBurnStatus(this, burnStatus);
 	}
 
 	/**
@@ -162,7 +162,7 @@ class Cell {
 	}
 
 	/**
-	 * Wildfire ignition probability based solely on groundcover fuelds, not accounting
+	 * Wildfire ignition probability based solely on groundcover fuels, not accounting
 	 * for wind, himidity, or other factors.
 	 *
 	 * Currently using USFS Probabalistic Wildfire Risk raster dataset
@@ -199,24 +199,24 @@ class Cell {
 
 		// Get distances from cell to 4 edges of extent
 		const dLeft = x;
-		const dRight = this.extent.width - x;
+		const dRight = this._extent.width - x;
 		const dTop = y;
-		const dBottom = this.extent.height - y;
+		const dBottom = this._extent.height - y;
 
 		if (dLeft < tileSize * buffer) {
-			this.extent.expandLeft();
+			this._extent.expandLeft();
 		}
 
 		if (dRight < tileSize * buffer) {
-			this.extent.expandRight();
+			this._extent.expandRight();
 		}
 
 		if (dTop < tileSize * buffer) {
-			this.extent.expandUp();
+			this._extent.expandUp();
 		}
 
 		if (dBottom < tileSize * buffer) {
-			this.extent.expandDown();
+			this._extent.expandDown();
 		}
 	}
 }
@@ -275,7 +275,7 @@ export class NeighborCell extends Cell {
 		const originCellElevation = getElevation(this.originCell.layerPoint);
 
 		const dElev = elevation - originCellElevation;
-		const distance = this.extent.averageDistance * this.distanceCoefficient;
+		const distance = this._extent.averageDistance * this.distanceCoefficient;
 
 		return Math.atan(dElev / distance).round();
 	}
@@ -306,7 +306,7 @@ export class NeighborCell extends Cell {
 	 * @returns Cell
 	 */
 	toCell() {
-		return new Cell(this.layerPoint, this.extent);
+		return new Cell(this.layerPoint, this._extent);
 	}
 }
 

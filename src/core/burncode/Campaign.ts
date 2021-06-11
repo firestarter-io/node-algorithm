@@ -14,6 +14,7 @@ import TimeStep from './Timestep';
 import { log } from '@core/utils/Logger';
 import Cell from './Cell';
 import chalk = require('chalk');
+import { dateRoundedToHour } from '@core/utils/time';
 
 export class Campaign {
 	/**
@@ -43,10 +44,10 @@ export class Campaign {
 	 * timesteps, and writing campaign data to the database
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
-	constructor(latlng: L.LatLng, startTime: number = new Date().getTime()) {
+	constructor(latlng: L.LatLng, startTime: number = dateRoundedToHour()) {
 		this.seedLatLng = latlng;
 		this.extents = [];
-		this.startTime = startTime;
+		this.startTime = dateRoundedToHour(new Date(startTime));
 		this.timesteps = [];
 		this.id = uuid();
 		data.campaigns[this.id] = this;

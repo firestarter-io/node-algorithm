@@ -14,7 +14,7 @@ class TimeStep {
 	/**
 	 * The Campaign that the timestep belongs to
 	 */
-	campaign: Campaign;
+	_campaign: Campaign;
 	/**
 	 * Index of the timestep in a campaign's timestep array
 	 */
@@ -51,11 +51,11 @@ class TimeStep {
 	 */
 	constructor(matrixSnapshots: Matrix[], campaign: Campaign) {
 		this.burnMatrices = matrixSnapshots;
-		this.campaign = campaign;
-		this.index = this.campaign.timesteps.length;
-		this.timestamp = this.campaign.startTime + this.index * timestepSize;
+		this._campaign = campaign;
+		this.index = this._campaign.timesteps.length;
+		this.timestamp = this._campaign.startTime + this.index * timestepSize;
 		this.time = new Date(this.timestamp).toLocaleString();
-		this.campaign.timesteps.push(this);
+		this._campaign.timesteps.push(this);
 		this.burn();
 	}
 
@@ -77,7 +77,7 @@ class TimeStep {
 	 * Calculates and applies burn statuses for Cells in this Timestep
 	 */
 	burn() {
-		this.campaign.extents.forEach((extent) => {
+		this._campaign.extents.forEach((extent) => {
 			extent.burnMatrix.burning.forEach((burningCell) => {
 				//
 				const touched = this.cellTouched(burningCell);
@@ -102,8 +102,8 @@ class TimeStep {
 	 */
 	next() {
 		new TimeStep(
-			this.campaign.extents.map((extent) => extent.burnMatrix.clone()),
-			this.campaign
+			this._campaign.extents.map((extent) => extent.burnMatrix.clone()),
+			this._campaign
 		);
 	}
 }
