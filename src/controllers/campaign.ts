@@ -35,7 +35,7 @@ export const campaign = async (req, res) => {
 		} else {
 			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
-			// await getWeather(latlng);
+			await getWeather(latlng);
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));

@@ -66,7 +66,7 @@ const baseurl =
 	'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline';
 
 /**
- * API call to get weather
+ * API call to get weather, default of 2 week forecast, daily and hourly data
  *
  * Currently using [weather.visualcrossing.com](weather.visualcrossing.com)
  *
@@ -78,6 +78,31 @@ export const getWeather = async (
 	const key = process.env.VISUALCROSSING_KEY;
 	const { lat, lng } = latlng;
 	const url = `${baseurl}/${lat},${lng}?unitGroup=metric&key=${key}`;
+
+	return fetch(url)
+		.then((r) => r.json())
+		.then((r) => console.log(r));
+};
+
+/**
+ * API call to get weather, custom timerange, daily and hourly forecast
+ *
+ * Currently using [weather.visualcrossing.com](weather.visualcrossing.com)
+ *
+ * ## Watch out!  This costs money!
+ *
+ * @param latlng | LatLng location of forecast / historyical date
+ * @param startTime | Unix timestamp of start time, in seconds, not miliseconds
+ * @param endTime | Unix timestamp of end time, in seconds, not miliseconds
+ */
+export const getWeatherRange = async (
+	latlng: L.LatLng | LatLngLiteral,
+	startTime: number,
+	endTime: number
+): Promise<WeatherForecastResponse> => {
+	const key = process.env.VISUALCROSSING_KEY;
+	const { lat, lng } = latlng;
+	const url = `${baseurl}/${lat},${lng}/${startTime}/${endTime}?unitGroup=metric&key=${key}`;
 
 	return fetch(url)
 		.then((r) => r.json())
