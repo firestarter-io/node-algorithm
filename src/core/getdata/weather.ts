@@ -109,7 +109,10 @@ export const fetchWeatherRange = async (
 	const url = `${baseurl}/${lat},${lng}/${startTime}/${endTime}?unitGroup=metric&key=${key}`;
 
 	try {
+		// DEV ▼
 		throw new Error('Skipping weather API call, using mock data');
+		// DEV ▲
+
 		return fetch(url)
 			.then((r) => r.json())
 			.then((r) => console.log(r));

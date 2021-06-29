@@ -27,7 +27,7 @@ export const campaign = async (req, res) => {
 		// const topo = await getTopography(L.latLng(latlng));
 		// console.log(topo);
 		if (!camp) {
-			camp = new Campaign(L.latLng(latlng));
+			camp = new Campaign(L.latLng(latlng), 1624950000000);
 			// @ts-ignore
 			globalThis.camp = camp;
 			await camp.initialize();
