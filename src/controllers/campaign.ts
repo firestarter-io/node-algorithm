@@ -11,7 +11,7 @@ import { refitBoundsToMapTiles } from '@utils/geometry/bounds';
 import { createDEM } from '@getdata/dem';
 import { getTopography } from '@core/getData/getTopography';
 import Campaign from '@core/burncode/Campaign';
-import { getWeather } from '@core/getdata/weather';
+import { fetchWeather, fetchWeatherRange } from '@core/getdata/weather';
 import chalk = require('chalk');
 
 let camp: Campaign;
@@ -35,7 +35,12 @@ export const campaign = async (req, res) => {
 		} else {
 			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			await camp.startFire(L.latLng(latlng));
-			await getWeather(latlng);
+			const weather = await fetchWeatherRange(
+				latlng,
+				camp.startTime,
+				camp.startTime
+			);
+			console.log(weather);
 		}
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));

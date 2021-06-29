@@ -184,6 +184,10 @@ class Cell {
 		}
 	}
 
+	// get ignitionP() {
+
+	// }
+
 	/**
 	 * Returns Andersen Fuel Model data for this cell
 	 */
