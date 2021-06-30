@@ -14,6 +14,7 @@ import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
 import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
 import { FBFM13, FuelModel } from '@core/constants/fuelmodels';
+import TimeStep from './Timestep';
 
 export enum Directions {
 	N = 'N',
@@ -184,9 +185,10 @@ class Cell {
 		}
 	}
 
-	// get ignitionP() {
-
-	// }
+	get ignitionP() {
+		const currentWeather = this._extent._campaign.timesteps.lastItem().weather;
+		return currentWeather;
+	}
 
 	/**
 	 * Returns Andersen Fuel Model data for this cell

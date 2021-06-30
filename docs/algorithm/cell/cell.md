@@ -1,6 +1,6 @@
 # `Cell`
 
-A `Cell` represents a single pixel within a `BurnMatrix`. At its core, it is convenience class for interacting with and making changes to the `BurnMatrix`. A `Cell` is tied to a particular `Extent`, and it has methods which enable it to access the `Extent`'s data at its own position within that `Extent`. It is also connected to the `Extent`'s `BurnMatrix`, and is able to get and set burn values at the `Cell`'s position in its `BurnMatrix`.
+A `Cell` represents a single pixel within a `BurnMatrix`. At its core, it is an abstraction layer for interacting with and making changes to the `BurnMatrix`. A `Cell` is tied to a particular `Extent`, and it has methods which enable it to access the `Extent`'s data at its own position within that `Extent`. It is also connected to the `Extent`'s `BurnMatrix`, and is able to get and set burn values at the `Cell`'s position in its `BurnMatrix`.
 
 FireStarter's stochastic model relies on a `Cell`'s ability to access its neighboring positions within its `BurnMatrix`. To that end, a `Cell` has the `neighbors()` method, which spawns 8 `NeighborCell`s, forming a [Moore Neighborhood](https://en.wikipedia.org/wiki/Moore_neighborhood).
 

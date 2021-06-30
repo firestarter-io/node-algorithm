@@ -19,8 +19,13 @@ import { math } from '@core/utils/math';
 import { Matrix } from 'mathjs';
 import Cell from './Cell';
 import { getTopography } from '@core/getData/getTopography';
+import Campaign from './Campaign';
 
 class Extent {
+	/**
+	 * The Campaign that the extent belongs to
+	 */
+	_campaign: Campaign;
 	/**
 	 * The latLngBounds of the extent (after refitting)
 	 */
@@ -62,7 +67,7 @@ class Extent {
 	 * and it creates a burn matrix with coordinates corresponding the the extent pixel bounds
 	 * @param latLngBounds | LatLngBounds to create area for
 	 */
-	constructor(latLngBounds: L.LatLngBounds) {
+	constructor(latLngBounds: L.LatLngBounds, campaign: Campaign) {
 		/**
 		 * Take in a latlngbounds and refit those bounds to cleaner dimensions
 		 * Height and width of bounds will be multiple of 256
@@ -75,6 +80,7 @@ class Extent {
 		/**
 		 * Keep all values available on instance:
 		 */
+		this._campaign = campaign;
 		this.latLngBounds = llbounds;
 		this.pixelBounds = pixelBounds;
 		this.width = pixelBounds.getSize().x;

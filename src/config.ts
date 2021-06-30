@@ -26,6 +26,19 @@ if (!Number.prototype.round) {
 	};
 }
 
+// Add lastItem method to array prototype, because it should be native in JS already!
+declare global {
+	interface Array<T> {
+		/**
+		 * Returns the last item in the array
+		 */
+		lastItem: () => T;
+	}
+}
+Array.prototype.lastItem = function () {
+	return this[this.length - 1];
+};
+
 // --------------------------------------------------------------------------------------- //
 //                                Get leaflet working in node                              //
 // --------------------------------------------------------------------------------------- //

@@ -9,6 +9,7 @@ import { FireStarterEvent } from 'typings/firestarter';
 import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
 import Cell, { NeighborCell } from './Cell';
+import { WeatherForecast } from '@core/getdata/weather';
 
 class TimeStep {
 	/**
@@ -27,6 +28,10 @@ class TimeStep {
 	 * The human readable time of the timestep
 	 */
 	time: string;
+	/**
+	 * Weather forecast for the hour of the current TimeStep
+	 */
+	weather: WeatherForecast;
 	/**
 	 * Array of burn matrices, cloned from the Campaigns extent
 	 */
@@ -55,6 +60,7 @@ class TimeStep {
 		this.index = this._campaign.timesteps.length;
 		this.timestamp = this._campaign.startTime + this.index * timestepSize;
 		this.time = new Date(this.timestamp).toLocaleString();
+		this.weather = this._campaign.weather[this.timestamp / 1000];
 		this._campaign.timesteps.push(this);
 		this.burn();
 	}
@@ -92,7 +98,7 @@ class TimeStep {
 			});
 		});
 
-		if (this.index < 10) {
+		if (this.index < 24) {
 			this.next();
 		}
 	}

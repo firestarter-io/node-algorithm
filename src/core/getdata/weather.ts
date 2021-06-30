@@ -9,7 +9,7 @@ import { LatLngLiteral } from 'leaflet';
 import fetch from 'node-fetch';
 import mockweather from '@core/constants/mockweather';
 
-interface WeatherForecast {
+export interface WeatherForecast {
 	cloudcover: number;
 	conditions: string;
 	datetime: string;
@@ -63,6 +63,10 @@ interface WeatherForecastResponse {
 	stations?: any; // NA
 	timezone: string;
 	tzoffset: number;
+}
+
+export interface WeatherByTheHour {
+	[key: number]: WeatherForecast;
 }
 
 const baseurl =
@@ -127,7 +131,7 @@ export const fetchWeatherRange = async (
  */
 export const flattenWeatherHours = (
 	forecast: WeatherForecastResponse
-): { [key: number]: WeatherForecast } => {
+): WeatherByTheHour => {
 	const flattened = forecast.days.map((day) => day.hours).flat();
 	return flattened.reduce(function (acc, curr) {
 		acc[curr.datetimeEpoch] = curr;

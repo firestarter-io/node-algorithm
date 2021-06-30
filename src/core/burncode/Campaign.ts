@@ -11,10 +11,15 @@ import * as data from '@data';
 import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
-import { log } from '@core/utils/Logger';
+import { emojis, log } from '@core/utils/Logger';
 import Cell from './Cell';
 import chalk = require('chalk');
 import { dateRoundedToHour } from '@core/utils/time';
+import {
+	fetchWeatherRange,
+	flattenWeatherHours,
+	WeatherByTheHour,
+} from '@core/getdata/weather';
 
 export class Campaign {
 	/**
@@ -37,6 +42,10 @@ export class Campaign {
 	 * Array of TimeSteps in the Campaign
 	 */
 	timesteps: TimeStep[];
+	/**
+	 * Weather forecast by the hour for the Campaign
+	 */
+	weather: WeatherByTheHour = {};
 
 	/**
 	 * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -60,10 +69,30 @@ export class Campaign {
 	 * @param bounds | Bounds to create a new extent from
 	 */
 	async createExtent(bounds: L.LatLngBounds) {
-		const extent = new Extent(bounds);
+		const extent = new Extent(bounds, this);
 		this.extents.push(extent);
 		await extent.fetchData();
 		return extent;
+	}
+
+	/**
+	 * Function to fetch weather for the campaign, for a given latlng and time period
+	 * Currently uses weather for a singular location applied across the whole campaign
+	 *
+	 * @param latlng | LatLng location of forecast / historyical date
+	 * @param startTime | Unix timestamp of start time, in seconds, not miliseconds
+	 * @param endTime | Unix timestamp of end time, in seconds, not miliseconds
+	 */
+	async getWeather(latlng: L.LatLng, startTime: number, endTime: number) {
+		console.log(`${emojis.fetch} Fetching weather . . .`);
+		try {
+			const rawForecast = await fetchWeatherRange(latlng, startTime, endTime);
+			const newHours = flattenWeatherHours(rawForecast);
+			this.weather = { ...this.weather, ...newHours };
+			console.log(`${emojis.successCheck} Weather ready`);
+		} catch (e) {
+			console.log(`${emojis.errorX} Weather failed to fetch`);
+		}
 	}
 
 	/**
@@ -73,6 +102,11 @@ export class Campaign {
 		console.log(chalk.bold('Initializing campaign'));
 		const bounds = this.seedLatLng.toBounds(extentSize);
 		await this.createExtent(bounds);
+		await this.getWeather(
+			this.seedLatLng,
+			this.startTime,
+			this.startTime + 1.21e9
+		);
 		console.log(chalk.bold('Campaign created'));
 
 		await this.startFire(this.seedLatLng);
