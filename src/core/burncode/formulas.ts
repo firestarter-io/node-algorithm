@@ -13,16 +13,13 @@
  * @param ffmcE Fine fuel moisture content effect
  * @returns Probability of fire spread from one Cell to another.  Unitless number between 0 and 1
  */
-const probabilityOfIgnition = (
+export const probabilityOfIgnition = (
 	nominalSpreadP: number,
 	alphaWind: number,
 	alphaSlope: number,
-	ffmcE: number
+	ffmcE: number = 0.3
 ): number => {
-	const effectiveFfmcE = ffmcE || 0.3;
-	return (
-		(1 - Math.pow(1 - nominalSpreadP, alphaSlope * alphaWind)) * effectiveFfmcE
-	);
+	return (1 - Math.pow(1 - nominalSpreadP, alphaSlope * alphaWind)) * ffmcE;
 };
 
 /**
@@ -35,7 +32,7 @@ const probabilityOfIgnition = (
  * Could use some fine tuning
  * @param slope slope, in percent
  */
-const alphaSlope = (slope: number) => {
+export const alphaSlope = (slope: number) => {
 	return (
 		0.5 + 0.75 * (1 / (Math.pow(Math.E, -Math.pow(slope, 3) / 30000) + 0.5))
 	);
@@ -54,7 +51,7 @@ const alphaSlope = (slope: number) => {
  * @param speed Wind speed in km/h
  * @returns Alpha wind, a unitless scaling factor which can positively or negatively affect burn probability
  */
-const alphaWind = (direction: number, speed: number) => {
+export const alphaWind = (direction: number, speed: number) => {
 	if (speed === 0) {
 		return 1;
 	}

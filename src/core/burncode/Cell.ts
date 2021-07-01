@@ -14,7 +14,7 @@ import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
 import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
 import { FBFM13, FuelModel } from '@core/constants/fuelmodels';
-import TimeStep from './Timestep';
+import { probabilityOfIgnition, alphaSlope, alphaWind } from './formulas';
 
 export enum Directions {
 	N = 'N',
@@ -148,6 +148,7 @@ class Cell {
 
 	/**
 	 * Calculates the burn status of the cell and sets it
+	 * @param touched Whether or not the cell has already been worked on in a given timestep
 	 * @returns the burn status of the cell after calculation
 	 */
 	calculateBurnStatus(touched: boolean) {
@@ -183,11 +184,6 @@ class Cell {
 			const P = lodash.random(minRisk, maxRisk).round(3);
 			return P;
 		}
-	}
-
-	get ignitionP() {
-		const currentWeather = this._extent._campaign.timesteps.lastItem().weather;
-		return currentWeather;
 	}
 
 	/**
@@ -288,7 +284,7 @@ export class NeighborCell extends Cell {
 	 * and this NeighborCell in that neighborhood
 	 * @returns Slope between origin Cell to this NeighborCell
 	 */
-	getSlopeFromOriginCell() {
+	get slopeFromOriginCell() {
 		const elevation = getElevation(this.layerPoint);
 		const originCellElevation = getElevation(this.originCell.layerPoint);
 
@@ -296,6 +292,14 @@ export class NeighborCell extends Cell {
 		const distance = this._extent.averageDistance * this.distanceCoefficient;
 
 		return Math.atan(dElev / distance).round();
+	}
+
+	/**
+	 * Function to get slope alpha multiplier factor for this NeighborCell
+	 * @returns alphaSlope number
+	 */
+	get alphaSlope() {
+		return alphaSlope(this.slopeFromOriginCell);
 	}
 
 	/**
@@ -313,10 +317,63 @@ export class NeighborCell extends Cell {
 	} as const;
 
 	/**
-	 * Function to get wind component in direction from origin cell to this neighbor
+	 * Function to get wind alpha multiplier factor for this NeighborCell
+	 * @returns alphaWind number
 	 */
-	getWindComponent() {
-		const bearing = NeighborCell.bearings[this.directionFromOrigin];
+	get alphaWind(): number {
+		try {
+			/**
+			 * Bearing from Origin cell to this NeighborCell:
+			 */
+			const bearing = NeighborCell.bearings[this.directionFromOrigin];
+
+			const currentWeather =
+				this._extent._campaign.timesteps.lastItem().weather;
+			const { windspeed, winddir } = currentWeather;
+
+			/**
+			 * Because wind is given in direction FROM origin, we must flip 180 degrees to get TO direction
+			 */
+			const toWind = (winddir + 180) % 360;
+			/**
+			 * The direction of where the wind is blowing to relative to this NeighborCell's
+			 */
+			const windDirectionRelativeToCell = bearing - toWind;
+
+			return alphaWind(windDirectionRelativeToCell, windspeed);
+		} catch (e) {
+			console.log(e);
+			return 1;
+		}
+	}
+
+	/**
+	 * Returns probability of ignition for this NeighborCell, including wind and slope factors
+	 */
+	get ignitionP() {
+		return probabilityOfIgnition(
+			this.groundcoverIgnitionP,
+			this.alphaWind,
+			this.alphaSlope
+		);
+	}
+
+	/**
+	 * Calculates the burn status of the cell and sets it
+	 * @param touched Whether or not the cell has already been worked on in a given timestep
+	 * @returns the burn status of the cell after calculation
+	 */
+	calculateBurnStatus(touched: boolean) {
+		/* If cell is unburned: */
+		if (this.burnStatus === 0 && Math.random() <= this.ignitionP) {
+			this.setBurnStatus(1);
+		}
+		/* If cell is already burning: */
+		if (this.burnStatus >= 1 && !touched) {
+			this.setBurnStatus(this.burnStatus + 1);
+		}
+
+		return this.burnStatus;
 	}
 
 	/**

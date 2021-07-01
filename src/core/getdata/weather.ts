@@ -19,6 +19,12 @@ export interface WeatherForecast {
 	feelslike: number;
 	feelslikemax?: number;
 	feelslikemin?: number;
+	/**
+	 * Relative humidity the amount of water vapor present in the air compared the maximum amount
+	 * possible for a given temperature, expressed as a mean percentage. Human comfort
+	 * levels are typically found between 30-70%. Values higher than 70% are considered humid.
+	 * Values lower than 30% are considered dry.
+	 */
 	humidity: number;
 	icon: string;
 	moonphase?: number;
@@ -43,9 +49,18 @@ export interface WeatherForecast {
 	tempmin?: number;
 	uvindex: number;
 	visibility: number;
+	/**
+	 * In degrees, clockwise from 0 deg N, coming FROM the degree listed
+	 */
 	winddir: number;
+	/**
+	 * Wind speed average over 20 seconds, in km/h when using ?unitGroup=metric
+	 */
 	windgust: number;
-	windspeed: number; // In degrees, clockwise from 0 deg N, coming FROM the degree listed
+	/**
+	 * Wind speed average over 2 minutes, in km/h when using ?unitGroup=metric
+	 */
+	windspeed: number;
 }
 
 type TotalForecast = WeatherForecast & { hours: WeatherForecast[] };
