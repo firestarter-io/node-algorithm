@@ -33,15 +33,11 @@ export const campaign = async (req, res) => {
 			await camp.initialize();
 			res.send({ extentBounds: camp.extents[0].latLngBounds });
 		} else {
-			camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			// console.log(thing);
 			await camp.startFire(L.latLng(latlng));
-			const weather = await fetchWeatherRange(
-				latlng,
-				camp.startTime,
-				camp.startTime
-			);
-			console.log(weather);
 		}
+		// res.send('good job ahole');
 	}
 	// latlng && console.log(new L.LatLng(latlng.lat, latlng.lng));
 	// latlng && zoom && console.log(topo);
@@ -69,5 +65,5 @@ export const campaign = async (req, res) => {
 	// 	GroundcoverRequest.fetchImage(paddedBounds, { token });
 	// });
 
-	res.send('good job ahole');
+	// res.send('good job ahole');
 };

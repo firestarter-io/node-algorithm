@@ -7,6 +7,7 @@
  */
 
 import * as path from 'path';
+import * as fs from 'fs';
 import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { Bounds, bounds, Point } from 'leaflet';
@@ -143,21 +144,34 @@ export class EsriRasterDataSource {
 
 			/* Download tiles as PNGs to local directory */
 			await Promise.all(
-				tileCoords.map((coord: TileCoord) => {
-					const { X, Y, Z } = coord;
-					const tilename = `${Z}.${X}.${Y}`;
-					const coordBounds = tileCoordToBounds(coord);
-					const url = this.buildImageUrl(coordBounds);
-					const downloadInstructions = {
-						tilename,
-						tiledir: this.datagroup,
-						body: {
-							url,
-							responseType: 'stream',
-						},
-					};
-					return downloadImage(downloadInstructions);
-				})
+				tileCoords
+					.filter((coord: TileCoord) => {
+						const { X, Y, Z } = coord;
+						const tilename = `${Z}.${X}.${Y}`;
+						if (
+							fs.existsSync(
+								`../../tileimages/${this.datagroup}/${tilename}.png`
+							)
+						) {
+							return false;
+						}
+						return true;
+					})
+					.map((coord: TileCoord) => {
+						const { X, Y, Z } = coord;
+						const tilename = `${Z}.${X}.${Y}`;
+						const coordBounds = tileCoordToBounds(coord);
+						const url = this.buildImageUrl(coordBounds);
+						const downloadInstructions = {
+							tilename,
+							tiledir: this.datagroup,
+							body: {
+								url,
+								responseType: 'stream',
+							},
+						};
+						return downloadImage(downloadInstructions);
+					})
 			);
 
 			/* Read local PNG tiles into a canvas and save imagedata to tileCache object */
