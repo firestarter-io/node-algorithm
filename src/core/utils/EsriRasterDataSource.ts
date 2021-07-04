@@ -148,14 +148,11 @@ export class EsriRasterDataSource {
 					.filter((coord: TileCoord) => {
 						const { X, Y, Z } = coord;
 						const tilename = `${Z}.${X}.${Y}`;
-						if (
-							fs.existsSync(
-								`../../tileimages/${this.datagroup}/${tilename}.png`
-							)
-						) {
-							return false;
-						}
-						return true;
+						const filepath = path.resolve(
+							__dirname,
+							`../../tileimages/${this.datagroup}/${tilename}.png`
+						);
+						return !fs.existsSync(filepath);
 					})
 					.map((coord: TileCoord) => {
 						const { X, Y, Z } = coord;
