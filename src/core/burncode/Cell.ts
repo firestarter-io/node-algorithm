@@ -368,17 +368,22 @@ export class NeighborCell extends Cell {
 	 */
 	calculateBurnStatus(touched: boolean) {
 		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= 0.06) {
-			// console.log('this.groundcoverIgnitionP: ', this.groundcoverIgnitionP);
-			console.log('this.ignitionP: ', this.ignitionP);
-			console.log(
-				'this.alphaWind: ',
-				this.alphaWind,
-				'\nthis.alphaSlope: ',
-				this.alphaSlope,
-				'\nthis.alphaSlope * this.alphaWind:',
-				this.alphaSlope * this.alphaWind
-			);
+		if (this.burnStatus === 0 && Math.random() <= this.ignitionP) {
+			// debugging is hard
+			if (this.alphaSlope * this.alphaWind >= 1) {
+				console.log('-------------------------------');
+				console.log(
+					'this.alphaWind: ',
+					this.alphaWind,
+					'\nthis.alphaSlope: ',
+					this.alphaSlope,
+					'\nalpha_ws:',
+					this.alphaSlope * this.alphaWind
+				);
+				console.log('this.groundcoverIgnitionP: ', this.groundcoverIgnitionP);
+				console.log('this.ignitionP: ', this.ignitionP);
+			}
+
 			this.setBurnStatus(1);
 		}
 		/* If cell is already burning: */
