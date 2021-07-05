@@ -118,6 +118,10 @@ class BurnMatrix {
 	clone() {
 		return this.matrix.clone();
 	}
+
+	snapshot() {
+		return new Map(this.burning);
+	}
 }
 
 export default BurnMatrix;

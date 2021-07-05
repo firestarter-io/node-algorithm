@@ -99,7 +99,9 @@ export class Campaign {
 	 * Initialize a new campaign
 	 */
 	async initialize() {
-		console.log(chalk.bold('Initializing campaign'));
+		console.log(
+			chalk.bold('-------------- Initializing campaign --------------')
+		);
 		const bounds = this.seedLatLng.toBounds(extentSize);
 		await this.createExtent(bounds);
 		await this.getWeather(
@@ -107,7 +109,7 @@ export class Campaign {
 			this.startTime,
 			this.startTime + 1.21e9
 		);
-		console.log(chalk.bold('Campaign created'));
+		console.log(chalk.bold('-------------- Campaign created --------------'));
 
 		await this.startFire(this.seedLatLng);
 

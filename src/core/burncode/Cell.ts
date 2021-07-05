@@ -282,7 +282,7 @@ export class NeighborCell extends Cell {
 	/**
 	 * Calculates the slope between the origin Cell of the Moore neighborhood
 	 * and this NeighborCell in that neighborhood
-	 * @returns Slope between origin Cell to this NeighborCell
+	 * @returns Slope between origin Cell to this NeighborCell, in percent grade (0 - 100)
 	 */
 	get slopeFromOriginCell() {
 		const elevation = getElevation(this.layerPoint);
@@ -291,7 +291,10 @@ export class NeighborCell extends Cell {
 		const dElev = elevation - originCellElevation;
 		const distance = this._extent.averageDistance * this.distanceCoefficient;
 
-		return Math.atan(dElev / distance).round();
+		const arctan = Math.atan(dElev / distance);
+		const deg = (arctan * 180) / Math.PI;
+
+		return (deg / 90) * 100;
 	}
 
 	/**
@@ -365,7 +368,17 @@ export class NeighborCell extends Cell {
 	 */
 	calculateBurnStatus(touched: boolean) {
 		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= this.ignitionP) {
+		if (this.burnStatus === 0 && Math.random() <= 0.06) {
+			// console.log('this.groundcoverIgnitionP: ', this.groundcoverIgnitionP);
+			console.log('this.ignitionP: ', this.ignitionP);
+			console.log(
+				'this.alphaWind: ',
+				this.alphaWind,
+				'\nthis.alphaSlope: ',
+				this.alphaSlope,
+				'\nthis.alphaSlope * this.alphaWind:',
+				this.alphaSlope * this.alphaWind
+			);
 			this.setBurnStatus(1);
 		}
 		/* If cell is already burning: */
