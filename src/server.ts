@@ -10,7 +10,7 @@ dotenv.config();
 
 // Set up app
 const app = express();
-const port: string = process.env.PORT || '4424';
+const port: string = process.env.PORT || '9090';
 
 // Set up middlewares
 app.use(bp.json());
