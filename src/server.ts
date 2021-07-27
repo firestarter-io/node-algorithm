@@ -40,7 +40,7 @@ const server = app.listen(port, () => {
 process.on('SIGINT', function () {
 	server.close(() => {
 		console.log(chalk.blue('\n\nShutting down Firestarter'));
-		fs.rmdirSync('./src/tileimages', { recursive: true });
+		// fs.rmdirSync('./src/tileimages', { recursive: true });
 		console.log(chalk.blackBright('🧹 Removing all tile images...'));
 		console.log(chalk.blue('Goodbye!\n\n'));
 		process.exit();

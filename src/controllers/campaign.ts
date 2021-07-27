@@ -31,7 +31,7 @@ export const campaign = async (req, res) => {
 			// @ts-ignore
 			globalThis.camp = camp;
 			await camp.initialize();
-			res.send({ extentBounds: camp.extents[0].latLngBounds });
+			res.send([camp.extents[0].latLngBounds]);
 		} else {
 			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			// console.log(thing);
