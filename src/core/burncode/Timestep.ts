@@ -65,6 +65,7 @@ class TimeStep {
 		this.time = new Date(this.timestamp).toLocaleString();
 		this.weather = this._campaign.weather[this.timestamp / 1000];
 		this._campaign.timesteps.push(this);
+		this._campaign.timestepSnapshots.push(this.snapshot());
 		this.burn();
 	}
 

@@ -52,6 +52,10 @@ export class Campaign {
 	 */
 	timesteps: TimeStep[];
 	/**
+	 * Array of Timestep snapshots (for dev)
+	 */
+	timestepSnapshots: Array<object> = [];
+	/**
 	 * Weather forecast by the hour for the Campaign
 	 */
 	weather: WeatherByTheHour = {};
@@ -171,7 +175,7 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timesteps.map((timestep) => timestep.snapshot()),
+			timesteps: clone.timestepSnapshots,
 		};
 
 		return simplifiedCampaign;
