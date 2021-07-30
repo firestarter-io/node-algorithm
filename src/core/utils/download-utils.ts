@@ -9,7 +9,7 @@
  */
 
 /**
- * Utility for downloading images
+ * Utilities for downloading images and files
  */
 
 import * as fs from 'fs';
@@ -53,4 +53,19 @@ export const downloadImage = async (downloadInstructions) => {
 		writer.on('finish', () => resolve('success'));
 		writer.on('error', () => reject());
 	});
+};
+
+/**
+ * Async function to write JSON to file
+ * @param json The JSON object to write to a file
+ * @param filepath The path to the file to be written
+ * @param filename The name of the file to be written, not including the .json extension
+ */
+export const downloadJSON = async (
+	json: object,
+	filepath: string,
+	filename: string
+) => {
+	await createDir(filepath);
+	fs.writeFileSync(`${filepath}/${filename}.json`, JSON.stringify(json));
 };

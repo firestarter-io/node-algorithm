@@ -28,7 +28,7 @@ import { TileCoord } from 'typings/gis';
 import { ImageRequestOptions } from 'typings/esri';
 import { log } from './Logger';
 import { getTileCoord } from '@core/getdata/dem';
-import { downloadImage } from '@utils/downloadImage';
+import { downloadImage, downloadJSON } from '@core/utils/download-utils';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	/**
@@ -125,7 +125,6 @@ export class EsriRasterDataSource {
 	 */
 	public async fetchTiles(latLngBounds: L.LatLngBounds) {
 		if (!legends[this.datagroup]) {
-			console.log(`${log.emojis.fetch} Fetching ${this.name} legend . . .`);
 			try {
 				await this.generateLegend();
 				console.log(`${log.emojis.notepad} Legend for ${this.name} ready`);
@@ -383,38 +382,64 @@ export class EsriRasterDataSource {
 	 * meaning according to the legend.
 	 */
 	public async generateLegend() {
-		const legendUrl = `${this.url}/legend?f=pjson`;
-		let layerJSON, legend, rgbValues;
+		let legend;
+		const pathToPreexistingJson = path.resolve(
+			__dirname,
+			`../../tileimages/${this.datagroup}.legend.json`
+		);
 
-		const canvas = createCanvas(20, 20);
-		const ctx = canvas.getContext('2d');
+		// If JSON has not yet been downloaded in this user session, download it:
+		if (!fs.existsSync(pathToPreexistingJson)) {
+			console.log(
+				`${log.emojis.fetch} Fetching ${this.name} legend from remote . . .`
+			);
 
-		// Get JSON of layer / sublayer's legend
-		await fetch(legendUrl)
-			.then((res) => res.json())
-			.then((data) => {
-				const layerId = this.options.sublayer || 0;
-				layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+			const legendUrl = `${this.url}/legend?f=pjson`;
+			let layerJSON, rgbValues;
+
+			const canvas = createCanvas(20, 20);
+			const ctx = canvas.getContext('2d');
+
+			// Get JSON of layer / sublayer's legend
+			await fetch(legendUrl)
+				.then((res) => res.json())
+				.then((data) => {
+					const layerId = this.options.sublayer || 0;
+					layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+				});
+
+			// Transform legend array images into rgbValues
+			await Promise.all(
+				layerJSON.legend.map((symbol) =>
+					loadImage(`data:image/png;base64,${symbol.imageData}`)
+				)
+			).then((symbolImages) => {
+				rgbValues = symbolImages.map((image) => {
+					ctx.drawImage(image, 0, 0);
+					const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
+					return { R, G, B, A };
+				});
+				return rgbValues;
 			});
 
-		// Transform legend array images into rgbValues
-		await Promise.all(
-			layerJSON.legend.map((symbol) =>
-				loadImage(`data:image/png;base64,${symbol.imageData}`)
-			)
-		).then((symbolImages) => {
-			rgbValues = symbolImages.map((image) => {
-				ctx.drawImage(image, 0, 0);
-				const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
-				return { R, G, B, A };
-			});
-			return rgbValues;
-		});
+			legend = await layerJSON.legend.map((symbol, ind) => ({
+				...symbol,
+				rgbvalue: rgbValues[ind],
+			}));
 
-		legend = await layerJSON.legend.map((symbol, ind) => ({
-			...symbol,
-			rgbvalue: rgbValues[ind],
-		}));
+			const filepath = path.resolve(__dirname, `../../tileimages/`);
+
+			await downloadJSON(legend, filepath, `${this.datagroup}.legend`);
+
+			// If Legend JSON is already downloaded in this user session, use it instead of fetching it
+		} else {
+			console.log(
+				`${log.emojis.fetch} Reading ${this.name} legend from local . . .`
+			);
+
+			const rawdata = fs.readFileSync(pathToPreexistingJson, 'utf-8');
+			legend = JSON.parse(rawdata);
+		}
 
 		legends[this.datagroup] = legend;
 

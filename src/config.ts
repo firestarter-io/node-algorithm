@@ -47,32 +47,6 @@ Array.prototype.lastItem = function () {
 	return this[this.length - 1];
 };
 
-// Add round method to number prototype, because it should be native in JS already!
-declare global {
-	interface JSON {
-		/**
-		 * Rounds the number to the specified number of decimals, or to 0 decimals if unspecified
-		 */
-		safeStringify;
-	}
-}
-
-JSON.safeStringify = (obj, indent = 2) => {
-	let cache = [];
-	const retVal = JSON.stringify(
-		obj,
-		(key, value) =>
-			typeof value === 'object' && value !== null
-				? cache.includes(value)
-					? undefined // Duplicate reference found, discard key
-					: cache.push(value) && value // Store value in our collection
-				: value,
-		indent
-	);
-	cache = null;
-	return retVal;
-};
-
 // --------------------------------------------------------------------------------------- //
 //                                Get leaflet working in node                              //
 // --------------------------------------------------------------------------------------- //

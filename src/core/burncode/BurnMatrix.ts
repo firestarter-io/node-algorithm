@@ -135,7 +135,7 @@ class BurnMatrix {
 		const { _campaign, burnMatrix, ...serializableExtent } = this._extent;
 
 		return {
-			burnMatrix: this.clone(),
+			burnMatrix: this.clone().toJSON(),
 			...serializableExtent,
 		};
 	}
