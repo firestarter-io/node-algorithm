@@ -353,7 +353,7 @@
                 
                 
                 <h1 id="cell"><code>Cell</code></h1>
-<p>A <code>Cell</code> represents a single pixel within a <code>BurnMatrix</code>. At its core, it is convenience class for interacting with and making changes to the <code>BurnMatrix</code>. A <code>Cell</code> is tied to a particular <code>Extent</code>, and it has methods which enable it to access the <code>Extent</code>'s data at its own position within that <code>Extent</code>. It is also connected to the <code>Extent</code>'s <code>BurnMatrix</code>, and is able to get and set burn values at the <code>Cell</code>'s position in its <code>BurnMatrix</code>.</p>
+<p>A <code>Cell</code> represents a single pixel within a <code>BurnMatrix</code>. At its core, it is an abstraction layer for interacting with and making changes to the <code>BurnMatrix</code>. A <code>Cell</code> is tied to a particular <code>Extent</code>, and it has methods which enable it to access the <code>Extent</code>'s data at its own position within that <code>Extent</code>. It is also connected to the <code>Extent</code>'s <code>BurnMatrix</code>, and is able to get and set burn values at the <code>Cell</code>'s position in its <code>BurnMatrix</code>.</p>
 <p>FireStarter's stochastic model relies on a <code>Cell</code>'s ability to access its neighboring positions within its <code>BurnMatrix</code>. To that end, a <code>Cell</code> has the <code>neighbors()</code> method, which spawns 8 <code>NeighborCell</code>s, forming a <a href="https://en.wikipedia.org/wiki/Moore_neighborhood">Moore Neighborhood</a>.</p>
 <hr />
 <h1 id="neighborcell"><code>NeighborCell</code></h1>

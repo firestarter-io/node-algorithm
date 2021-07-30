@@ -412,8 +412,9 @@
                 
                 <h1 id="burnmatrix"><code>BurnMatrix</code></h1>
 <h2 id="creation">Creation</h2>
-<p>A <code>BurnMatrix</code> belongs to an <code>Extent</code>. It is a mathematical abstraction representing all the pixels in an extent. A <code>BurnExtent</code> is a <a href="https://mathjs.org/docs/datatypes/matrices.html">Mathjs sparse matrix</a> whose size is the same as the size of the <code>Extent</code>. For example, an <code>Extent</code> that is 3 tiles wide by 2 tiles tall, with a tilesize of 256 pixels, will have a <code>BurnMatrix</code> of size <code>[256 * 3, 256 * 2]</code>.</p>
+<p>A <code>BurnMatrix</code> belongs to an <code>Extent</code>. It is a mathematical abstraction representing all the pixels in an extent. A <code>BurnExtent</code> is a <a href="https://mathjs.org/docs/reference/classes/sparsematrix.html">MathJS SparseMatrix</a> whose size is the same as the size of the <code>Extent</code>. For example, an <code>Extent</code> that is 3 tiles wide by 2 tiles tall, with a tilesize of 256 pixels, will have a <code>BurnMatrix</code> of size <code>[256 * 3, 256 * 2]</code>.</p>
 <p>A <code>BurnMatrix</code> is created and associated with an extent when a <code>new Extent</code> is created. The <code>Extent</code> is also available from the <code>BurnMatrix</code> - there is always a 1 to 1 relationship, meaning <code>Extents</code> won't share a <code>BurnMatrix</code>, and vice versa.</p>
+<p>A <code>BurnMatrix</code> is <em>dynamic</em>, meaning its state is constantly changing over the life of the algorithm. Looking at a <code>BurnMatrix</code> at one point in time tells you nothing about its state at another point in time. However, a snapshot of the <code>BurnMatrix</code> is taken at every <code>Timestep</code>, so the evolution of the <code>BurnMatrix</code> can be seen by following the trail of its snapshots through an array of <code>Timesteps</code>.</p>
 <h2 id="coordinates">Coordinates</h2>
 <p>A Mathjs matrix is a wrapped around a javascript array. A 2 dimensional matrix is an array of inner arrays:</p>
 <pre><code>const matrix = math.zeros(2, 3)
