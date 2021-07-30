@@ -1,6 +1,14 @@
-/**
+/*
  * Firestarter.io
  *
+ * Copyright (C) 2021 Blue Ohana, Inc.
+ * All rights reserved.
+ * The information in this software is subject to change without notice and
+ * should not be construed as a commitment by Blue Ohana, Inc.
+ *
+ */
+
+/**
  * Utility functions for getting RGB DEM tile images
  * and converting them to raw rgba pixel data
  */

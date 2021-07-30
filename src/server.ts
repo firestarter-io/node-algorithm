@@ -1,11 +1,15 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2020 Blue Ohana, Inc.
+ * Copyright (C) 2021 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
  *
+ */
+
+/**
+ * Express server that serves the application
  */
 
 import * as fs from 'fs';

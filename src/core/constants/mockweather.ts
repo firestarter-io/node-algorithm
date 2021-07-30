@@ -1,6 +1,14 @@
-/**
+/*
  * Firestarter.io
  *
+ * Copyright (C) 2021 Blue Ohana, Inc.
+ * All rights reserved.
+ * The information in this software is subject to change without notice and
+ * should not be construed as a commitment by Blue Ohana, Inc.
+ *
+ */
+
+/**
  * Sample 2 day forcast call from VisualCrossing
  * https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/34.6055194287661,-118.3879852294922/2021-06-29/2021-06-30?key=API_KEY&unitGroup=metric
  *

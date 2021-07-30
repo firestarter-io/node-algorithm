@@ -1,6 +1,14 @@
 /*
  * Firestarter.io
  *
+ * Copyright (C) 2021 Blue Ohana, Inc.
+ * All rights reserved.
+ * The information in this software is subject to change without notice and
+ * should not be construed as a commitment by Blue Ohana, Inc.
+ *
+ */
+
+/*
  * Utility functions for projections
  * Adapted from node_modules/leaflet/src/geometry/Transformation.js
  * https://github.com/Leaflet/Leaflet/blob/7db94fd1ec23f0967dd8b07a5e2e2b1554b6d8db/src/geometry/Transformation.js
