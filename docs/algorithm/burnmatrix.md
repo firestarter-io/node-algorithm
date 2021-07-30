@@ -2,9 +2,11 @@
 
 ## Creation
 
-A `BurnMatrix` belongs to an `Extent`. It is a mathematical abstraction representing all the pixels in an extent. A `BurnExtent` is a [Mathjs sparse matrix](https://mathjs.org/docs/datatypes/matrices.html) whose size is the same as the size of the `Extent`. For example, an `Extent` that is 3 tiles wide by 2 tiles tall, with a tilesize of 256 pixels, will have a `BurnMatrix` of size `[256 * 3, 256 * 2]`.
+A `BurnMatrix` belongs to an `Extent`. It is a mathematical abstraction representing all the pixels in an extent. A `BurnExtent` is a [MathJS SparseMatrix](https://mathjs.org/docs/reference/classes/sparsematrix.html) whose size is the same as the size of the `Extent`. For example, an `Extent` that is 3 tiles wide by 2 tiles tall, with a tilesize of 256 pixels, will have a `BurnMatrix` of size `[256 * 3, 256 * 2]`.
 
 A `BurnMatrix` is created and associated with an extent when a `new Extent` is created. The `Extent` is also available from the `BurnMatrix` - there is always a 1 to 1 relationship, meaning `Extents` won't share a `BurnMatrix`, and vice versa.
+
+A `BurnMatrix` is _dynamic_, meaning its state is constantly changing over the life of the algorithm. Looking at a `BurnMatrix` at one point in time tells you nothing about its state at another point in time. However, a snapshot of the `BurnMatrix` is taken at every `Timestep`, so the evolution of the `BurnMatrix` can be seen by following the trail of its snapshots through an array of `Timesteps`.
 
 ## Coordinates
 
