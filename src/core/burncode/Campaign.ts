@@ -7,6 +7,7 @@
 
 import * as L from 'leaflet';
 import { v4 as uuid } from 'uuid';
+import * as lodash from 'lodash';
 import * as data from '@data';
 import { scale, extentSize } from '@config';
 import Extent from './Extent';
@@ -146,10 +147,26 @@ export class Campaign {
 	 * Begin the Campaign by creating the first timestep
 	 */
 	start() {
-		const first = new TimeStep(
-			this.extents.map((extent) => extent.burnMatrix.clone()),
-			this
-		);
+		const first = new TimeStep(this);
+	}
+
+	/**
+	 * Converts the Campaign class instance to a JSON-friendly object
+	 */
+	simplify() {
+		const clone = lodash.cloneDeep(this);
+
+		const simplifiedCampaign = {
+			id: clone.id,
+			startTime: clone.startTime,
+			extents: clone.extents.map((extent) => ({
+				bounds: extent.latLngBounds,
+				averageDistance: extent.averageDistance,
+			})),
+			timesteps: clone.timesteps.map((timestep) => timestep.snapshot()),
+		};
+
+		return simplifiedCampaign;
 	}
 }
 

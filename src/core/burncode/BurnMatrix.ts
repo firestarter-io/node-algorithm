@@ -19,7 +19,7 @@ class BurnMatrix {
 	/**
 	 * The Extent instance that the BurnMatrix instance belongs to
 	 */
-	extent: Extent;
+	_extent: Extent;
 	/**
 	 * Cells that are currently burning
 	 */
@@ -45,7 +45,7 @@ class BurnMatrix {
 	 */
 	constructor(width: number, height: number, extent: Extent) {
 		this.matrix = math.zeros(height, width, 'sparse') as Matrix;
-		this.extent = extent;
+		this._extent = extent;
 		this.burning = new Map();
 		this.burnedOut = new Map();
 		this.supressed = new Map();
@@ -119,8 +119,17 @@ class BurnMatrix {
 		return this.matrix.clone();
 	}
 
-	snapshot() {
-		return new Map(this.burning);
+	/**
+	 * Takes a snapshot of the BurnMatrix at a given point in time, creates serializable object
+	 * containing information about the BurnMatrix and its Extent
+	 */
+	takeSnapshot() {
+		const { _campaign, burnMatrix, ...serializableExtent } = this._extent;
+
+		return {
+			burnMatrix: this.clone(),
+			...serializableExtent,
+		};
 	}
 }
 

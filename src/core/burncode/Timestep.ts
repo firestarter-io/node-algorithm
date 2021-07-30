@@ -33,10 +33,6 @@ class TimeStep {
 	 */
 	weather: WeatherForecast;
 	/**
-	 * Array of burn matrices, cloned from the Campaigns extent
-	 */
-	burnMatrices: Matrix[];
-	/**
 	 * Ids of Cells that have been calculated in this timestep
 	 */
 	touchedCells: Set<string> = new Set<string>();
@@ -54,8 +50,7 @@ class TimeStep {
 	 * their derived polygons, any events for the timestep, etc.
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
-	constructor(matrixSnapshots: Matrix[], campaign: Campaign) {
-		this.burnMatrices = matrixSnapshots;
+	constructor(campaign: Campaign) {
 		this._campaign = campaign;
 		this.index = this._campaign.timesteps.length;
 		this.timestamp = this._campaign.startTime + this.index * timestepSize;
@@ -107,10 +102,20 @@ class TimeStep {
 	 * Propagates the Campaign to the next timestep.
 	 */
 	next() {
-		new TimeStep(
-			this._campaign.extents.map((extent) => extent.burnMatrix.clone()),
-			this._campaign
-		);
+		new TimeStep(this._campaign);
+	}
+
+	/**
+	 * Takes a serialized snapshot of the Timestep
+	 */
+	snapshot() {
+		const { _campaign, touchedCells, ...serializedTimestep } = this;
+		return {
+			...serializedTimestep,
+			extents: this._campaign.extents.map((extent) =>
+				extent.burnMatrix.takeSnapshot()
+			),
+		};
 	}
 }
 
