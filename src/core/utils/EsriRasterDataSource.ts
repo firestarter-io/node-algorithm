@@ -123,7 +123,6 @@ export class EsriRasterDataSource {
 				console.log(`${log.emojis.notepad} Legend for ${this.name} ready`);
 			} catch (e) {
 				console.log(`${log.emojis.errorX} Legend failed to fetch`, e);
-				throw e;
 			}
 		}
 
