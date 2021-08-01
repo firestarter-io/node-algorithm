@@ -131,7 +131,7 @@ class BurnMatrix {
 	 * Takes a snapshot of the BurnMatrix at a given point in time, creates serializable object
 	 * containing information about the BurnMatrix and its Extent
 	 */
-	takeSnapshot() {
+	toJSON() {
 		const { _campaign, burnMatrix, ...serializableExtent } = this._extent;
 
 		return {

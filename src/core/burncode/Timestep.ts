@@ -48,6 +48,10 @@ class TimeStep {
 	 * Array of events that occurred in that timestep, if any
 	 */
 	events: FireStarterEvent[];
+	/**
+	 * Serializable JSON copy of the timestep
+	 */
+	snapshot;
 
 	/**
 	 * A TimeStep produces a snapshot of the state of a Campaign at a given time.
@@ -65,7 +69,7 @@ class TimeStep {
 		this.time = new Date(this.timestamp).toLocaleString();
 		this.weather = this._campaign.weather[this.timestamp / 1000];
 		this._campaign.timesteps.push(this);
-		this._campaign.timestepSnapshots.push(this.snapshot());
+		this.snapshot = this.toJSON();
 		this.burn();
 	}
 
@@ -117,12 +121,12 @@ class TimeStep {
 	/**
 	 * Takes a serialized snapshot of the Timestep
 	 */
-	snapshot() {
+	toJSON() {
 		const { _campaign, touchedCells, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
 			extents: this._campaign.extents.map((extent) =>
-				extent.burnMatrix.takeSnapshot()
+				extent.burnMatrix.toJSON()
 			),
 		};
 	}

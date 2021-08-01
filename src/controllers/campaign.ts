@@ -36,12 +36,12 @@ export const campaign = async (req, res) => {
 			// @ts-ignore
 			global.camp = camp;
 			globalThis.camp = camp;
-			res.send(camp.simplify());
+			res.send(camp.toJSON());
 		} else {
 			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			// console.log(thing);
 			await camp.startFire(L.latLng(latlng));
-			res.send(camp.simplify());
+			res.send(camp.toJSON());
 		}
 	}
 };

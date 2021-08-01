@@ -52,10 +52,6 @@ export class Campaign {
 	 */
 	timesteps: TimeStep[];
 	/**
-	 * Array of Timestep snapshots (for dev)
-	 */
-	timestepSnapshots: Array<object> = [];
-	/**
 	 * Weather forecast by the hour for the Campaign
 	 */
 	weather: WeatherByTheHour = {};
@@ -165,7 +161,7 @@ export class Campaign {
 	/**
 	 * Converts the Campaign class instance to a JSON-friendly object
 	 */
-	simplify() {
+	toJSON() {
 		const clone = lodash.cloneDeep(this);
 
 		const simplifiedCampaign = {
@@ -175,7 +171,7 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timestepSnapshots,
+			timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 		};
 
 		return simplifiedCampaign;
