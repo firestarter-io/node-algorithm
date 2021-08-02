@@ -119,7 +119,9 @@ class TimeStep {
 	}
 
 	/**
-	 * Takes a serialized snapshot of the Timestep
+	 * Converts the Timestep class instance to a serializable JSON-friendly object
+	 * Removes all circular references and readies Timestep object to be sent to front end
+	 * or database
 	 */
 	toJSON() {
 		const { _campaign, touchedCells, ...serializedTimestep } = this;

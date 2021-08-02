@@ -159,7 +159,9 @@ export class Campaign {
 	}
 
 	/**
-	 * Converts the Campaign class instance to a JSON-friendly object
+	 * Converts the Campaign class instance to a serializable JSON-friendly object
+	 * Removes all circular references and readies campaign object to be sent to front end
+	 * or database
 	 */
 	toJSON() {
 		const clone = lodash.cloneDeep(this);
