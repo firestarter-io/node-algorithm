@@ -73,7 +73,7 @@ class Cell {
 		this.id = JSON.stringify(layerPoint);
 		this._extent = extent;
 		this._burnMatrix = extent.burnMatrix;
-		this.position = this.layerPointToMatrixPosition(layerPoint);
+		this.position = this.projectedPointToMatrixPosition(layerPoint);
 		this.pstring = JSON.stringify(this.position);
 	}
 
@@ -104,7 +104,7 @@ class Cell {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
 						new NeighborCell(
-							this.matrixPositionToLayerPoint([x + i, y + j]),
+							this.matrixPositionToProjectedPoint([x + i, y + j]),
 							this._extent,
 							this,
 							distanceTo,
@@ -121,7 +121,7 @@ class Cell {
 	 * Takes layer point of Cell and returns its position in the matrix
 	 * @param layerPoint | L.Point
 	 */
-	layerPointToMatrixPosition(layerPoint: L.Point): CellPosition {
+	projectedPointToMatrixPosition(layerPoint: L.Point): CellPosition {
 		return [
 			layerPoint.x - this._extent.origin.x,
 			layerPoint.y - this._extent.origin.y,
@@ -132,7 +132,7 @@ class Cell {
 	 * Takes in cell position in matrix and returns its leaflet layerPoint
 	 * @param position | [x, y] position of Cell in matrix
 	 */
-	matrixPositionToLayerPoint(position: CellPosition) {
+	matrixPositionToProjectedPoint(position: CellPosition) {
 		return new L.Point(
 			position[0] + this._extent.origin.x,
 			position[1] + this._extent.origin.y

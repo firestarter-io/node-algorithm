@@ -85,6 +85,7 @@ class Extent {
 			refitLatLngBounds: llbounds,
 			refitPixelBounds: pixelBounds,
 		} = refitBoundsToMapTiles(latLngBounds);
+
 		/**
 		 * Keep all values available on instance:
 		 */
