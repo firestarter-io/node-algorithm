@@ -67,7 +67,7 @@ class TimeStep {
 		this.index = this._campaign.timesteps.length;
 		this.timestamp = this._campaign.startTime + this.index * timestepSize;
 		this.time = new Date(this.timestamp).toLocaleString();
-		this.weather = this._campaign.weather[this.timestamp / 1000];
+		this.weather = this.derivedWeather;
 		this._campaign.timesteps.push(this);
 		this.snapshot = this.toJSON();
 		this.burn();
@@ -85,6 +85,32 @@ class TimeStep {
 			this.touchedCells.add(cell.id);
 		}
 		return touched;
+	}
+
+	/**
+	 * Function to get weather from forecast, either direct weather forecast or derived from
+	 * similar dates / times
+	 */
+	get derivedWeather(): WeatherForecast {
+		/**
+		 * The exact weather for the hour of the timestep as retrieved from VisualCrossing, if it exists
+		 */
+		const realHourlyWeather = this._campaign.weather[this.timestamp / 1000];
+
+		// DEV ▼
+		/**
+		 * Weather spoofed duplicated from previous day(s) available from the api call
+		 */
+		const duplicatedHourlyWeather: WeatherForecast = Object.values(
+			this._campaign.weather
+		).find((weatherHour: WeatherForecast) => {
+			const dateOfWeatherHour = new Date(weatherHour.datetimeEpoch * 1000);
+			const dateOfTimestep = new Date(this.timestamp);
+			return dateOfWeatherHour.getHours() === dateOfTimestep.getHours();
+		});
+		// DEV ▲
+
+		return realHourlyWeather ?? duplicatedHourlyWeather;
 	}
 
 	/**
@@ -106,7 +132,7 @@ class TimeStep {
 			});
 		});
 
-		if (this.index < 24) {
+		if (this.index < 100) {
 			this.next();
 		}
 	}

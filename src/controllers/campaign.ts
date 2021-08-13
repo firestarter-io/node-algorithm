@@ -20,6 +20,10 @@ import Campaign from '@core/burncode/Campaign';
 
 let camp: Campaign;
 
+// @ts-ignore
+global.camp = camp;
+globalThis.camp = camp;
+
 export const campaign = async (req, res) => {
 	const { mapBounds, pixelBounds, zoom } = req.body;
 	const latlng: L.LatLngLiteral = req.body.latlng;
@@ -36,6 +40,7 @@ export const campaign = async (req, res) => {
 			// @ts-ignore
 			global.camp = camp;
 			globalThis.camp = camp;
+			console.log(camp);
 			res.send(camp.toJSON());
 		} else {
 			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
