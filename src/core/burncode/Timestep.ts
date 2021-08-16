@@ -118,7 +118,12 @@ class TimeStep {
 	 */
 	burn() {
 		this._campaign.extents.forEach((extent) => {
-			extent.burnMatrix.burning.forEach((burningCell) => {
+			/**
+			 * Cloned Map of currently burning cells
+			 */
+			const burningCells = new Map(extent.burnMatrix.burning);
+
+			burningCells.forEach((burningCell) => {
 				//
 				const touched = this.cellTouched(burningCell);
 				burningCell.calculateBurnStatus(touched);
