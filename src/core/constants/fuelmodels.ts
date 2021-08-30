@@ -49,7 +49,7 @@ export interface FuelModel {
 	moistureOfExtinction: number;
 	/**
 	 * Rate of spread, in chains / hour, assuming windspeed of 5 mi/h (8 km /h)
-	 * and moisture content of 8%.  1 chain per hour ~= 1.1 foot per minute
+	 * and moisture content of 8%.  1 chain per hour ~= 1.1 foot per minute or ~ 18 meters/hour
 	 */
 	rateOfSpread: number;
 	/**

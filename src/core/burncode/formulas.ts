@@ -110,6 +110,20 @@ const firelineIntensity = (H: number, w: number, R: number): number =>
  */
 
 /**
+ * Function which creates a probabiliy of spread based on a fuel model's rate of spread
+ * and an Extent's average Cell size
+ */
+const probabilityOfIgnitionFromRateOfSpread = (
+	ros: number,
+	cellsize: number
+) => {
+	/**
+	 * Rate of spread in meters / hour (chains / hour * ~20)
+	 */
+	const rateOfSpread = ros * 20;
+};
+
+/**
  * Alternative function which scales the nominal fire spread probability by wind and slope factors
  * @param nominalSpreadP Nominal Fire Spread Probability (Probability of spread based solely on ground cover)
  * @param alphaWind Wind factor
