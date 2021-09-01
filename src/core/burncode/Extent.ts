@@ -39,6 +39,10 @@ class Extent {
 	 */
 	latLngBounds: L.LatLngBounds;
 	/**
+	 * The string ID of the extent
+	 */
+	id: string;
+	/**
 	 * The projected bounds of the extent (after refitting)
 	 */
 	bounds: L.Bounds;
@@ -91,6 +95,7 @@ class Extent {
 		 */
 		this._campaign = campaign;
 		this.latLngBounds = llbounds;
+		this.id = this.latLngBounds.toBBoxString();
 		this.pixelBounds = pixelBounds;
 		this.width = pixelBounds.getSize().x;
 		this.height = pixelBounds.getSize().y;

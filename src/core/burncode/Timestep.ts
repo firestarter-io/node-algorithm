@@ -18,12 +18,17 @@ import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
 import Cell, { NeighborCell } from './Cell';
 import { WeatherForecast } from '@core/getdata/weather';
+import { EventQueueItem } from './PriorityQueue';
 
 class TimeStep {
 	/**
 	 * The Campaign that the timestep belongs to
 	 */
 	_campaign: Campaign;
+	/**
+	 * The event in the event queue that spawned the timestep
+	 */
+	event: EventQueueItem;
 	/**
 	 * Index of the timestep in a campaign's timestep array
 	 */
@@ -64,13 +69,17 @@ class TimeStep {
 	 */
 	constructor(campaign: Campaign) {
 		this._campaign = campaign;
-		this.index = this._campaign.timesteps.length;
-		this.timestamp = this._campaign.startTime + this.index * timestepSize;
-		this.time = new Date(this.timestamp).toLocaleString();
-		this.weather = this.derivedWeather;
-		this._campaign.timesteps.push(this);
-		this.snapshot = this.toJSON();
-		this.burn();
+		this.event = campaign.eventQueue.next();
+		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
+		if (this.event) {
+			this.index = this._campaign.timesteps.length;
+			this.timestamp = this._campaign.startTime + this.index * timestepSize;
+			this.time = new Date(this.timestamp).toLocaleString();
+			this.weather = this.derivedWeather;
+			this._campaign.timesteps.push(this);
+			this.snapshot = this.toJSON();
+			this.burn();
+		}
 	}
 
 	/**
@@ -117,23 +126,39 @@ class TimeStep {
 	 * Calculates and applies burn statuses for Cells in this Timestep
 	 */
 	burn() {
-		this._campaign.extents.forEach((extent) => {
+		/**
+		 * For each cell in the event queue that is slated to be set to burning:
+		 */
+		this.event.setToBurning.forEach((cellToBurn) => {
 			/**
-			 * Cloned Map of currently burning cells
+			 * Set the burn status to 1
 			 */
-			const burningCells = new Map(extent.burnMatrix.burning);
+			cellToBurn.setBurnStatus(1);
+			/**
+			 * Determine if/when neighbor cells will be set to burning:
+			 */
+			cellToBurn.neighbors.forEach((neighbor) => {
+				const touched = this.cellTouched(neighbor);
 
-			burningCells.forEach((burningCell) => {
-				//
-				const touched = this.cellTouched(burningCell);
-				burningCell.calculateBurnStatus(touched);
+				/**
+				 * If this Cell has not already been worked on in this timestep:
+				 */
+				if (!touched) {
+					/**
+					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
+					 */
+					const timeToIgnite =
+						neighbor.distanceCoefficient *
+						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
+						60 *
+						60 *
+						1000;
 
-				burningCell.neighbors().forEach((neighbor) => {
-					//
-					const touched = this.cellTouched(neighbor);
-					neighbor.calculateBurnStatus(touched);
-					//
-				});
+					/**
+					 * The timestamp at which the cell will ignite, in ms
+					 */
+					const timestampOfIgnition = this.timestamp + timeToIgnite;
+				}
 			});
 		});
 

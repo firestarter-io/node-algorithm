@@ -95,7 +95,7 @@ class Cell {
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
 	 */
-	neighbors(): NeighborCell[] {
+	get neighbors(): NeighborCell[] {
 		const [x, y] = this.position;
 		let neighbors = [];
 		for (let j = -1; j <= 1; j++) {
@@ -103,13 +103,13 @@ class Cell {
 				if (!(i === 0 && j === 0)) {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
-						new NeighborCell(
-							this.matrixPositionToProjectedPoint([x + i, y + j]),
-							this._extent,
-							this,
-							distanceTo,
-							Cell.neighborsMap[JSON.stringify([i, j])]
-						)
+						new NeighborCell({
+							layerPoint: this.matrixPositionToProjectedPoint([x + i, y + j]),
+							extent: this._extent,
+							originCell: this,
+							distanceCoefficient: distanceTo,
+							directionFromOrigin: Cell.neighborsMap[JSON.stringify([i, j])],
+						})
 					);
 				}
 			}
@@ -203,11 +203,11 @@ class Cell {
 	}
 
 	/**
-	 * Returns data for all data types for the Cell
+	 * Returns the RoS of the Cells fuel in meters / hour (chains / hour * ~20)
 	 */
-	get data() {
-		const gcP = this.groundcoverIgnitionP;
-		return gcP;
+	get fuelRateOfSpreadRaw(): number {
+		const fuel = this.fuelModel13;
+		return fuel.rateOfSpread * 20;
 	}
 
 	/**
@@ -274,13 +274,20 @@ export class NeighborCell extends Cell {
 	 * @param {DistanceCoefficients} distanceCoefficient | What to multiply the average Extent distance by
 	 * @param {Directions} directionFromOrigin | Name to help identify NeighborCell position relative to cell
 	 */
-	constructor(
-		layerPoint: L.Point,
-		extent: Extent,
-		originCell: Cell,
-		distanceCoefficient: DistanceCoefficients,
-		directionFromOrigin: Directions
-	) {
+	constructor(args: {
+		layerPoint: L.Point;
+		extent: Extent;
+		originCell: Cell;
+		distanceCoefficient: DistanceCoefficients;
+		directionFromOrigin: Directions;
+	}) {
+		const {
+			layerPoint,
+			extent,
+			originCell,
+			distanceCoefficient,
+			directionFromOrigin,
+		} = args;
 		super(layerPoint, extent);
 		this.originCell = originCell;
 		this.distanceCoefficient = distanceCoefficient;
@@ -367,6 +374,22 @@ export class NeighborCell extends Cell {
 			this.alphaWind,
 			this.alphaSlope
 		);
+	}
+
+	/**
+	 * The rate of spread of fuel in meters/hour, as averaged between an origin Cell and NeighborCell
+	 */
+	get rateOfSpread(): number {
+		/**
+		 * The RoS of the origin Cell's fuel
+		 */
+		const originCellRoS = this.originCell.fuelRateOfSpreadRaw;
+		/**
+		 * The RoS of this Cell's fuel
+		 */
+		const RoS = this.fuelRateOfSpreadRaw;
+
+		return (originCellRoS + RoS) / 2;
 	}
 
 	/**

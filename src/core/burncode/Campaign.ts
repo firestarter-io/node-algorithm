@@ -29,6 +29,7 @@ import {
 	flattenWeatherHours,
 	WeatherByTheHour,
 } from '@core/getdata/weather';
+import PriorityQueue from './PriorityQueue';
 
 export class Campaign {
 	/**
@@ -55,6 +56,10 @@ export class Campaign {
 	 * Weather forecast by the hour for the Campaign
 	 */
 	weather: WeatherByTheHour = {};
+	/**
+	 * The event queue for the campaign
+	 */
+	eventQueue: PriorityQueue;
 
 	/**
 	 * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -68,6 +73,7 @@ export class Campaign {
 		this.startTime = dateRoundedToHour(new Date(startTime));
 		this.timesteps = [];
 		this.id = uuid();
+		this.eventQueue = new PriorityQueue();
 		data.campaigns[this.id] = this;
 	}
 
@@ -120,9 +126,9 @@ export class Campaign {
 		);
 		console.log(chalk.bold('-------------- Campaign created --------------'));
 
-		await this.startFire(this.seedLatLng);
+		const firstBurningCell = await this.startFire(this.seedLatLng);
 
-		this.start();
+		this.start(firstBurningCell);
 		// this.propagateTimestep();
 	}
 
@@ -132,6 +138,9 @@ export class Campaign {
 	 * @param latLng | The latlng location to start the fire
 	 */
 	async startFire(latLng: L.LatLng) {
+		/**
+		 * Transform a latlng to a layer point, extrapolate to bounds, and create an extent
+		 */
 		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
@@ -149,13 +158,24 @@ export class Campaign {
 		burningCell.setBurnStatus(1);
 
 		log(`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`);
+
+		return burningCell;
 	}
 
 	/**
 	 * Begin the Campaign by creating the first timestep
 	 */
-	start() {
-		const first = new TimeStep(this);
+	start(firstBurningCell: Cell) {
+		const fistBurningCells: Map<string, Cell> = new Map();
+
+		fistBurningCells.set(firstBurningCell.id, firstBurningCell);
+
+		this.eventQueue.enqueue({
+			time: this.startTime,
+			setToBurning: fistBurningCells,
+		});
+
+		new TimeStep(this);
 	}
 
 	/**

@@ -9,12 +9,21 @@
  */
 
 import * as lodash from 'lodash';
+import Cell from './Cell';
 
-interface QueueItem {
+export interface EventQueueItem {
 	/**
 	 * The timestamp of the event in the priority queue, also acts as the priority itself
 	 */
 	time: number;
+	/**
+	 * The Cells to set to burning at the time of this event, if any
+	 */
+	setToBurning?: Map<string, Cell>;
+	/**
+	 * The Cells to set to burned out at the time of this event, if any
+	 */
+	setToBurnedOut?: Map<string, Cell>;
 }
 
 /**
@@ -27,7 +36,7 @@ class PriorityQueue {
 	/**
 	 * The items in the queue, should not be accessed directly
 	 */
-	private items: QueueItem[];
+	private items: EventQueueItem[];
 
 	constructor() {
 		this.items = [];
@@ -37,7 +46,7 @@ class PriorityQueue {
 	 * Adds an item to the priority queue in the correct place, based on the item's timestamp
 	 * @param element | A QueueItem object
 	 */
-	enqueue(element: QueueItem) {
+	enqueue(element: EventQueueItem) {
 		/**
 		 * Whether or not the new element is going to be added to the end of the queue
 		 */
@@ -83,9 +92,6 @@ class PriorityQueue {
 	 * @returns QueueItem
 	 */
 	next() {
-		if (this.isEmpty()) {
-			return 'Queue is empty!';
-		}
 		return this.items.shift();
 	}
 

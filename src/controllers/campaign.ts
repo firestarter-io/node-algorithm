@@ -40,7 +40,6 @@ export const campaign = async (req, res) => {
 			// @ts-ignore
 			global.camp = camp;
 			globalThis.camp = camp;
-			console.log(camp);
 			res.send(camp.toJSON());
 		} else {
 			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
