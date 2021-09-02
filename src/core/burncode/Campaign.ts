@@ -166,13 +166,11 @@ export class Campaign {
 	 * Begin the Campaign by creating the first timestep
 	 */
 	start(firstBurningCell: Cell) {
-		const fistBurningCells: Map<string, Cell> = new Map();
-
-		fistBurningCells.set(firstBurningCell.id, firstBurningCell);
-
 		this.eventQueue.enqueue({
 			time: this.startTime,
-			setToBurning: fistBurningCells,
+			setToBurning: {
+				[firstBurningCell.id]: firstBurningCell,
+			},
 		});
 
 		new TimeStep(this);

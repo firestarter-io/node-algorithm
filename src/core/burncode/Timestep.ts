@@ -129,11 +129,21 @@ class TimeStep {
 		/**
 		 * For each cell in the event queue that is slated to be set to burning:
 		 */
-		this.event.setToBurning.forEach((cellToBurn) => {
+		new Map(Object.entries(this.event.setToBurning)).forEach((cellToBurn) => {
 			/**
 			 * Set the burn status to 1
 			 */
 			cellToBurn.setBurnStatus(1);
+
+			/**
+			 * Object to organize neighbor cells to be added to queue by timestamp at which they'll be added
+			 */
+			const eventsToAddToQueue: {
+				[key: number]: {
+					[key: string]: Cell;
+				};
+			} = {};
+
 			/**
 			 * Determine if/when neighbor cells will be set to burning:
 			 */
@@ -158,7 +168,41 @@ class TimeStep {
 					 * The timestamp at which the cell will ignite, in ms
 					 */
 					const timestampOfIgnition = this.timestamp + timeToIgnite;
+
+					/**
+					 * An event already added at a specific timestamp (from a previously burned neighbor)
+					 */
+					const existingEventToAdd = eventsToAddToQueue[timestampOfIgnition];
+
+					/**
+					 * Populate events to add to queue with any events for this timestamp
+					 */
+					eventsToAddToQueue[timestampOfIgnition] = {
+						/**
+						 * IF there were previous Cells in this loop for this timestamp, spread them in
+						 */
+						...(existingEventToAdd ?? {}),
+						/**
+						 * Add the new neighbor to this event
+						 */
+						[neighbor.id]: neighbor.toCell(),
+					};
 				}
+			});
+
+			/**
+			 * Transform object to Map for easier iteration
+			 */
+			const eventsAsMap = new Map(Object.entries(eventsToAddToQueue));
+
+			/**
+			 * For each timestamp where cells are to be burned, add an item to the eventQueue
+			 */
+			eventsAsMap.forEach((value, key) => {
+				this._campaign.eventQueue.enqueue({
+					time: Number(key),
+					setToBurning: value,
+				});
 			});
 		});
 

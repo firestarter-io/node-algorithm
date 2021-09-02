@@ -19,11 +19,15 @@ export interface EventQueueItem {
 	/**
 	 * The Cells to set to burning at the time of this event, if any
 	 */
-	setToBurning?: Map<string, Cell>;
+	setToBurning?: {
+		[key: string]: Cell;
+	};
 	/**
 	 * The Cells to set to burned out at the time of this event, if any
 	 */
-	setToBurnedOut?: Map<string, Cell>;
+	setToBurnedOut?: {
+		[key: string]: Cell;
+	};
 }
 
 /**
@@ -37,9 +41,14 @@ class PriorityQueue {
 	 * The items in the queue, should not be accessed directly
 	 */
 	private items: EventQueueItem[];
+	/**
+	 * Items that have been processed and removed from the queue, helpful for debugging
+	 */
+	private history: EventQueueItem[];
 
 	constructor() {
 		this.items = [];
+		this.history = [];
 	}
 
 	/**
@@ -92,7 +101,9 @@ class PriorityQueue {
 	 * @returns QueueItem
 	 */
 	next() {
-		return this.items.shift();
+		const nextItem = this.items.shift();
+		this.history.push(nextItem);
+		return nextItem;
 	}
 
 	/**
