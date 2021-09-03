@@ -19,3 +19,14 @@
 	color: var(--md-accent-fg-color);
 	text-decoration: underline;
 }
+
+figure {
+	border: thin #c0c0c0 solid;
+}
+
+.md-typeset figcaption {
+	margin: 10px 0px;
+	max-width: none;
+	font-style: normal;
+	font-size: 0.7rem;
+}

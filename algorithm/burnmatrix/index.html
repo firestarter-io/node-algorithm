@@ -299,6 +299,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../queue/queue/" class="md-nav__link">
+        Priority Queue
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -417,13 +429,13 @@
 <p>A <code>BurnMatrix</code> is <em>dynamic</em>, meaning its state is constantly changing over the life of the algorithm. Looking at a <code>BurnMatrix</code> at one point in time tells you nothing about its state at another point in time. However, a snapshot of the <code>BurnMatrix</code> is taken at every <code>Timestep</code>, so the evolution of the <code>BurnMatrix</code> can be seen by following the trail of its snapshots through an array of <code>Timesteps</code>.</p>
 <h2 id="coordinates">Coordinates</h2>
 <p>A Mathjs matrix is a wrapped around a javascript array. A 2 dimensional matrix is an array of inner arrays:</p>
-<pre><code>const matrix = math.zeros(2, 3)
+<div class="highlight"><pre><span></span><code>const matrix = math.zeros(2, 3)
 
 [
     [0, 0, 0],
     [0, 0, 0]
 ];
-</code></pre>
+</code></pre></div>
 <p>Note that <a href="https://github.com/josdejong/mathjs/issues/2142#issuecomment-805653872">the coordinates for all matrix operations are in <code>[y, x]</code> format</a>. A <code>BurnMatrix</code> redefines any necessary matrix methods to use <code>[x, y]</code> coordinates for consistency with canvas data methods. For example, <a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/getImageData"><code>CanvasRenderingContext2D.getImageData()</code></a> takes coordinates in <code>[x, y]</code> order. This is the reason that certain <code>BurnMatrix</code> and <code>Extent</code> methods use <code>[y, x]</code> coordinates.</p>
                 
               
@@ -495,6 +507,12 @@
     
     
       <script src="../../assets/javascripts/bundle.9b151c6a.min.js"></script>
+      
+        <script src="../../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
