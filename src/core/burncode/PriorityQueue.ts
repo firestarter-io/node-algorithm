@@ -73,8 +73,21 @@ class PriorityQueue {
 		 * into existing one
 		 */
 		if (preexistingItemIndex !== -1) {
-			const preexistingItem = { ...this.items[preexistingItemIndex] };
+			const preexistingItem: EventQueueItem = {
+				...this.items[preexistingItemIndex],
+			};
 			this.items[preexistingItemIndex] = lodash.merge(preexistingItem, element);
+			// this.items[preexistingItemIndex] = {
+			// 	...preexistingItem,
+			// 	setToBurning: {
+			// 		...preexistingItem.setToBurning,
+			// 		...element.setToBurning,
+			// 	},
+			// 	setToBurnedOut: {
+			// 		...preexistingItem.setToBurnedOut,
+			// 		...element.setToBurnedOut,
+			// 	},
+			// };
 		}
 
 		/**

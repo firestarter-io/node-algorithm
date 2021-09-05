@@ -206,7 +206,7 @@ class TimeStep {
 			});
 		});
 
-		if (this.index < 100) {
+		if (this.index < 300) {
 			this.next();
 		}
 	}
@@ -224,7 +224,7 @@ class TimeStep {
 	 * or database
 	 */
 	toJSON() {
-		const { _campaign, touchedCells, ...serializedTimestep } = this;
+		const { _campaign, event, touchedCells, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
 			extents: this._campaign.extents.map((extent) =>
