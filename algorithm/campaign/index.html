@@ -424,11 +424,13 @@
                 
                 <h1 id="campaign"><code>Campaign</code></h1>
 <h2 id="creation">Creation</h2>
-<p>A Campaign represents a complete simulation in Firestarter. Given a set of user inputs, a <code>new Campaign</code> is created and its timeline begins running. A Campaign contains the following main sub-elements</p>
+<p>A <code>Campaign</code> represents a complete simulation in Firestarter. Given a set of user inputs, a <code>new Campaign</code> is created and its timeline begins running. A Campaign contains the following main properties</p>
 <ul>
 <li><code>Campaign.extents</code> - Array of <code>Extent</code> objects</li>
+<li><code>Campaign.eventQueue</code> - The <a href="/algorithm/queue/queue/">event queue</a> of the campaign</li>
 <li><code>Campaign.timesteps</code> - Array of <code>Timestep</code> objects</li>
 </ul>
+<p>A <code>Campaign</code> object acts as the coordinator and center of all activities required to run a simulation</p>
 <h2 id="flow">Flow</h2>
                 
               
