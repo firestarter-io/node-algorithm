@@ -21,7 +21,7 @@ import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
 import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
-import { FBFM13, FuelModel } from '@core/constants/fuelmodels';
+import { FBFM13, FuelModel13 } from '@core/constants/fuelmodel13';
 import { probabilityOfIgnition, alphaSlope, alphaWind } from './formulas';
 
 export enum Directions {
@@ -197,7 +197,7 @@ class Cell {
 	/**
 	 * Returns Andersen Fuel Model data for this cell
 	 */
-	get fuelModel13(): FuelModel {
+	get fuelModel13(): FuelModel13 {
 		const fuelModel = FBFuelModels13.getValueAt(this.layerPoint);
 		return FBFM13[fuelModel];
 	}

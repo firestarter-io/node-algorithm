@@ -50,10 +50,16 @@ class PriorityQueue {
 	 * Items that have been processed and removed from the queue, helpful for debugging
 	 */
 	private history: EventQueueItem[];
+	/**
+	 * A javascript Map which lists all Cells currently in the queue to be burned, and at what time.
+	 * Needed for getting reference to queue item from Cell id
+	 */
+	private cellsInQueue: Map<string, number>;
 
 	constructor() {
 		this.items = [];
 		this.history = [];
+		this.cellsInQueue = new Map();
 	}
 
 	/**
@@ -82,17 +88,6 @@ class PriorityQueue {
 				...this.items[preexistingItemIndex],
 			};
 			this.items[preexistingItemIndex] = lodash.merge(preexistingItem, element);
-			// this.items[preexistingItemIndex] = {
-			// 	...preexistingItem,
-			// 	setToBurning: {
-			// 		...preexistingItem.setToBurning,
-			// 		...element.setToBurning,
-			// 	},
-			// 	setToBurnedOut: {
-			// 		...preexistingItem.setToBurnedOut,
-			// 		...element.setToBurnedOut,
-			// 	},
-			// };
 		}
 
 		/**

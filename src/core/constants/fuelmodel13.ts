@@ -12,7 +12,7 @@
  * Constants assocaited with LANDFIRE's fueld model layers
  */
 
-export interface FuelModel {
+export interface FuelModel13 {
 	/**
 	 * String description of the fuel model
 	 */
@@ -62,7 +62,7 @@ export interface FuelModel {
  * Based on the 13 Fire Behavior Fuel Models as defined in LANDFIRE
  * Definitions from "Aids to Determining Fuel Models For Estimating Fire Behavior", Hal E. Anderson, 1982
  */
-export const FBFM13: { [key: string]: FuelModel } = {
+export const FBFM13: { [key: string]: FuelModel13 } = {
 	/** Grass and grass-dominated */
 	FBFM1: {
 		description: 'Short grass (1 foot)',
