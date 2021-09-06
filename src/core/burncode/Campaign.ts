@@ -168,6 +168,7 @@ export class Campaign {
 	start(firstBurningCell: Cell) {
 		this.eventQueue.enqueue({
 			time: this.startTime,
+			origin: this.startTime,
 			setToBurning: {
 				[firstBurningCell.id]: firstBurningCell,
 			},
@@ -191,7 +192,7 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
+			timesteps: clone.timesteps.map((timestep) => timestep.toJSON()),
 		};
 
 		return simplifiedCampaign;

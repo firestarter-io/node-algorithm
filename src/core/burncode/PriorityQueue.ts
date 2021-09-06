@@ -28,6 +28,11 @@ export interface EventQueueItem {
 	setToBurnedOut?: {
 		[key: string]: Cell;
 	};
+	/**
+	 * The time of the EventQueueItem / TimeStamp that spawned the new item, helpful for tracing
+	 * events backwards.  time and origin should only be the same for the very first event item
+	 */
+	origin: number;
 }
 
 /**
