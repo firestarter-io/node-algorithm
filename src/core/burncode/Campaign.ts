@@ -192,7 +192,7 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timesteps.map((timestep) => timestep.toJSON()),
+			timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 		};
 
 		return simplifiedCampaign;
