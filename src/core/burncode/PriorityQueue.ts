@@ -54,12 +54,12 @@ class PriorityQueue {
 	 * A javascript Map which lists all Cells currently in the queue to be burned, and at what time.
 	 * Needed for getting reference to queue item from Cell id
 	 */
-	private cellsInQueue: Map<string, number>;
+	private touchedCells: Map<string, number>;
 
 	constructor() {
 		this.items = [];
 		this.history = [];
-		this.cellsInQueue = new Map();
+		this.touchedCells = new Map();
 	}
 
 	/**
@@ -107,6 +107,15 @@ class PriorityQueue {
 		if (last) {
 			this.items.push(element);
 		}
+
+		/**
+		 * Add all cells to burn in element to the touchedCells
+		 */
+		if (element.setToBurning) {
+			new Map(Object.entries(element.setToBurning)).forEach((cell) => {
+				this.touchedCells.set(cell.id, element.time);
+			});
+		}
 	}
 
 	/**
@@ -117,6 +126,33 @@ class PriorityQueue {
 		const nextItem = this.items.shift();
 		this.history.push(nextItem);
 		return nextItem;
+	}
+
+	/**
+	 * Function to check whether or not a cell has already been calculated in the simulation
+	 * @param cellId | The ID of the Cell you want to check
+	 */
+	cellTouched(cellId: string) {
+		return this.touchedCells.get(cellId);
+	}
+
+	/**
+	 * Returns the queue item that has a given time value
+	 * @param time | The timestamp of the queue item to retrieve
+	 */
+	getItem(time: number) {
+		return this.items.find((item) => item.time === time);
+	}
+
+	/**
+	 * Checks whether an event queue item is empty, meaning it has no information
+	 * in it other than a time
+	 * @param item
+	 */
+	isItemEmpty(item: EventQueueItem) {
+		const noSetToBurningCells = !item.setToBurning || !!item.setToBurning.size;
+		const noSetToBurnedOutCell =
+			!item.setToBurnedOut || !!item.setToBurnedOut.size;
 	}
 
 	/**

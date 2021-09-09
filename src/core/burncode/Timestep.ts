@@ -148,46 +148,53 @@ class TimeStep {
 			 * Determine if/when neighbor cells will be set to burning:
 			 */
 			cellToBurn.neighbors.forEach((neighbor) => {
-				const touched = this.cellTouched(neighbor);
+				/**
+				 * Whether or not the cell has been worked on before
+				 */
+				const timeTouched = this._campaign.eventQueue.cellTouched(neighbor.id);
 
 				/**
-				 * If this Cell has not already been worked on in this timestep:
+				 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
 				 */
-				if (!touched) {
-					/**
-					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
-					 */
-					const timeToIgnite =
-						neighbor.distanceCoefficient *
-						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
-						60 *
-						60 *
-						1000;
+				const timeToIgnite =
+					neighbor.distanceCoefficient *
+					(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
+					60 *
+					60 *
+					1000;
 
-					/**
-					 * The timestamp at which the cell will ignite, in ms
-					 */
-					const timestampOfIgnition = this.timestamp + timeToIgnite;
+				/**
+				 * The timestamp at which the cell will ignite, in ms
+				 */
+				const timestampOfIgnition = this.timestamp + timeToIgnite;
 
-					/**
-					 * An event already added at a specific timestamp (from a previously burned neighbor)
-					 */
-					const existingEventToAdd = eventsToAddToQueue[timestampOfIgnition];
-
-					/**
-					 * Populate events to add to queue with any events for this timestamp
-					 */
-					eventsToAddToQueue[timestampOfIgnition] = {
-						/**
-						 * IF there were previous Cells in this loop for this timestamp, spread them in
-						 */
-						...(existingEventToAdd ?? {}),
-						/**
-						 * Add the new neighbor to this event
-						 */
-						[neighbor.id]: neighbor.toCell(),
-					};
+				/**
+				 * If the Cell time to ignite has been calculated before in a previous step,
+				 * but in this iteration, the calculated time is less, move that Cell's time
+				 * to ignire to earlier in the queue
+				 */
+				if (timestampOfIgnition < timeTouched) {
+					// cell should be moved
 				}
+
+				/**
+				 * An event already added at a specific timestamp (from a previously burned neighbor)
+				 */
+				const existingEventToAdd = eventsToAddToQueue[timestampOfIgnition];
+
+				/**
+				 * Populate events to add to queue with any events for this timestamp
+				 */
+				eventsToAddToQueue[timestampOfIgnition] = {
+					/**
+					 * IF there were previous Cells in this loop for this timestamp, spread them in
+					 */
+					...(existingEventToAdd ?? {}),
+					/**
+					 * Add the new neighbor to this event
+					 */
+					[neighbor.id]: neighbor.toCell(),
+				};
 			});
 
 			/**
