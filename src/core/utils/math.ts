@@ -13,6 +13,7 @@
  */
 
 import { create, all } from 'mathjs';
+import * as lodash from 'lodash';
 
 export const ROOT2 = 1.4142135623730951 as const;
 
@@ -65,6 +66,27 @@ export function compareObjectWithTolerance<T>(
 	});
 	return !sames.some((c) => !c);
 }
+
+/**
+ *
+ * @param value The value to apply noise to
+ * @param noiseFactor The amount of noise to apply, as a percentage - default is 10%
+ * @example
+ * // Returns a value between 90 and 110:
+ * noise(100, 10)
+ * @example
+ * // Returns a value between 9 and 11
+ * noise(10, 10)
+ * @example
+ * // Returns a value between 12% less than 77 and 12% more than 77
+ * noise(77, 12)
+ */
+export const noise = (value: number, noiseFactor: number = 10): number => {
+	const fraction = noiseFactor / 100;
+	const lowValue = value * (1 - fraction);
+	const highValue = value * (1 + fraction);
+	return lodash.random(lowValue, highValue, true);
+};
 
 /**
  * A moore neighborhood is a 3 x 3 grid composed of a central cell and its 8 neighbors

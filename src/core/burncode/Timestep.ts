@@ -212,7 +212,7 @@ class TimeStep {
 			});
 		});
 
-		if (this.index < 30) {
+		if (this.index < 100) {
 			this.next();
 		}
 	}
