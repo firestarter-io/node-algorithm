@@ -20,12 +20,18 @@ export interface EventQueueItem {
 	 * The Cells to set to burning at the time of this event, if any
 	 */
 	setToBurning?: {
+		/**
+		 * Key is Cell.id string value
+		 */
 		[key: string]: Cell;
 	};
 	/**
 	 * The Cells to set to burned out at the time of this event, if any
 	 */
 	setToBurnedOut?: {
+		/**
+		 * Key is Cell.id string value
+		 */
 		[key: string]: Cell;
 	};
 	/**
@@ -88,24 +94,29 @@ class PriorityQueue {
 				...this.items[preexistingItemIndex],
 			};
 			this.items[preexistingItemIndex] = lodash.merge(preexistingItem, element);
-		}
+		} else {
+			/**
+			 * If there is not already an existing queue item with this time/priority, add a new one
+			 */
 
-		/**
-		 * Loop through existing item and add new element at appropriate place
-		 */
-		for (let i = 0; i < this.items.length; i++) {
-			if (this.items[i].time > element.time) {
-				this.items.splice(i, 0, element);
-				last = false;
-				break;
+			/**
+			 *
+			 * Loop through list and add new element at appropriate place
+			 */
+			for (let i = 0; i < this.items.length; i++) {
+				if (this.items[i].time > element.time) {
+					this.items.splice(i, 0, element);
+					last = false;
+					break;
+				}
 			}
-		}
 
-		/**
-		 * If the item was not inserted somewhere by the for loop, it will be last, and should be pushed into the array
-		 */
-		if (last) {
-			this.items.push(element);
+			/**
+			 * If the item was not inserted somewhere by the for loop, it will be last, and should be pushed into the array
+			 */
+			if (last) {
+				this.items.push(element);
+			}
 		}
 
 		/**
@@ -113,8 +124,28 @@ class PriorityQueue {
 		 */
 		if (element.setToBurning) {
 			new Map(Object.entries(element.setToBurning)).forEach((cell) => {
+				/**
+				 * If the Cell time to ignite has been calculated before in a previous step,
+				 * but in this iteration, the calculated time is less, move that Cell's time
+				 * to ignire to earlier in the queue
+				 */
+				if (element.time < this.cellTouched(cell.id)) {
+					this.removeCell(cell, this.cellTouched(cell.id));
+				}
+
 				this.touchedCells.set(cell.id, element.time);
 			});
+		}
+	}
+
+	/**
+	 * Removes an item from the queue
+	 * @param time | The timestamp of the event item
+	 */
+	dequeue(time: number) {
+		const itemIndex = this.items.findIndex((item) => item.time === time);
+		if (itemIndex > -1) {
+			this.items.splice(itemIndex, 1);
 		}
 	}
 
@@ -132,8 +163,23 @@ class PriorityQueue {
 	 * Function to check whether or not a cell has already been calculated in the simulation
 	 * @param cellId | The ID of the Cell you want to check
 	 */
-	cellTouched(cellId: string) {
+	cellTouched(cellId: string): number | undefined {
 		return this.touchedCells.get(cellId);
+	}
+
+	/**
+	 * Removes a cell from an item in the queue, and removes that queue item if it becomes empty
+	 * @param cell The Cell to remove
+	 * @param originTime The timestamp of the EventQueueItem to remove the Cell from
+	 */
+	removeCell(cell: Cell, originTime: number) {
+		const originEventItem = this.getItem(originTime);
+
+		delete originEventItem.setToBurning[cell.id];
+
+		if (this.isItemEmpty(originEventItem)) {
+			this.dequeue(originTime);
+		}
 	}
 
 	/**
@@ -147,12 +193,10 @@ class PriorityQueue {
 	/**
 	 * Checks whether an event queue item is empty, meaning it has no information
 	 * in it other than a time
-	 * @param item
+	 * @param item EventQueueItem
 	 */
 	isItemEmpty(item: EventQueueItem) {
-		const noSetToBurningCells = !item.setToBurning || !!item.setToBurning.size;
-		const noSetToBurnedOutCell =
-			!item.setToBurnedOut || !!item.setToBurnedOut.size;
+		return !item.setToBurning?.size && !item.setToBurnedOut?.size;
 	}
 
 	/**

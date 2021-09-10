@@ -46,10 +46,6 @@ class TimeStep {
 	 */
 	weather: WeatherForecast;
 	/**
-	 * Ids of Cells that have been calculated in this timestep
-	 */
-	touchedCells: Set<string> = new Set<string>();
-	/**
 	 * Array of events that occurred in that timestep, if any
 	 */
 	events: FireStarterEvent[];
@@ -80,20 +76,6 @@ class TimeStep {
 			this.snapshot = this.toJSON();
 			this.burn();
 		}
-	}
-
-	/**
-	 * Checks whether or not a Cell's burn status has already been calculated in this timestep.
-	 * If not, it adds it to the touchedCells array
-	 * @param cell Cell or NeighborCell
-	 * @returns Boolean - whether or not cell has already been worked on in this timestep
-	 */
-	cellTouched(cell: Cell | NeighborCell) {
-		const touched = this.touchedCells.has(cell.id);
-		if (!touched) {
-			this.touchedCells.add(cell.id);
-		}
-		return touched;
 	}
 
 	/**
@@ -149,52 +131,68 @@ class TimeStep {
 			 */
 			cellToBurn.neighbors.forEach((neighbor) => {
 				/**
-				 * Whether or not the cell has been worked on before
+				 * If the neighbor is currently burnable
 				 */
-				const timeTouched = this._campaign.eventQueue.cellTouched(neighbor.id);
+				if (neighbor.isBurnable) {
+					/**
+					 * Whether or not the cell has been worked on before
+					 */
+					const timeTouched = this._campaign.eventQueue.cellTouched(
+						neighbor.id
+					);
 
-				/**
-				 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
-				 */
-				const timeToIgnite =
-					neighbor.distanceCoefficient *
-					(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
-					60 *
-					60 *
-					1000;
+					/**
+					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
+					 */
+					const timeToIgnite =
+						neighbor.distanceCoefficient *
+						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
+						60 *
+						60 *
+						1000;
 
-				/**
-				 * The timestamp at which the cell will ignite, in ms
-				 */
-				const timestampOfIgnition = this.timestamp + timeToIgnite;
+					/**
+					 * The timestamp at which the cell will ignite, in ms
+					 */
+					const timestampOfIgnition = this.timestamp + timeToIgnite;
 
-				/**
-				 * If the Cell time to ignite has been calculated before in a previous step,
-				 * but in this iteration, the calculated time is less, move that Cell's time
-				 * to ignire to earlier in the queue
-				 */
-				if (timestampOfIgnition < timeTouched) {
-					// cell should be moved
+					/**
+					 * If the Cell time to ignite has been calculated before in a previous step,
+					 * but in this iteration, the calculated time is less, remove that Cell's from the queue
+					 * at the earlier time - it will be readded to the queue at the end of this method when
+					 * 'enqueue' is called
+					 */
+					if (timeTouched && timestampOfIgnition < timeTouched) {
+						this._campaign.eventQueue.removeCell(neighbor, timeTouched);
+					} else if (timeTouched && timestampOfIgnition > timeTouched) {
+						/**
+						 * If the Cell time to ignite has been calculated before in a previous step,
+						 * but in this iteration, the calculated time is MORE, do not add this Cell to the queue,
+						 * as it already exists in the queue at some later time than was calculated in
+						 * this step
+						 */
+						return;
+					}
+
+					/**
+					 * An event already added at a specific timestamp (from a previously burned neighbor)
+					 */
+					const existingEventToAdd = eventsToAddToQueue[timestampOfIgnition];
+
+					/**
+					 * Populate events to add to queue with any events for this timestamp
+					 */
+					eventsToAddToQueue[timestampOfIgnition] = {
+						/**
+						 * IF there were previous Cells in this loop for this timestamp, spread them in
+						 */
+						...(existingEventToAdd ?? {}),
+						/**
+						 * Add the new neighbor to this event
+						 */
+						[neighbor.id]: neighbor.toCell(),
+					};
 				}
-
-				/**
-				 * An event already added at a specific timestamp (from a previously burned neighbor)
-				 */
-				const existingEventToAdd = eventsToAddToQueue[timestampOfIgnition];
-
-				/**
-				 * Populate events to add to queue with any events for this timestamp
-				 */
-				eventsToAddToQueue[timestampOfIgnition] = {
-					/**
-					 * IF there were previous Cells in this loop for this timestamp, spread them in
-					 */
-					...(existingEventToAdd ?? {}),
-					/**
-					 * Add the new neighbor to this event
-					 */
-					[neighbor.id]: neighbor.toCell(),
-				};
 			});
 
 			/**
@@ -207,14 +205,14 @@ class TimeStep {
 			 */
 			eventsAsMap.forEach((value, key) => {
 				this._campaign.eventQueue.enqueue({
-					time: Number(key),
+					time: Math.floor(Number(key)),
 					origin: this.timestamp,
 					setToBurning: value,
 				});
 			});
 		});
 
-		if (this.index < 300) {
+		if (this.index < 30) {
 			this.next();
 		}
 	}
@@ -232,7 +230,7 @@ class TimeStep {
 	 * or database
 	 */
 	toJSON() {
-		const { _campaign, event, touchedCells, ...serializedTimestep } = this;
+		const { _campaign, event, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
 			extents: this._campaign.extents.map((extent) =>

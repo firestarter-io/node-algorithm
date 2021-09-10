@@ -140,6 +140,29 @@ class Cell {
 	}
 
 	/**
+	 * Whether or not the cell is currently burnable.  Returns true by detault,
+	 * returns false if the Cell has a nonburnable fuel,  or if it is already
+	 * burned out or supressed
+	 */
+	get isBurnable(): boolean {
+		/**
+		 * If the cell has a nonburnable fuel:
+		 */
+		if (this.fuelModel13.nonBurnable) {
+			return false;
+		}
+
+		/**
+		 * If the cell has already been burned or supressed
+		 */
+		if (this._extent._campaign.burnedCells.has(this.id)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns the burn status for the cell
 	 */
 	get burnStatus() {
