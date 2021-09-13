@@ -69,7 +69,7 @@ class TimeStep {
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
 		if (this.event) {
 			this.index = this._campaign.timesteps.length;
-			this.timestamp = this._campaign.startTime + this.index * timestepSize;
+			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this._campaign.timesteps.push(this);
@@ -212,7 +212,7 @@ class TimeStep {
 			});
 		});
 
-		if (this.index < 10) {
+		if (this.index < 100) {
 			this.next();
 		}
 	}
