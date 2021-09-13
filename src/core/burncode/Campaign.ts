@@ -61,6 +61,10 @@ export class Campaign {
 	 */
 	eventQueue: PriorityQueue;
 	/**
+	 * List of IDs of Cells that are currently burning
+	 */
+	burningCells: Set<string> = new Set<string>();
+	/**
 	 * List of IDs of Cells that have already burned
 	 */
 	burnedCells: Set<string> = new Set<string>();

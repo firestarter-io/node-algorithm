@@ -144,11 +144,18 @@ class Cell {
 	 * returns false if the Cell has a nonburnable fuel,  or if it is already
 	 * burned out or supressed
 	 */
-	get isBurnable(): boolean {
+	get isIgnitable(): boolean {
 		/**
 		 * If the cell has a nonburnable fuel:
 		 */
 		if (this.fuelModel13.nonBurnable) {
+			return false;
+		}
+
+		/**
+		 * If the cell has already been burned or supressed
+		 */
+		if (this._extent._campaign.burningCells.has(this.id)) {
 			return false;
 		}
 
