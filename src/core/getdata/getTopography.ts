@@ -29,7 +29,7 @@ import { DataGroups } from '@data';
  */
 export function getElevation(point: PointLiteral): number {
 	const { X, Y, Z } = getTileCoord(point);
-	const tileName = `${Z}/${X}/${Y}`;
+	const tileName = `${Z}.${X}.${Y}`;
 
 	const xyPositionOnTile = {
 		x: Math.floor(point.x) - X * 256,
