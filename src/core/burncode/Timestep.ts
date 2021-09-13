@@ -141,9 +141,9 @@ class TimeStep {
 					const timestampOfIgnition = this.timestamp + timeToIgnite;
 
 					this._campaign.eventQueue.enqueue({
-						time: timestampOfIgnition,
+						time: Math.floor(Number(timestampOfIgnition)),
 						origin: this.timestamp,
-						setToBurning: { [neighbor.id]: neighbor },
+						setToBurning: { [neighbor.id]: neighbor.toCell() },
 					});
 
 					/**
