@@ -133,7 +133,6 @@ export class Campaign {
 		const firstBurningCell = await this.startFire(this.seedLatLng);
 
 		this.start(firstBurningCell);
-		// this.propagateTimestep();
 	}
 
 	/**
