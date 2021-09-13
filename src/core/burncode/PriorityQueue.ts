@@ -79,22 +79,44 @@ class PriorityQueue {
 		var last = true;
 
 		/**
-		 *
-		 * Loop through list and add new element at appropriate place
+		 * The index of the element that already exists in the queue with the same priority as the new element, if it exists
 		 */
-		for (let i = 0; i < this.items.length; i++) {
-			if (this.items[i].time > element.time) {
-				this.items.splice(i, 0, element);
-				last = false;
-				break;
-			}
-		}
+		const preexistingItemIndex = this.items.findIndex(
+			(item) => item.time === element.time
+		);
 
 		/**
-		 * If the item was not inserted somewhere by the for loop, it will be last, and should be pushed into the array
+		 * If item already exists in the queue with this time/priority, merge new element
+		 * into existing one
 		 */
-		if (last) {
-			this.items.push(element);
+		if (preexistingItemIndex !== -1) {
+			const preexistingItem: EventQueueItem = {
+				...this.items[preexistingItemIndex],
+			};
+			this.items[preexistingItemIndex] = lodash.merge(preexistingItem, element);
+		} else {
+			/**
+			 * If there is not already an existing queue item with this time/priority, add a new one
+			 */
+
+			/**
+			 *
+			 * Loop through list and add new element at appropriate place
+			 */
+			for (let i = 0; i < this.items.length; i++) {
+				if (this.items[i].time > element.time) {
+					this.items.splice(i, 0, element);
+					last = false;
+					break;
+				}
+			}
+
+			/**
+			 * If the item was not inserted somewhere by the for loop, it will be last, and should be pushed into the array
+			 */
+			if (last) {
+				this.items.push(element);
+			}
 		}
 	}
 
@@ -117,6 +139,14 @@ class PriorityQueue {
 		const nextItem = this.items.shift();
 		this.history.push(nextItem);
 		return nextItem;
+	}
+
+	/**
+	 * Function to check whether or not a cell has already been calculated in the simulation
+	 * @param cellId | The ID of the Cell you want to check
+	 */
+	cellTouched(cellId: string): number | undefined {
+		return this.touchedCells.get(cellId);
 	}
 
 	/**

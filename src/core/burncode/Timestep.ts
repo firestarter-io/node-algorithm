@@ -69,7 +69,7 @@ class TimeStep {
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
 		if (this.event) {
 			this.index = this._campaign.timesteps.length;
-			this.timestamp = this._campaign.startTime + this.index * timestepSize;
+			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this._campaign.timesteps.push(this);
@@ -112,10 +112,16 @@ class TimeStep {
 		 * For each cell in the event queue that is slated to be set to burning:
 		 */
 		new Map(Object.entries(this.event.setToBurning)).forEach((cellToBurn) => {
-			/**
-			 * Set the burn status to 1
-			 */
-			cellToBurn.setBurnStatus(1);
+			if (cellToBurn.isIgnitable) {
+				/**
+				 * Set the burn status to 1
+				 */
+				cellToBurn.setBurnStatus(1);
+				/**
+				 * Add this neighbor to list of currently burning cells
+				 */
+				this._campaign.burningCells.add(cellToBurn.id);
+			}
 
 			/**
 			 * Determine if/when neighbor cells will be set to burning:
@@ -128,7 +134,7 @@ class TimeStep {
 					/**
 					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
 					 */
-					const timeToIgnite = neighbor.distanceCoefficient;
+					const timeToIgnite = neighbor.distanceCoefficient * 1000;
 					// *
 					// (cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
 					// 60 *
@@ -145,16 +151,11 @@ class TimeStep {
 						origin: this.timestamp,
 						setToBurning: { [neighbor.id]: neighbor.toCell() },
 					});
-
-					/**
-					 * Add this neighbor to list of currently burning cells
-					 */
-					this._campaign.burningCells.add(neighbor.id);
 				}
 			});
 		});
 
-		if (this.index < 30) {
+		if (this.index < 100) {
 			this.next();
 		}
 	}
