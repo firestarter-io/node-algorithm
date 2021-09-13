@@ -118,24 +118,6 @@ class PriorityQueue {
 				this.items.push(element);
 			}
 		}
-
-		/**
-		 * Add all cells to burn in element to the touchedCells
-		 */
-		if (element.setToBurning) {
-			new Map(Object.entries(element.setToBurning)).forEach((cell) => {
-				/**
-				 * If the Cell time to ignite has been calculated before in a previous step,
-				 * but in this iteration, the calculated time is less, move that Cell's time
-				 * to ignire to earlier in the queue
-				 */
-				if (element.time < this.cellTouched(cell.id)) {
-					this.removeCell(cell, this.cellTouched(cell.id));
-				}
-
-				this.touchedCells.set(cell.id, element.time);
-			});
-		}
 	}
 
 	/**
