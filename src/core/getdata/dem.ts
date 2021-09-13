@@ -13,11 +13,14 @@
  * and converting them to raw rgba pixel data
  */
 
+import * as path from 'path';
+import * as fs from 'fs';
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import { getTileCoords } from '@utils/geometry/Bounds';
 import { saveTile, scale } from '@config';
 import { TileCoord, PointLiteral } from 'typings/gis';
 import { DataGroups, tileCache } from '@data';
+import { downloadImage } from '@core/utils/download-utils';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -54,18 +57,53 @@ export function getTileCoord(point: PointLiteral): TileCoord {
  */
 export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 	const { X, Y, Z } = coord;
-	const name = `${Z}/${X}/${Y}`;
+	const tilename = `${Z}.${X}.${Y}`;
 
-	if (!tileCache.DEM[name]) {
-		const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
+	const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
+
+	const filepath = path.resolve(
+		__dirname,
+		`../../tileimages/DEM/${tilename}.png`
+	);
+
+	/**
+	 * Whether or not the tile image was already saved to local disc
+	 */
+	const tileInLocalFs = fs.existsSync(filepath);
+
+	/**
+	 * If tile image not yet in local disc, download it
+	 */
+	if (!tileInLocalFs) {
+		console.log('here');
+		const downloadInstructions = {
+			tilename,
+			tiledir: 'DEM',
+			body: {
+				url,
+				responseType: 'stream',
+			},
+		};
+
+		await downloadImage(downloadInstructions);
+	}
+
+	/**
+	 * If tile image data not already in ephemeral memory, decode from local downloaded image and save
+	 * imagedata to memory
+	 */
+	if (!tileCache.DEM[tilename]) {
+		const localUrl = path.resolve(
+			__dirname,
+			`../../tileimages/DEM/${tilename}.png`
+		);
 
 		try {
-			const image: any = await loadImage(url);
+			const image: any = await loadImage(localUrl);
 			const canvas: Canvas = createCanvas(256, 256);
 			const ctx: RenderingContext = canvas.getContext('2d');
 			ctx.drawImage(image, 0, 0, 256, 256);
-			saveTile(DataGroups.DEM, name, ctx.getImageData(0, 0, 256, 256));
-			console.log(`tile ${name} saved succesfully`);
+			saveTile(DataGroups.DEM, tilename, ctx.getImageData(0, 0, 256, 256));
 		} catch (e) {
 			console.log(e);
 		}
@@ -90,7 +128,7 @@ export async function createDEM(
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
-		const name = `${Z}/${X}/${Y}`;
+		const name = `${Z}.${X}.${Y}`;
 		if (Object.keys(tileCache.DEM).includes(name)) {
 			return false;
 		} else {
@@ -104,22 +142,11 @@ export async function createDEM(
 			'Map bounds and zoom comprised of over 20 tiles.  Consider smaller bounds or zoom.  Aborting tile fetching.'
 		);
 	} else {
-		await Promise.all<CanvasImageSource>(
+		await Promise.all<void>(
 			tileCoords.map((coord: TileCoord) => {
-				const url = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
-				return loadImage(url);
+				fetchDEMTile(coord);
 			})
 		)
-			.then((images: CanvasImageSource[]): void => {
-				images.forEach((image: CanvasImageSource, index: number) => {
-					const canvas: Canvas = createCanvas(256, 256);
-					const ctx: RenderingContext = canvas.getContext('2d');
-					ctx.drawImage(image, 0, 0, 256, 256);
-					const { X, Y, Z } = tileCoords[index];
-					const name = `${Z}/${X}/${Y}`;
-					saveTile(DataGroups.DEM, name, ctx.getImageData(0, 0, 256, 256));
-				});
-			})
 			// .then(() => console.log('Dem tiles loaded and saved to cache'))
 			.catch((e) => console.log(e));
 	}
