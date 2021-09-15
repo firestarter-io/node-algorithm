@@ -19,6 +19,13 @@ import { CellPosition } from 'typings/firestarter';
 import Extent from './Extent';
 import Cell, { NeighborCell } from './Cell';
 
+/**
+ * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
+ * to burn status values, as well as quickly indexing what cells are currently in a given
+ * burn status.
+ *
+ * ***&#128211; &nbsp; See more in the [BurnMatrix documentation](https://firestarter-io.github.io/node-algorithm/algorithm/burnmatrix/)***
+ */
 class BurnMatrix {
 	/**
 	 * The mathjs matrix at the core of the BurnMatrix instance

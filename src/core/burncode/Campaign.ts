@@ -31,6 +31,13 @@ import {
 } from '@core/getdata/weather';
 import PriorityQueue from './PriorityQueue';
 
+/**
+ * Campaign class creates a new campaign object, which is the central unit of firestarter.
+ * A campaign manages its own configuration, user inputs, map extents and their associated data,
+ * timesteps, and writing campaign data to the database
+ *
+ * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/algorithm/campaign/)***
+ */
 export class Campaign {
 	/**
 	 * Unique id of the campaign

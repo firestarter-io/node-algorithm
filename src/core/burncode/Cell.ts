@@ -13,16 +13,15 @@
  */
 
 import * as L from 'leaflet';
-import * as lodash from 'lodash';
 import { tileSize } from '@config';
 import { getElevation } from '@core/getdata/getTopography';
 import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
-import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
+import { FBFuelModels13 } from '@core/getdata/rasterSources';
 import { FBFM13, FuelModel13 } from '@core/constants/fuelmodel13';
-import { probabilityOfIgnition, alphaSlope, alphaWind } from './formulas';
+import { alphaSlope, alphaWind } from './formulas';
 
 export enum Directions {
 	N = 'N',
@@ -37,6 +36,13 @@ export enum Directions {
 export type Bearings = 0 | 45 | 90 | 135 | 180 | 225 | 270 | 315;
 export type DistanceCoefficients = 1 | typeof ROOT2;
 
+/**
+ * A Cell represents a single pixel in a burn matrix.  It provides an abstraction layer
+ * for interaction with values in the burn matrix, as well as for retrieving data from
+ * an Extent.
+ *
+ * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/algorithm/cell/cell/)***
+ */
 class Cell {
 	/**
 	 * The layerpoint of the Cell's position
@@ -182,46 +188,6 @@ class Cell {
 	 */
 	setBurnStatus(burnStatus: number) {
 		this._burnMatrix.setBurnStatus(this, burnStatus);
-	}
-
-	/**
-	 * Calculates the burn status of the cell and sets it
-	 * @param touched Whether or not the cell has already been worked on in a given timestep
-	 * @returns the burn status of the cell after calculation
-	 */
-	calculateBurnStatus(touched: boolean) {
-		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= this.groundcoverIgnitionP) {
-			this.setBurnStatus(1);
-		}
-		/* If cell is already burning: */
-		if (this.burnStatus >= 1 && !touched) {
-			this.setBurnStatus(this.burnStatus + 1);
-		}
-
-		return this.burnStatus;
-	}
-
-	/**
-	 * Wildfire ignition probability based solely on groundcover fuels, not accounting
-	 * for wind, himidity, or other factors.
-	 *
-	 * Currently using USFS Probabalistic Wildfire Risk raster dataset
-	 *
-	 * @returns {number} P - probability, as a fraction of 1
-	 */
-	get groundcoverIgnitionP() {
-		const fireRisk = WildfireRisk.getValueAt(this.layerPoint);
-		if (this.fuelModel13.nonBurnable) {
-			return 0;
-		}
-		if (fireRisk === '0') {
-			return 0;
-		} else {
-			const [minRisk, maxRisk] = fireRisk.replace(' - ', ',').split(',');
-			const P = lodash.random(minRisk, maxRisk).round(3);
-			return P;
-		}
 	}
 
 	/**
@@ -401,17 +367,6 @@ export class NeighborCell extends Cell {
 	}
 
 	/**
-	 * Returns probability of ignition for this NeighborCell, including wind and slope factors
-	 */
-	get ignitionP() {
-		return probabilityOfIgnition(
-			this.groundcoverIgnitionP,
-			this.alphaWind,
-			this.alphaSlope
-		);
-	}
-
-	/**
 	 * The rate of spread of fuel in meters/hour, as averaged between an origin Cell and NeighborCell
 	 */
 	get rateOfSpread(): number {
@@ -425,24 +380,6 @@ export class NeighborCell extends Cell {
 		const RoS = this.fuelRateOfSpreadRaw;
 
 		return (originCellRoS + RoS) / 2;
-	}
-
-	/**
-	 * Calculates the burn status of the cell and sets it
-	 * @param touched Whether or not the cell has already been worked on in a given timestep
-	 * @returns the burn status of the cell after calculation
-	 */
-	calculateBurnStatus(touched: boolean) {
-		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= this.ignitionP) {
-			this.setBurnStatus(1);
-		}
-		/* If cell is already burning: */
-		if (this.burnStatus >= 1 && !touched) {
-			this.setBurnStatus(this.burnStatus + 1);
-		}
-
-		return this.burnStatus;
 	}
 
 	/**

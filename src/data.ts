@@ -26,8 +26,6 @@ export const campaigns: { [key: string]: Campaign } = {};
 export enum DataGroups {
 	DEM = 'DEM',
 	FBFuelModels13 = 'FBFuelModels13',
-	WildfireRisk = 'WildfireRisk',
-	GroundCover = 'GroundCover',
 }
 
 /**
@@ -53,8 +51,6 @@ export type DataCache = {
 export const tileCache: DataCache = {
 	DEM: {},
 	FBFuelModels13: {},
-	WildfireRisk: {},
-	GroundCover: {},
 	datagroups: Object.values(DataGroups),
 };
 
@@ -70,6 +66,7 @@ export type Legends = {
  */
 export const legends = {};
 
+// Adding to global scope for quick value checking and debugging:
 // @ts-ignore
 globalThis.campaigns = campaigns;
 // @ts-ignore

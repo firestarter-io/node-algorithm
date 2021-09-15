@@ -20,7 +20,7 @@ import {
 	refitBoundsToMapTiles,
 } from '@utils/geometry/bounds';
 import { createDEM } from '@core/getdata/dem';
-import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
+import { FBFuelModels13 } from '@core/getdata/rasterSources';
 import BurnMatrix from './BurnMatrix';
 import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
@@ -29,6 +29,13 @@ import Cell from './Cell';
 import { getTopography } from '@core/getData/getTopography';
 import Campaign from './Campaign';
 
+/**
+ * Extent class builds an object containing all required data for a given map extent.
+ * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
+ * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds.
+ *
+ * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/algorithm/extent/extent/)***
+ */
 class Extent {
 	/**
 	 * The Campaign that the extent belongs to
@@ -76,7 +83,7 @@ class Extent {
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
 	 * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
-	 * and it creates a burn matrix with coordinates corresponding the the extent pixel bounds
+	 * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds
 	 * @param latLngBounds | LatLngBounds to create area for
 	 */
 	constructor(latLngBounds: L.LatLngBounds, campaign: Campaign) {
@@ -126,15 +133,6 @@ class Extent {
 		} catch (e) {
 			throw e;
 		}
-
-		/**
-		 * Get Probabalistic Wildfire Risk raster
-		 */
-		try {
-			await WildfireRisk.fetchTiles(this.latLngBounds);
-		} catch (e) {
-			throw e;
-		}
 	}
 
 	/**
@@ -177,9 +175,6 @@ class Extent {
 		}
 
 		const fuelModel = FBFuelModels13.getValueAt(coord);
-		const fireRisk = WildfireRisk.getValueAt(coord);
-
-		// const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
 		const { slope, aspect, elevation } = getTopography(point);
 
@@ -188,10 +183,7 @@ class Extent {
 			aspect,
 			elevation,
 			fuelModel,
-			fireRisk,
 		};
-
-		console.log(data);
 
 		return data;
 	}

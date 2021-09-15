@@ -46,6 +46,8 @@ export interface EventQueueItem {
  * FireStarter.
  *
  * Adapted from ["Implementation ofPriority Queue in Javascript"](https://www.geeksforgeeks.org/implementation-priority-queue-javascript/)
+ *
+ * ***&#128211; &nbsp; See more in the [PriorityQueue Documentation](https://firestarter-io.github.io/node-algorithm/algorithm/queue/queue/)***
  */
 class PriorityQueue {
 	/**
