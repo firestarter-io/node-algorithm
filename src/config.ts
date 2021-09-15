@@ -94,6 +94,11 @@ export const scale: number = 12;
 export const tileSize = 256;
 
 /**
+ * Whether or not to purge tiles on server restart
+ */
+export const purgeTilesOnRestart = false;
+
+/**
  * Number of tiles to expand an extent when it grows
  */
 export const tilesToExpand = 2;
@@ -140,4 +145,5 @@ export default {
 	tileCache,
 	saveTile,
 	retrieveTile,
+	purgeTilesOnRestart,
 };

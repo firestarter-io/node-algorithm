@@ -15,7 +15,7 @@
 var pm2 = require('pm2');
 
 export const restart = (req, res) => {
-	console.log('Restarting firestarter from within code');
+	console.log('⟳ Restarting firestarter from within code');
 	res.send('Restarting server');
 	pm2.reload('firestarter');
 };
