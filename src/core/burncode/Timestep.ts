@@ -112,6 +112,9 @@ class TimeStep {
 		 * For each cell in the event queue that is slated to be set to burning:
 		 */
 		new Map(Object.entries(this.event.setToBurning)).forEach((cellToBurn) => {
+			/**
+			 * If cell is ignitable, set it to burning
+			 */
 			if (cellToBurn.isIgnitable) {
 				/**
 				 * Set the burn status to 1
@@ -134,12 +137,13 @@ class TimeStep {
 					/**
 					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
 					 */
-					const timeToIgnite = neighbor.distanceCoefficient * 1000;
-					// *
-					// (cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
-					// 60 *
-					// 60 *
-					// 1000;
+					const timeToIgnite =
+						neighbor.distanceCoefficient *
+						1000 *
+						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
+						60 *
+						60 *
+						1000;
 
 					/**
 					 * The timestamp at which the cell will ignite, in ms
