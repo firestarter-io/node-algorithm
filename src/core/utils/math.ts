@@ -9,7 +9,7 @@
  */
 
 /**
- * Some basic math utility functions
+ * Math utility functions
  */
 
 import { create, all } from 'mathjs';
