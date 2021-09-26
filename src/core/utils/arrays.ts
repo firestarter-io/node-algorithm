@@ -38,17 +38,18 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	/**
 	 * Optional parameter to transform the object T to something new when resampling
 	 */
-	transform?: {
-		/**
-		 * Function to transform item T to something else when returning result
-		 */
-		transformationFunction?: (item: T) => any;
-		/**
-		 * If the time at which the item was sampled is desired in the new object, this property specifies
-		 * the property key that will be appended to the returned item containing the sampling time
-		 */
-		newSampleTimeName?: string;
-	}
+	// transform?: {
+	// 	/**
+	// 	 * Function to transform item T to something else when returning result
+	// 	 */
+	// 	transformationFunction?: (item: T) => any;
+	// 	/**
+	// 	 * If the time at which the item was sampled is desired in the new object, this property specifies
+	// 	 * the property key that will be appended to the returned item containing the sampling time
+	// 	 */
+	// 	newSampleTimeName?: string;
+	// }
+	transformationFunction?: (item: T, sampleTime?: number) => any
 ): Array<T> {
 	/**
 	 * Copy array
@@ -79,32 +80,36 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	 * Function to transform an item in the original array, as defined by the optional transform paramter. If the transform parameter is used,
 	 * the transformed object is returned.  If the transform parameter is not used, the original item T is returned.
 	 */
-	function transformedResult() {
-		/**
-		 * An item in the results array, as transformed by the transform optional paramater.  If no patameter is passed,
-		 * the original item T will be used
-		 */
-		var transformed = lodash.cloneDeep(queuedItem);
+	// function transformedResult() {
+	// 	/**
+	// 	 * An item in the results array, as transformed by the transform optional paramater.  If no patameter is passed,
+	// 	 * the original item T will be used
+	// 	 */
+	// 	var transformed = lodash.cloneDeep(queuedItem);
 
-		if (transform) {
-			const { transformationFunction, newSampleTimeName } = transform;
+	// 	if (transform) {
+	// 		const { transformationFunction, newSampleTimeName } = transform;
 
-			if (transformationFunction) {
-				transformed = transformationFunction(queuedItem);
-			}
+	// 		if (transformationFunction) {
+	// 			transformed = transformationFunction(queuedItem);
+	// 		}
 
-			if (newSampleTimeName) {
-				transformed[newSampleTimeName] = latestSampleTime;
-			}
-		}
+	// 		if (newSampleTimeName) {
+	// 			transformed[newSampleTimeName] = latestSampleTime;
+	// 		}
+	// 	}
 
-		return transformed;
-	}
+	// 	return transformed;
+	// }
 
 	/**
 	 * First item in the original array is pushed to be the first item in the results array
 	 */
-	result.push(transformedResult());
+	result.push(
+		transformationFunction
+			? transformationFunction(queuedItem, latestSampleTime)
+			: queuedItem
+	);
 
 	/**
 	 * Recursive function to iterate over the sample time, starting from t0, until the current
@@ -147,7 +152,14 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 			/**
 			 * Push the queued item into the results
 			 */
-			result.push(transformedResult());
+			result.push(
+				transformationFunction
+					? transformationFunction(
+							lodash.cloneDeep(queuedItem),
+							latestSampleTime
+					  )
+					: queuedItem
+			);
 
 			/**
 			 * Iterate over next sampling interval

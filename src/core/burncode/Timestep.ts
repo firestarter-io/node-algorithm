@@ -12,11 +12,8 @@
  * TimeStep class
  */
 
-import { Matrix } from 'mathjs';
 import { FireStarterEvent } from 'typings/firestarter';
-import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
-import Cell, { NeighborCell } from './Cell';
 import { WeatherForecast } from '@core/getdata/weather';
 import { EventQueueItem } from './PriorityQueue';
 
@@ -52,7 +49,7 @@ class TimeStep {
 	/**
 	 * Serializable JSON copy of the timestep
 	 */
-	snapshot;
+	snapshot: ReturnType<TimeStep['toJSON']>;
 
 	/**
 	 * A TimeStep produces a snapshot of the state of a Campaign at a given time.
@@ -137,9 +134,8 @@ class TimeStep {
 					/**
 					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
 					 */
-					const timeToIgnite =
+					const timeToIgnite = // TODO: check this math!
 						neighbor.distanceCoefficient *
-						1000 *
 						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
 						60 *
 						60 *

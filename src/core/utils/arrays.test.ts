@@ -32,6 +32,44 @@ const sample3 = [
 
 describe('The resample function', () => {
 	it('Should skip values when there are multiple entries within a sampling interval', () => {
+		const sample0 = [
+			{
+				time: 0,
+				details: 'Item 1',
+			},
+			{
+				time: 7,
+				details: 'Item 2',
+			},
+			{
+				time: 8,
+				details: 'Item 3',
+			},
+			{
+				time: 12,
+				details: 'Item 4',
+			},
+		];
+
+		const resampled1 = resample(sample0, 'time', 10);
+
+		expect(resampled1).toEqual([
+			{
+				time: 0,
+				details: 'Item 1',
+			},
+			{
+				time: 8,
+				details: 'Item 3',
+			},
+			{
+				time: 12,
+				details: 'Item 4',
+			},
+		]);
+	});
+
+	it('Should skip values when there are multiple entries within a sampling interval', () => {
 		const sample1 = [
 			{
 				time: 0,
@@ -51,8 +89,9 @@ describe('The resample function', () => {
 			},
 		];
 
-		const resampled1 = resample(sample1, 'time', 10, {
-			newSampleTimeName: 'time',
+		const resampled1 = resample(sample1, 'time', 10, (item, sampleTime) => {
+			item.time = sampleTime;
+			return item;
 		});
 
 		expect(resampled1).toEqual([
@@ -91,8 +130,9 @@ describe('The resample function', () => {
 			},
 		];
 
-		const resampled1 = resample(sample2, 'time', 10, {
-			newSampleTimeName: 'time',
+		const resampled1 = resample(sample2, 'time', 10, (item, sampleTime) => {
+			item.time = sampleTime;
+			return item;
 		});
 
 		expect(resampled1).toEqual([
@@ -116,8 +156,9 @@ describe('The resample function', () => {
 	});
 
 	it('Should maintain prototypal inheritance of items passed', () => {
-		const resampled2 = resample(sample3, 'time', 10, {
-			newSampleTimeName: 'time',
+		const resampled2 = resample(sample3, 'time', 10, (item, sampleTime) => {
+			item.time = sampleTime;
+			return item;
 		});
 
 		expect(resampled2[0].description()).toBe('This is item 0');

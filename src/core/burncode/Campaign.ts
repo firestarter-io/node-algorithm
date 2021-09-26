@@ -30,6 +30,7 @@ import {
 	WeatherByTheHour,
 } from '@core/getdata/weather';
 import PriorityQueue from './PriorityQueue';
+import { resample } from '@core/utils/arrays';
 
 /**
  * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -206,7 +207,17 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
+			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
+			timesteps: resample(
+				clone.timesteps.map((timestep) => timestep.snapshot),
+				'timestamp',
+				3.6e6,
+				(timestep, resampledTime) => {
+					timestep.timestamp = resampledTime;
+					timestep.time = new Date(resampledTime).toLocaleString();
+					return timestep;
+				}
+			),
 		};
 
 		return simplifiedCampaign;
