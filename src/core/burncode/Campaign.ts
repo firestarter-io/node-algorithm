@@ -68,14 +68,6 @@ export class Campaign {
 	 * The event queue for the campaign
 	 */
 	eventQueue: PriorityQueue;
-	/**
-	 * List of IDs of Cells that are currently burning
-	 */
-	burningCells: Set<string> = new Set<string>();
-	/**
-	 * List of IDs of Cells that have already burned
-	 */
-	burnedCells: Set<string> = new Set<string>();
 
 	/**
 	 * Campaign class creates a new campaign object, which is the central unit of firestarter.

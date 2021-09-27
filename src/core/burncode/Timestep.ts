@@ -113,14 +113,7 @@ class TimeStep {
 			 * If cell is ignitable, set it to burning
 			 */
 			if (cellToBurn.isIgnitable) {
-				/**
-				 * Set the burn status to 1
-				 */
 				cellToBurn.setBurnStatus(1);
-				/**
-				 * Add this neighbor to list of currently burning cells
-				 */
-				this._campaign.burningCells.add(cellToBurn.id);
 			}
 
 			/**

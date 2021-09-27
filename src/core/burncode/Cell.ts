@@ -146,6 +146,20 @@ class Cell {
 	}
 
 	/**
+	 * Whether or not the cell is currently burning
+	 */
+	get isBurning() {
+		return this._burnMatrix.burningCells.has(this.id);
+	}
+
+	/**
+	 * Whether or not the cell is already burned out
+	 */
+	get isBurnedOut() {
+		return this._burnMatrix.burnedOutCells.has(this.id);
+	}
+
+	/**
 	 * Whether or not the cell is currently burnable.  Returns true by detault,
 	 * returns false if the Cell has a nonburnable fuel,  or if it is already
 	 * burned out or supressed
@@ -159,16 +173,16 @@ class Cell {
 		}
 
 		/**
-		 * If the cell has already been burned or supressed
+		 * If the cell is already burning at this time
 		 */
-		if (this._extent._campaign.burningCells.has(this.id)) {
+		if (this.isBurning) {
 			return false;
 		}
 
 		/**
 		 * If the cell has already been burned or supressed
 		 */
-		if (this._extent._campaign.burnedCells.has(this.id)) {
+		if (this.isBurnedOut) {
 			return false;
 		}
 
