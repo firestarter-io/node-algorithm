@@ -181,7 +181,7 @@ export class Campaign {
 			},
 		});
 
-		while (this.timesteps.length < 2000) {
+		while (this.timesteps.length < 5000) {
 			new TimeStep(this);
 		}
 	}

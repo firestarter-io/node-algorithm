@@ -38,7 +38,7 @@ describe('The resample function', () => {
 				details: 'Item 1',
 			},
 			{
-				time: 7,
+				time: 7, // <------ should skip this
 				details: 'Item 2',
 			},
 			{
@@ -76,7 +76,7 @@ describe('The resample function', () => {
 				details: 'Item 1',
 			},
 			{
-				time: 7,
+				time: 7, // <------ should skip this
 				details: 'Item 2',
 			},
 			{
@@ -121,7 +121,7 @@ describe('The resample function', () => {
 				details: 'Item 2',
 			},
 			{
-				time: 9,
+				time: 9, // <------ should repeat this
 				details: 'Item 3',
 			},
 			{
@@ -136,6 +136,51 @@ describe('The resample function', () => {
 		});
 
 		expect(resampled1).toEqual([
+			{
+				time: 0,
+				details: 'Item 1',
+			},
+			{
+				time: 10,
+				details: 'Item 3',
+			},
+			{
+				time: 20,
+				details: 'Item 3',
+			},
+			{
+				time: 30,
+				details: 'Item 4',
+			},
+		]);
+	});
+
+	it('Should include values whos original sortkey land on the exact sampling interval', () => {
+		const sample3 = [
+			{
+				time: 0,
+				details: 'Item 1',
+			},
+			{
+				time: 7,
+				details: 'Item 2',
+			},
+			{
+				time: 10, // <------ should include this
+				details: 'Item 3',
+			},
+			{
+				time: 22,
+				details: 'Item 4',
+			},
+		];
+
+		const resampled3 = resample(sample3, 'time', 10, (item, sampleTime) => {
+			item.time = sampleTime;
+			return item;
+		});
+
+		expect(resampled3).toEqual([
 			{
 				time: 0,
 				details: 'Item 1',

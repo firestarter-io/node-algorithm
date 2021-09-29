@@ -54,15 +54,17 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	 */
 	const result = [];
 
+	let i = 0;
+
 	/**
 	 * Take the first item in the array
 	 */
-	let queuedItem = array.shift();
+	let queuedItem = array[i];
 
 	/**
 	 * The very first item in the original array's time
 	 */
-	let t0: number = queuedItem[sortKey];
+	let t0: number = array[0][sortKey];
 
 	/**
 	 * The time of the very first item in the original array becomes the time of the first sampled item
@@ -79,63 +81,33 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	);
 
 	/**
-	 * Recursive function to iterate over the sample time, starting from t0, until the current
-	 * sample time is greater than the t of the last item in originalArray
+	 * If we are not at the end of the array
 	 */
-	function shiftAndCheckAndPush() {
+	while (i < array.length) {
 		/**
 		 * Increment sample time
 		 */
 		latestSampleTime = latestSampleTime + samplingInterval;
 
 		/**
-		 * Recusive function to check if the latest sample time is greater than the next item in the array's time,
-		 * and if so, to pop that item off and set the queued item to that next item
+		 * Iterate through next items in array until latestSampleTime >= next item in array
 		 */
-		function shiftAndCheck() {
-			/**
-			 * If there are still items in the original array copy
-			 */
-			if (array.length) {
-				const nextItem = array[0];
-
-				if (latestSampleTime >= nextItem[sortKey]) {
-					array.shift();
-					queuedItem = nextItem;
-					shiftAndCheck();
-				}
+		while (array[i] && array[i][sortKey] <= latestSampleTime) {
+			if (array[i]) {
+				queuedItem = array[i];
 			}
+			i = i + 1;
 		}
 
 		/**
-		 * If there are still items in the original array copy
+		 * Push the queued item into the results
 		 */
-		if (array.length) {
-			/**
-			 * Iterate through next items in array until latestSampleTime >= next item in array
-			 */
-			shiftAndCheck();
-
-			/**
-			 * Push the queued item into the results
-			 */
-			result.push(
-				transformationFunction
-					? transformationFunction(
-							lodash.cloneDeep(queuedItem),
-							latestSampleTime
-					  )
-					: queuedItem
-			);
-
-			/**
-			 * Iterate over next sampling interval
-			 */
-			shiftAndCheckAndPush();
-		}
+		result.push(
+			transformationFunction
+				? transformationFunction(lodash.cloneDeep(queuedItem), latestSampleTime)
+				: queuedItem
+		);
 	}
-
-	shiftAndCheckAndPush();
 
 	return result;
 }
