@@ -78,7 +78,7 @@ export class Campaign {
 	constructor(latlng: L.LatLng, startTime: number = dateRoundedToHour()) {
 		this.seedLatLng = latlng;
 		this.extents = [];
-		this.startTime = dateRoundedToHour(new Date(startTime));
+		this.startTime = dateRoundedToHour(startTime);
 		this.timesteps = [];
 		this.id = uuid();
 		this.eventQueue = new PriorityQueue();
@@ -181,7 +181,9 @@ export class Campaign {
 			},
 		});
 
-		new TimeStep(this);
+		while (this.timesteps.length < 2000) {
+			new TimeStep(this);
+		}
 	}
 
 	/**

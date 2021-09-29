@@ -219,7 +219,7 @@ class Cell {
 		const fuel = this.fuelModel13;
 		// DEV ▼
 		// Constant RoS to test spread behavior
-		return 50;
+		// return 50;
 		// DEV ▲
 
 		return fuel.rateOfSpread * 20;

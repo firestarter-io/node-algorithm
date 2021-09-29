@@ -70,8 +70,8 @@ class TimeStep {
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this._campaign.timesteps.push(this);
-			this.snapshot = this.toJSON();
 			this.burn();
+			this.snapshot = this.toJSON();
 		}
 	}
 
@@ -147,17 +147,6 @@ class TimeStep {
 				}
 			});
 		});
-
-		if (this.index < 100) {
-			this.next();
-		}
-	}
-
-	/**
-	 * Propagates the Campaign to the next timestep.
-	 */
-	next() {
-		new TimeStep(this._campaign);
 	}
 
 	/**
