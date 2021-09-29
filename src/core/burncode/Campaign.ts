@@ -23,7 +23,7 @@ import TimeStep from './Timestep';
 import { emojis, log } from '@core/utils/Logger';
 import Cell from './Cell';
 import chalk = require('chalk');
-import { dateRoundedToHour } from '@core/utils/time';
+import { roundTime } from '@core/utils/time';
 import {
 	fetchWeatherRange,
 	flattenWeatherHours,
@@ -75,10 +75,10 @@ export class Campaign {
 	 * timesteps, and writing campaign data to the database
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
-	constructor(latlng: L.LatLng, startTime: number = dateRoundedToHour()) {
+	constructor(latlng: L.LatLng, startTime: number = roundTime.byHour()) {
 		this.seedLatLng = latlng;
 		this.extents = [];
-		this.startTime = dateRoundedToHour(startTime);
+		this.startTime = roundTime.byHour(startTime);
 		this.timesteps = [];
 		this.id = uuid();
 		this.eventQueue = new PriorityQueue();
