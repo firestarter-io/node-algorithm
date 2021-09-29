@@ -36,19 +36,12 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	 */
 	samplingInterval: number,
 	/**
-	 * Optional parameter to transform the object T to something new when resampling
+	 * Optional function parameter to transform the object T to something new when resampling
+	 * @param item The item that will be transformed in the array
+	 * @param sampleTime If the time at which the item was sampled is desired in the new object, this property specifies
+	 * the property key that will be appended to the returned item containing the sampling time
+	 * @returns The result of your transformation function
 	 */
-	// transform?: {
-	// 	/**
-	// 	 * Function to transform item T to something else when returning result
-	// 	 */
-	// 	transformationFunction?: (item: T) => any;
-	// 	/**
-	// 	 * If the time at which the item was sampled is desired in the new object, this property specifies
-	// 	 * the property key that will be appended to the returned item containing the sampling time
-	// 	 */
-	// 	newSampleTimeName?: string;
-	// }
 	transformationFunction?: (item: T, sampleTime?: number) => any
 ): Array<T> {
 	/**
@@ -75,32 +68,6 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	 * The time of the very first item in the original array becomes the time of the first sampled item
 	 */
 	let latestSampleTime = t0;
-
-	/**
-	 * Function to transform an item in the original array, as defined by the optional transform paramter. If the transform parameter is used,
-	 * the transformed object is returned.  If the transform parameter is not used, the original item T is returned.
-	 */
-	// function transformedResult() {
-	// 	/**
-	// 	 * An item in the results array, as transformed by the transform optional paramater.  If no patameter is passed,
-	// 	 * the original item T will be used
-	// 	 */
-	// 	var transformed = lodash.cloneDeep(queuedItem);
-
-	// 	if (transform) {
-	// 		const { transformationFunction, newSampleTimeName } = transform;
-
-	// 		if (transformationFunction) {
-	// 			transformed = transformationFunction(queuedItem);
-	// 		}
-
-	// 		if (newSampleTimeName) {
-	// 			transformed[newSampleTimeName] = latestSampleTime;
-	// 		}
-	// 	}
-
-	// 	return transformed;
-	// }
 
 	/**
 	 * First item in the original array is pushed to be the first item in the results array
