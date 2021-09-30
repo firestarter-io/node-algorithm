@@ -181,7 +181,7 @@ export class Campaign {
 			},
 		});
 
-		while (this.timesteps.length < 5000) {
+		while (this.timesteps.length < 2000) {
 			new TimeStep(this);
 		}
 	}
@@ -205,7 +205,7 @@ export class Campaign {
 			timesteps: resample(
 				clone.timesteps.map((timestep) => timestep.snapshot),
 				'timestamp',
-				3.6e6,
+				10 * 60 * 1000,
 				(timestep, resampledTime) => {
 					timestep.timestamp = resampledTime;
 					timestep.time = new Date(resampledTime).toLocaleString();

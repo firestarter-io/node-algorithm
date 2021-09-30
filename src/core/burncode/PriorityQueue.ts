@@ -58,10 +58,16 @@ class PriorityQueue {
 	 * Items that have been processed and removed from the queue, helpful for debugging
 	 */
 	private history: EventQueueItem[];
+	/**
+	 * A javascript Map which lists all Cells currently in the queue to be burned, and at what time.
+	 * Needed for getting reference to queue item from Cell id
+	 */
+	private touchedCells: Map<string, number>;
 
 	constructor() {
 		this.items = [];
 		this.history = [];
+		this.touchedCells = new Map();
 	}
 
 	/**
@@ -114,6 +120,35 @@ class PriorityQueue {
 				this.items.push(element);
 			}
 		}
+
+		/**
+		 * Add all cells to burn in element to the touchedCells
+		 */
+		if (element.setToBurning) {
+			new Map(Object.entries(element.setToBurning)).forEach((cell) => {
+				/**
+				 * If the Cell time to ignite has been calculated before in a previous step,
+				 * but in this iteration, the calculated time is less, move that Cell's time
+				 * to ignire to earlier in the queue
+				 */
+				if (element.time < this.touchedCells.get(cell.id)) {
+					this.removeCell(cell, this.touchedCells.get(cell.id));
+				}
+
+				this.touchedCells.set(cell.id, element.time);
+			});
+		}
+	}
+
+	/**
+	 * Removes an item from the queue
+	 * @param time | The timestamp of the event item
+	 */
+	dequeue(time: number) {
+		const itemIndex = this.items.findIndex((item) => item.time === time);
+		if (itemIndex > -1) {
+			this.items.splice(itemIndex, 1);
+		}
 	}
 
 	/**
@@ -124,6 +159,55 @@ class PriorityQueue {
 		const nextItem = this.items.shift();
 		this.history.push(nextItem);
 		return nextItem;
+	}
+
+	/**
+	 * Removes a cell from an item in the queue, and removes that queue item if it becomes empty
+	 * @param cell The Cell to remove
+	 * @param originTime The timestamp of the EventQueueItem to remove the Cell from
+	 */
+	removeCell(cell: Cell, originTime: number) {
+		const originEventItem = this.getItem(originTime);
+
+		delete originEventItem.setToBurning[cell.id];
+
+		if (this.isItemEmpty(originEventItem)) {
+			this.dequeue(originTime);
+		}
+	}
+
+	/**
+	 * Returns the queue item that has a given time value
+	 * @param time | The timestamp of the queue item to retrieve
+	 */
+	getItem(time: number) {
+		return this.items.find((item) => item.time === time);
+	}
+
+	/**
+	 * Checks whether an event queue item is empty, meaning it has no information
+	 * in it other than a time
+	 * @param item EventQueueItem
+	 */
+	isItemEmpty(item: EventQueueItem) {
+		return (
+			lodash.isEmpty(item.setToBurning) && lodash.isEmpty(item.setToBurnedOut)
+		);
+	}
+
+	/**
+	 * Returns true if the queue is empty
+	 * @returns boolean
+	 */
+	isEmpty(): boolean {
+		return this.items.length === 0;
+	}
+
+	/**
+	 * Clears the queue
+	 */
+	clear() {
+		this.items = [];
 	}
 }
 

@@ -68,4 +68,42 @@ describe('The PriorityQueue.queue method', () => {
 			id3: 'cell3',
 		});
 	});
+
+	it('Removes a Cell from later in the queue if that Cell is added earlier', () => {
+		queue.clear();
+
+		queue.enqueue({
+			time: 5,
+			origin: 1,
+			setToBurning: {
+				id4: { id: 'id4' } as unknown as Cell,
+				id5: { id: 'id5' } as unknown as Cell,
+			},
+		});
+
+		queue.enqueue({
+			time: 2,
+			origin: 1,
+			setToBurning: {
+				id4: { id: 'id4' } as unknown as Cell,
+			},
+		});
+
+		expect(queue.items).toEqual([
+			{
+				time: 2,
+				origin: 1,
+				setToBurning: {
+					id4: { id: 'id4' } as unknown as Cell,
+				},
+			},
+			{
+				time: 5,
+				origin: 1,
+				setToBurning: {
+					id5: { id: 'id5' } as unknown as Cell,
+				},
+			},
+		]);
+	});
 });

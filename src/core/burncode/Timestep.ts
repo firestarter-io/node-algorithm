@@ -16,6 +16,7 @@ import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
 import { WeatherForecast } from '@core/getdata/weather';
 import { EventQueueItem } from './PriorityQueue';
+import { roundTime } from '@core/utils/time';
 
 class TimeStep {
 	/**
@@ -140,7 +141,7 @@ class TimeStep {
 					const timestampOfIgnition = this.timestamp + timeToIgnite;
 
 					this._campaign.eventQueue.enqueue({
-						time: Math.floor(Number(timestampOfIgnition)),
+						time: roundTime.bySecond(Math.floor(Number(timestampOfIgnition))),
 						origin: this.timestamp,
 						setToBurning: { [neighbor.id]: neighbor.toCell() },
 					});
