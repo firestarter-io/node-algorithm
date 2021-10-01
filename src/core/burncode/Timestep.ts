@@ -62,6 +62,7 @@ class TimeStep {
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
 	constructor(campaign: Campaign) {
+		var start = process.hrtime();
 		this._campaign = campaign;
 		this.event = campaign.eventQueue.next();
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
@@ -73,6 +74,14 @@ class TimeStep {
 			this._campaign.timesteps.push(this);
 			this.burn();
 			this.snapshot = this.toJSON();
+			var stop = process.hrtime(start);
+
+			// DEV ▼
+			if (this.index % 100 === 0) {
+				console.log(`\nCalculated Timestep ${this.index}`);
+				console.log(`Time to execute: ${Math.floor(stop[1] / 1000)}μs`);
+			}
+			// DEV ▲
 		}
 	}
 
