@@ -71,9 +71,9 @@ class TimeStep {
 			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
-			this._campaign.timesteps.push(this);
 			this.burn();
 			this.snapshot = this.toJSON();
+			this._campaign.timesteps.push(this);
 			var stop = process.hrtime(start);
 
 			// DEV ▼
@@ -156,6 +156,8 @@ class TimeStep {
 					});
 				}
 			});
+
+			// cellToBurn.checkDistanceToEdge().then(() => {});
 		});
 	}
 

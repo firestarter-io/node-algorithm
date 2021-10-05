@@ -192,7 +192,7 @@ class Extent {
 	 * Expands Extent downward, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandDown(noOfTiles: number = tilesToExpand) {
+	async expandDown(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -209,15 +209,15 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding Extent:');
-		this.fetchData();
+		console.log('Expanding extent down');
+		await this.fetchData();
 	}
 
 	/**
 	 * Expands Extent to the right, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandRight(noOfTiles: number = tilesToExpand) {
+	async expandRight(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -234,7 +234,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent right');
+		await this.fetchData();
 	}
 
 	/**
@@ -242,7 +243,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandUp(noOfTiles: number = tilesToExpand) {
+	async expandUp(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -273,7 +274,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent up');
+		await this.fetchData();
 	}
 
 	/**
@@ -281,7 +283,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandLeft(noOfTiles: number = tilesToExpand) {
+	async expandLeft(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -312,7 +314,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent left');
+		await this.fetchData();
 	}
 }
 

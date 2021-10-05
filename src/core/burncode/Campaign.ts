@@ -170,7 +170,7 @@ export class Campaign {
 	}
 
 	/**
-	 * Begin the Campaign by creating the first timestep
+	 * Begin the Campaign by creating the first event in the eventQueue
 	 */
 	start(firstBurningCell: Cell) {
 		this.eventQueue.enqueue({
@@ -181,6 +181,13 @@ export class Campaign {
 			},
 		});
 
+		this.continue();
+	}
+
+	/**
+	 * Calculates timesteps in succession, propagating the simulation forward through time
+	 */
+	continue() {
 		while (this.timesteps.length < 5000) {
 			new TimeStep(this);
 		}

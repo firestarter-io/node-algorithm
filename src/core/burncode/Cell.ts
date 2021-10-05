@@ -231,7 +231,7 @@ class Cell {
 	 * to be too close if it is within @param buffer tiles of the edge of its extent
 	 * @param buffer | Number of tiles to use as buffer
 	 */
-	checkDistanceToEdge(buffer: number = 1) {
+	async checkDistanceToEdge(buffer: number = 1 / 2) {
 		const [x, y] = this.position;
 
 		// Get distances from cell to 4 edges of extent
@@ -241,19 +241,35 @@ class Cell {
 		const dBottom = this._extent.height - y;
 
 		if (dLeft < tileSize * buffer) {
-			this._extent.expandLeft();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandLeft();
 		}
 
 		if (dRight < tileSize * buffer) {
-			this._extent.expandRight();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandRight();
 		}
 
 		if (dTop < tileSize * buffer) {
-			this._extent.expandUp();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandUp();
 		}
 
 		if (dBottom < tileSize * buffer) {
-			this._extent.expandDown();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandDown();
 		}
 	}
 }
