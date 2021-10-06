@@ -39,19 +39,18 @@ app.use('/', router);
 
 // Start server
 const server = app.listen(port, () => {
-	// console.clear();
-	console.log(chalk.blue(`\n\nFirestarter is listening on port ${port} 🎧\n`));
+	logger.log('server', `Firestarter is listening on port ${port} 🎧\n`);
 });
 
 // Perform cleanup
 process.on('SIGINT', function () {
 	server.close(() => {
-		console.log(chalk.blue('\n\nShutting down Firestarter'));
+		logger.log('server', 'Shutting down Firestarter');
 		if (purgeTilesOnRestart) {
 			fs.rmdirSync(TILE_DIR, { recursive: true });
-			console.log(chalk.blackBright('🧹 Removing all tile images...'));
+			logger.log('server', '🧹 Removing all tile images...');
 		}
-		console.log(chalk.blue('Goodbye!\n\n'));
+		logger.log('server', 'Goodbye!\n\n');
 		process.exit();
 	});
 });

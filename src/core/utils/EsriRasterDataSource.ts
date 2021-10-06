@@ -26,7 +26,7 @@ import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
 import { ImageRequestOptions } from 'typings/esri';
-import { log } from './Logger';
+import logger, { log } from './Logger';
 import { getTileCoord } from '@core/getdata/dem';
 import { downloadImage, downloadJSON } from '@core/utils/download-utils';
 
@@ -127,13 +127,13 @@ export class EsriRasterDataSource {
 		if (!legends[this.datagroup]) {
 			try {
 				await this.generateLegend();
-				console.log(`${log.emojis.notepad} Legend for ${this.name} ready`);
+				logger.info(`${log.emojis.notepad} Legend for ${this.name} ready`);
 			} catch (e) {
-				console.log(`${log.emojis.errorX} Legend failed to fetch`, e);
+				logger.error(`${log.emojis.errorX} Legend failed to fetch`, e);
 			}
 		}
 
-		console.log(`${log.emojis.fetch} Fetching ${this.name} Tiles . . .`);
+		logger.info(`${log.emojis.fetch} Fetching ${this.name} Tiles . . .`);
 
 		try {
 			let tileCoords = getTileCoords(latLngBounds, scale);
@@ -212,9 +212,9 @@ export class EsriRasterDataSource {
 					throw e;
 				});
 
-			console.log(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
+			logger.info(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
 		} catch (e) {
-			console.log(
+			logger.error(
 				`${log.emojis.errorX}`,
 				`Problem fetching ${this.name}:\n`,
 				e
@@ -387,7 +387,7 @@ export class EsriRasterDataSource {
 
 		// If JSON has not yet been downloaded in this user session, download it:
 		if (!fs.existsSync(pathToPreexistingJson)) {
-			console.log(
+			logger.info(
 				`${log.emojis.fetch} Fetching ${this.name} legend from remote . . .`
 			);
 
@@ -430,7 +430,7 @@ export class EsriRasterDataSource {
 
 			// If Legend JSON is already downloaded in this user session, use it instead of fetching it
 		} else {
-			console.log(
+			logger.info(
 				`${log.emojis.fetch} Reading ${this.name} legend from local . . .`
 			);
 

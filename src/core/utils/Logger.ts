@@ -8,14 +8,88 @@
  *
  */
 
-import { createLogger, format, transports } from 'winston';
+import * as chalk from 'chalk';
+import * as Winston from 'winston';
+import { createLogger, format, info, transports } from 'winston';
 
-const { printf } = format;
+const { printf, errors } = format;
 
-export const logger = createLogger({
-	transports: [
+enum Levels {
+	info = 'info',
+	header = 'header',
+	success = 'success',
+	server = 'server',
+	warn = 'warn',
+	error = 'error',
+}
+
+const levels: {
+	levels: { [key in Levels]: number };
+	colors: { [key in Levels]: string };
+} = {
+	levels: {
+		info: 0,
+		header: 1,
+		success: 2,
+		server: 3,
+		warn: 4,
+		error: 5,
+	},
+	colors: {
+		info: 'green',
+		header: 'bold black',
+		success: 'green',
+		server: 'blue',
+		warn: 'yellowBG',
+		error: 'red',
+	},
+};
+
+const logger = createLogger({ levels: levels.levels });
+Winston.addColors(levels.colors);
+
+/**
+ * Override the winston console transport to support node --inspect, nodemon --inspect
+ * Because winston will use stdout, stderror with higher priority than console.log
+ * Taken from https://github.com/winstonjs/winston/issues/981#issuecomment-578417506
+ */
+function supportNodeInspect(winstonTransportsConsoleInstance) {
+	// Override log fn to support log to node --inspect
+	winstonTransportsConsoleInstance.log = (info, callback) => {
+		const { level, message, stack } = info;
+		console.log(level, message);
+
+		// Bending over backwards to get things to look nice in chrome node inspector
+		// switch (true) {
+		// 	case level.includes(Levels.info.toUpperCase()):
+		// 		console.log(chalk.green(level), message);
+		// 		break;
+		// 	case level.includes(Levels.warn.toUpperCase()):
+		// 		console.log(chalk.green(level), message);
+		// 		break;
+		// 	case level.includes(Levels.success.toUpperCase()):
+		// 		console.log(chalk.green(level), message);
+		// 		break;
+		// 	case level.includes(Levels.error.toUpperCase()):
+		// 		console.log(chalk.green(level), message);
+		// 		break;
+		// 	case level.includes(Levels.header.toUpperCase()):
+		// 		console.log(chalk.bold(message));
+		// 		break;
+		// }
+
+		callback();
+	};
+
+	return winstonTransportsConsoleInstance;
+}
+
+logger.add(
+	supportNodeInspect(
 		new transports.Console({
+			level: 'error',
 			format: format.combine(
+				errors({ stack: true }),
 				format((info) => {
 					info.level = info.level.toUpperCase();
 					return info;
@@ -26,9 +100,9 @@ export const logger = createLogger({
 					return `${level} ${message}`;
 				})
 			),
-		}),
-	],
-});
+		})
+	)
+);
 
 export const emojis = {
 	fetch: '🐕',

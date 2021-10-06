@@ -14,7 +14,7 @@
  */
 
 import * as L from 'leaflet';
-import { emojis } from '@core/utils/Logger';
+import logger, { emojis } from '@core/utils/Logger';
 import {
 	pixelBoundsToLatLngBounds,
 	refitBoundsToMapTiles,
@@ -118,12 +118,12 @@ class Extent {
 		/**
 		 *  Generate Digital Elevation Model for extent:
 		 */
-		console.log(`${emojis.fetch} Fetching DEM . . .`);
+		logger.info(`${emojis.fetch} Fetching DEM . . .`);
 		try {
 			await createDEM(this.latLngBounds);
-			console.log(`${emojis.successCheck} DEM Loaded`);
+			logger.info(`${emojis.successCheck} DEM Loaded`);
 		} catch (e) {
-			console.log(`${emojis.errorX}`, e);
+			logger.info(`${emojis.errorX}`, e);
 		}
 		/**
 		 *  Get Anderson Ground Cover Fuel Models
@@ -169,7 +169,7 @@ class Extent {
 		} else if (coord instanceof L.Point) {
 			point = coord;
 		} else {
-			console.log(
+			logger.error(
 				'Something is wrong with the coordinate type fed to getPixelValuesAt'
 			);
 		}
@@ -209,7 +209,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding extent down');
+		logger.info('Expanding extent down');
 		await this.fetchData();
 	}
 
@@ -234,7 +234,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding extent right');
+		logger.info('Expanding extent right');
 		await this.fetchData();
 	}
 
@@ -274,7 +274,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding extent up');
+		logger.info('Expanding extent up');
 		await this.fetchData();
 	}
 
@@ -314,7 +314,7 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding extent left');
+		logger.info('Expanding extent left');
 		await this.fetchData();
 	}
 }

@@ -20,7 +20,7 @@ import * as data from '@data';
 import { scale, extentSize } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
-import { emojis, log } from '@core/utils/Logger';
+import logger, { emojis, log } from '@core/utils/Logger';
 import Cell from './Cell';
 import chalk = require('chalk');
 import { roundTime } from '@core/utils/time';
@@ -107,14 +107,14 @@ export class Campaign {
 	 * @param endTime | Unix timestamp of end time, in seconds, not miliseconds
 	 */
 	async getWeather(latlng: L.LatLng, startTime: number, endTime: number) {
-		console.log(`${emojis.fetch} Fetching weather . . .`);
+		logger.info(`${emojis.fetch} Fetching weather . . .`);
 		try {
 			const rawForecast = await fetchWeatherRange(latlng, startTime, endTime);
 			const newHours = flattenWeatherHours(rawForecast);
 			this.weather = { ...this.weather, ...newHours };
-			console.log(`${emojis.successCheck} Weather ready`);
+			logger.info(`${emojis.successCheck} Weather ready`);
 		} catch (e) {
-			console.log(`${emojis.errorX} Weather failed to fetch`);
+			logger.error(`${emojis.errorX} Weather failed to fetch`);
 		}
 	}
 
@@ -122,9 +122,11 @@ export class Campaign {
 	 * Initialize a new campaign
 	 */
 	async initialize() {
-		console.log(
-			chalk.bold('-------------- Initializing campaign --------------')
+		logger.log(
+			'header',
+			'------------------- Initializing campaign -------------------'
 		);
+
 		const bounds = this.seedLatLng.toBounds(extentSize);
 		await this.createExtent(bounds);
 		await this.getWeather(
@@ -132,7 +134,10 @@ export class Campaign {
 			this.startTime,
 			this.startTime + 1.21e9
 		);
-		console.log(chalk.bold('-------------- Campaign created --------------'));
+		logger.log(
+			'header',
+			'---------------------- Campaign created ---------------------'
+		);
 
 		const firstBurningCell = await this.startFire(this.seedLatLng);
 
@@ -164,7 +169,9 @@ export class Campaign {
 
 		burningCell.setBurnStatus(1);
 
-		log(`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`);
+		logger.info(
+			`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
+		);
 
 		return burningCell;
 	}

@@ -30,6 +30,11 @@ export const TILE_DIR = path.join(TEMP_DIR, 'tileimages');
  */
 export const LEGENDS_DIR = path.join(TEMP_DIR, 'legends');
 
+/**
+ * Whether or not to purge tiles on server restart
+ */
+export const purgeTilesOnRestart = false;
+
 export default {
 	PORT,
 	TEMP_DIR,
