@@ -8,22 +8,27 @@
  *
  */
 
-/**
- * Convenience class to keep all logger logic centralized
- */
+import { createLogger, format, transports } from 'winston';
 
-// export class Logger {
-// 	static log(...args: any[]) {
-// 		console.log(...args);
-// 	}
+const { printf } = format;
 
-// 	static emojis = {
-// 		fetch: '🐕',
-// 		successCheck: '✅',
-// 		errorX: '❌',
-// 		fire: '🔥',
-// 	};
-// }
+export const logger = createLogger({
+	transports: [
+		new transports.Console({
+			format: format.combine(
+				format((info) => {
+					info.level = info.level.toUpperCase();
+					return info;
+				})(),
+				format.colorize(),
+				format.align(),
+				printf(({ level, message }) => {
+					return `${level} ${message}`;
+				})
+			),
+		}),
+	],
+});
 
 export const emojis = {
 	fetch: '🐕',
@@ -44,3 +49,5 @@ export const log = <F>function (...args: any[]) {
 };
 
 log.emojis = emojis;
+
+export default logger;

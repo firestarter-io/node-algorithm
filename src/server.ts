@@ -22,6 +22,7 @@ import '@config';
 import { PORT, TILE_DIR } from '@config';
 import router from './router';
 import { purgeTilesOnRestart } from '@config';
+import logger from '@core/utils/Logger';
 dotenv.config();
 
 // Set up app
