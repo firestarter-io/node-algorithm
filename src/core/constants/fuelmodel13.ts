@@ -12,7 +12,7 @@
  * Constants assocaited with LANDFIRE's fueld model layers
  */
 
-export interface FuelModel {
+export interface FuelModel13 {
 	/**
 	 * String description of the fuel model
 	 */
@@ -48,7 +48,7 @@ export interface FuelModel {
 	 */
 	moistureOfExtinction: number;
 	/**
-	 * Rate of spread, in chains / hour, assuming windspeed of 5 mi/h (8 km /h)
+	 * Rate of spread, in chains / hour, assuming windspeed of 5 mi/h (8 km/h)
 	 * and moisture content of 8%.  1 chain per hour ~= 1.1 foot per minute or ~ 18 meters/hour
 	 */
 	rateOfSpread: number;
@@ -62,7 +62,7 @@ export interface FuelModel {
  * Based on the 13 Fire Behavior Fuel Models as defined in LANDFIRE
  * Definitions from "Aids to Determining Fuel Models For Estimating Fire Behavior", Hal E. Anderson, 1982
  */
-export const FBFM13: { [key: string]: FuelModel } = {
+export const FBFM13: { [key: string]: FuelModel13 } = {
 	/** Grass and grass-dominated */
 	FBFM1: {
 		description: 'Short grass (1 foot)',

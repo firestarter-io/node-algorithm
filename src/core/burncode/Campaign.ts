@@ -23,13 +23,22 @@ import TimeStep from './Timestep';
 import { emojis, log } from '@core/utils/Logger';
 import Cell from './Cell';
 import chalk = require('chalk');
-import { dateRoundedToHour } from '@core/utils/time';
+import { roundTime } from '@core/utils/time';
 import {
 	fetchWeatherRange,
 	flattenWeatherHours,
 	WeatherByTheHour,
 } from '@core/getdata/weather';
+import PriorityQueue from './PriorityQueue';
+import { resample } from '@core/utils/arrays';
 
+/**
+ * Campaign class creates a new campaign object, which is the central unit of firestarter.
+ * A campaign manages its own configuration, user inputs, map extents and their associated data,
+ * timesteps, and writing campaign data to the database
+ *
+ * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/algorithm/campaign/)***
+ */
 export class Campaign {
 	/**
 	 * Unique id of the campaign
@@ -55,6 +64,10 @@ export class Campaign {
 	 * Weather forecast by the hour for the Campaign
 	 */
 	weather: WeatherByTheHour = {};
+	/**
+	 * The event queue for the campaign
+	 */
+	eventQueue: PriorityQueue;
 
 	/**
 	 * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -62,12 +75,13 @@ export class Campaign {
 	 * timesteps, and writing campaign data to the database
 	 * @param latlng | An initial latlng representing the starting point of the first first
 	 */
-	constructor(latlng: L.LatLng, startTime: number = dateRoundedToHour()) {
+	constructor(latlng: L.LatLng, startTime: number = roundTime.byHour()) {
 		this.seedLatLng = latlng;
 		this.extents = [];
-		this.startTime = dateRoundedToHour(new Date(startTime));
+		this.startTime = roundTime.byHour(startTime);
 		this.timesteps = [];
 		this.id = uuid();
+		this.eventQueue = new PriorityQueue();
 		data.campaigns[this.id] = this;
 	}
 
@@ -120,10 +134,9 @@ export class Campaign {
 		);
 		console.log(chalk.bold('-------------- Campaign created --------------'));
 
-		await this.startFire(this.seedLatLng);
+		const firstBurningCell = await this.startFire(this.seedLatLng);
 
-		this.start();
-		// this.propagateTimestep();
+		this.start(firstBurningCell);
 	}
 
 	/**
@@ -132,6 +145,9 @@ export class Campaign {
 	 * @param latLng | The latlng location to start the fire
 	 */
 	async startFire(latLng: L.LatLng) {
+		/**
+		 * Transform a latlng to a layer point, extrapolate to bounds, and create an extent
+		 */
 		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
@@ -149,13 +165,32 @@ export class Campaign {
 		burningCell.setBurnStatus(1);
 
 		log(`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`);
+
+		return burningCell;
 	}
 
 	/**
-	 * Begin the Campaign by creating the first timestep
+	 * Begin the Campaign by creating the first event in the eventQueue
 	 */
-	start() {
-		const first = new TimeStep(this);
+	start(firstBurningCell: Cell) {
+		this.eventQueue.enqueue({
+			time: this.startTime,
+			origin: this.startTime,
+			setToBurning: {
+				[firstBurningCell.id]: firstBurningCell,
+			},
+		});
+
+		this.continue();
+	}
+
+	/**
+	 * Calculates timesteps in succession, propagating the simulation forward through time
+	 */
+	continue() {
+		while (this.timesteps.length < 5000) {
+			new TimeStep(this);
+		}
 	}
 
 	/**
@@ -173,7 +208,17 @@ export class Campaign {
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
-			timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
+			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
+			timesteps: resample(
+				clone.timesteps.map((timestep) => timestep.snapshot),
+				'timestamp',
+				10 * 60 * 1000,
+				(timestep, resampledTime) => {
+					timestep.timestamp = resampledTime;
+					timestep.time = new Date(resampledTime).toLocaleString();
+					return timestep;
+				}
+			),
 		};
 
 		return simplifiedCampaign;

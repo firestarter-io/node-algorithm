@@ -20,30 +20,24 @@ import Campaign from '@core/burncode/Campaign';
 
 let camp: Campaign;
 
-// @ts-ignore
-global.camp = camp;
-globalThis.camp = camp;
-
 export const campaign = async (req, res) => {
-	const { mapBounds, pixelBounds, zoom } = req.body;
+	const { mapBounds } = req.body;
 	const latlng: L.LatLngLiteral = req.body.latlng;
 
 	// Get DEM tiles for map bounds
 	mapBounds &&
 		createDEM(L.latLngBounds(mapBounds._southWest, mapBounds._northEast));
 	if (latlng) {
-		// const topo = await getTopography(L.latLng(latlng));
-		// console.log(topo);
 		if (!camp) {
 			camp = new Campaign(L.latLng(latlng), 1624950000000);
 			await camp.initialize();
+			// Adding to global scope for quick value checking and debugging:
 			// @ts-ignore
-			global.camp = camp;
 			globalThis.camp = camp;
 			res.send(camp.toJSON());
 		} else {
-			const thing = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
-			// console.log(thing);
+			const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			// console.log(values);
 			await camp.startFire(L.latLng(latlng));
 			res.send(camp.toJSON());
 		}

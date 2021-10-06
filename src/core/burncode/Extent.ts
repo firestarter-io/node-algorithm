@@ -20,7 +20,7 @@ import {
 	refitBoundsToMapTiles,
 } from '@utils/geometry/bounds';
 import { createDEM } from '@core/getdata/dem';
-import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
+import { FBFuelModels13 } from '@core/getdata/rasterSources';
 import BurnMatrix from './BurnMatrix';
 import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
@@ -29,6 +29,13 @@ import Cell from './Cell';
 import { getTopography } from '@core/getData/getTopography';
 import Campaign from './Campaign';
 
+/**
+ * Extent class builds an object containing all required data for a given map extent.
+ * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
+ * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds.
+ *
+ * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/algorithm/extent/extent/)***
+ */
 class Extent {
 	/**
 	 * The Campaign that the extent belongs to
@@ -38,6 +45,10 @@ class Extent {
 	 * The latLngBounds of the extent (after refitting)
 	 */
 	latLngBounds: L.LatLngBounds;
+	/**
+	 * The string ID of the extent
+	 */
+	id: string;
 	/**
 	 * The projected bounds of the extent (after refitting)
 	 */
@@ -72,7 +83,7 @@ class Extent {
 	/**
 	 * Extent class builds an object containing all required data for a given map extent.
 	 * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
-	 * and it creates a burn matrix with coordinates corresponding the the extent pixel bounds
+	 * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds
 	 * @param latLngBounds | LatLngBounds to create area for
 	 */
 	constructor(latLngBounds: L.LatLngBounds, campaign: Campaign) {
@@ -91,6 +102,7 @@ class Extent {
 		 */
 		this._campaign = campaign;
 		this.latLngBounds = llbounds;
+		this.id = this.latLngBounds.toBBoxString();
 		this.pixelBounds = pixelBounds;
 		this.width = pixelBounds.getSize().x;
 		this.height = pixelBounds.getSize().y;
@@ -118,15 +130,6 @@ class Extent {
 		 */
 		try {
 			await FBFuelModels13.fetchTiles(this.latLngBounds);
-		} catch (e) {
-			throw e;
-		}
-
-		/**
-		 * Get Probabalistic Wildfire Risk raster
-		 */
-		try {
-			await WildfireRisk.fetchTiles(this.latLngBounds);
 		} catch (e) {
 			throw e;
 		}
@@ -172,9 +175,6 @@ class Extent {
 		}
 
 		const fuelModel = FBFuelModels13.getValueAt(coord);
-		const fireRisk = WildfireRisk.getValueAt(coord);
-
-		// const fuelVegetationType = LandfireFuelVegetationType.getValueAt(coord);
 
 		const { slope, aspect, elevation } = getTopography(point);
 
@@ -183,10 +183,7 @@ class Extent {
 			aspect,
 			elevation,
 			fuelModel,
-			fireRisk,
 		};
-
-		console.log(data);
 
 		return data;
 	}
@@ -195,7 +192,7 @@ class Extent {
 	 * Expands Extent downward, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandDown(noOfTiles: number = tilesToExpand) {
+	async expandDown(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -212,15 +209,15 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		console.log('Expanding Extent:');
-		this.fetchData();
+		console.log('Expanding extent down');
+		await this.fetchData();
 	}
 
 	/**
 	 * Expands Extent to the right, performs all resizing and data fetching of new data
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandRight(noOfTiles: number = tilesToExpand) {
+	async expandRight(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height, resize burn matrix:
@@ -237,7 +234,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent right');
+		await this.fetchData();
 	}
 
 	/**
@@ -245,7 +243,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandUp(noOfTiles: number = tilesToExpand) {
+	async expandUp(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -276,7 +274,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent up');
+		await this.fetchData();
 	}
 
 	/**
@@ -284,7 +283,7 @@ class Extent {
 	 * Restructures matrix and reindexes all cell tracking variables to the new coordinates
 	 * @param {Number} noOfTiles | Number of tiles to expand extent by
 	 */
-	expandLeft(noOfTiles: number = tilesToExpand) {
+	async expandLeft(noOfTiles: number = tilesToExpand) {
 		const morePixels = noOfTiles * tileSize;
 
 		// Adjust height and origin
@@ -315,7 +314,8 @@ class Extent {
 		this.latLngBounds = pixelBoundsToLatLngBounds(this.pixelBounds);
 
 		// Fetch data for new bounds:
-		this.fetchData();
+		console.log('Expanding extent left');
+		await this.fetchData();
 	}
 }
 

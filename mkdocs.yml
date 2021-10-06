@@ -1,4 +1,4 @@
-site_name: Firestarter.io Algorithm
+site_name: FireStarter Algorithm Docs
 nav:
   - About: index.md
   - Components:
@@ -6,17 +6,25 @@ nav:
       - Extent: algorithm/extent/extent.md
       - BurnMatrix: algorithm/burnmatrix.md
       - Cell: algorithm/cell/cell.md
+      - Priority Queue: algorithm/queue/queue.md
   - Algorithm:
       - Overview: algorithm/overview.md
       - Data: algorithm/data.md
 theme:
   name: material
   logo: assets/flame.png
-  favicon: assets/flame-orange.png
+  favicon: assets/flame-docs.png
   highlightjs: true
 extra_css:
   - stylesheets/extra.css
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 markdown_extensions:
   - attr_list
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
   - pymdownx.highlight:
       use_pygments: true

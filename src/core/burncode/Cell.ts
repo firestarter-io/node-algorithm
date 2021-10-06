@@ -13,16 +13,15 @@
  */
 
 import * as L from 'leaflet';
-import * as lodash from 'lodash';
 import { tileSize } from '@config';
 import { getElevation } from '@core/getdata/getTopography';
 import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
-import { FBFuelModels13, WildfireRisk } from '@core/getdata/rasterSources';
-import { FBFM13, FuelModel } from '@core/constants/fuelmodels';
-import { probabilityOfIgnition, alphaSlope, alphaWind } from './formulas';
+import { FBFuelModels13 } from '@core/getdata/rasterSources';
+import { FBFM13, FuelModel13 } from '@core/constants/fuelmodel13';
+import { alphaSlope, alphaWind } from './formulas';
 
 export enum Directions {
 	N = 'N',
@@ -37,6 +36,13 @@ export enum Directions {
 export type Bearings = 0 | 45 | 90 | 135 | 180 | 225 | 270 | 315;
 export type DistanceCoefficients = 1 | typeof ROOT2;
 
+/**
+ * A Cell represents a single pixel in a burn matrix.  It provides an abstraction layer
+ * for interaction with values in the burn matrix, as well as for retrieving data from
+ * an Extent.
+ *
+ * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/algorithm/cell/cell/)***
+ */
 class Cell {
 	/**
 	 * The layerpoint of the Cell's position
@@ -95,7 +101,7 @@ class Cell {
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
 	 */
-	neighbors(): NeighborCell[] {
+	get neighbors(): NeighborCell[] {
 		const [x, y] = this.position;
 		let neighbors = [];
 		for (let j = -1; j <= 1; j++) {
@@ -103,13 +109,13 @@ class Cell {
 				if (!(i === 0 && j === 0)) {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
-						new NeighborCell(
-							this.matrixPositionToProjectedPoint([x + i, y + j]),
-							this._extent,
-							this,
-							distanceTo,
-							Cell.neighborsMap[JSON.stringify([i, j])]
-						)
+						new NeighborCell({
+							layerPoint: this.matrixPositionToProjectedPoint([x + i, y + j]),
+							extent: this._extent,
+							originCell: this,
+							distanceCoefficient: distanceTo,
+							directionFromOrigin: Cell.neighborsMap[JSON.stringify([i, j])],
+						})
 					);
 				}
 			}
@@ -140,6 +146,50 @@ class Cell {
 	}
 
 	/**
+	 * Whether or not the cell is currently burning
+	 */
+	get isBurning() {
+		return this._burnMatrix.burningCells.has(this.id);
+	}
+
+	/**
+	 * Whether or not the cell is already burned out
+	 */
+	get isBurnedOut() {
+		return this._burnMatrix.burnedOutCells.has(this.id);
+	}
+
+	/**
+	 * Whether or not the cell is currently burnable.  Returns true by detault,
+	 * returns false if the Cell has a nonburnable fuel,  or if it is already
+	 * burned out or supressed
+	 */
+	get isIgnitable(): boolean {
+		/**
+		 * If the cell has a nonburnable fuel:
+		 */
+		if (this.fuelModel13.nonBurnable) {
+			return false;
+		}
+
+		/**
+		 * If the cell is already burning at this time
+		 */
+		if (this.isBurning) {
+			return false;
+		}
+
+		/**
+		 * If the cell has already been burned or supressed
+		 */
+		if (this.isBurnedOut) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Returns the burn status for the cell
 	 */
 	get burnStatus() {
@@ -155,59 +205,24 @@ class Cell {
 	}
 
 	/**
-	 * Calculates the burn status of the cell and sets it
-	 * @param touched Whether or not the cell has already been worked on in a given timestep
-	 * @returns the burn status of the cell after calculation
-	 */
-	calculateBurnStatus(touched: boolean) {
-		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= this.groundcoverIgnitionP) {
-			this.setBurnStatus(1);
-		}
-		/* If cell is already burning: */
-		if (this.burnStatus >= 1 && !touched) {
-			this.setBurnStatus(this.burnStatus + 1);
-		}
-
-		return this.burnStatus;
-	}
-
-	/**
-	 * Wildfire ignition probability based solely on groundcover fuels, not accounting
-	 * for wind, himidity, or other factors.
-	 *
-	 * Currently using USFS Probabalistic Wildfire Risk raster dataset
-	 *
-	 * @returns {number} P - probability, as a fraction of 1
-	 */
-	get groundcoverIgnitionP() {
-		const fireRisk = WildfireRisk.getValueAt(this.layerPoint);
-		if (this.fuelModel13.nonBurnable) {
-			return 0;
-		}
-		if (fireRisk === '0') {
-			return 0;
-		} else {
-			const [minRisk, maxRisk] = fireRisk.replace(' - ', ',').split(',');
-			const P = lodash.random(minRisk, maxRisk).round(3);
-			return P;
-		}
-	}
-
-	/**
 	 * Returns Andersen Fuel Model data for this cell
 	 */
-	get fuelModel13(): FuelModel {
+	get fuelModel13(): FuelModel13 {
 		const fuelModel = FBFuelModels13.getValueAt(this.layerPoint);
 		return FBFM13[fuelModel];
 	}
 
 	/**
-	 * Returns data for all data types for the Cell
+	 * Returns the RoS of the Cells fuel in meters / hour (chains / hour * ~20)
 	 */
-	get data() {
-		const gcP = this.groundcoverIgnitionP;
-		return gcP;
+	get fuelRateOfSpreadRaw(): number {
+		const fuel = this.fuelModel13;
+		// DEV ▼
+		// Constant RoS to test spread behavior
+		// return 50;
+		// DEV ▲
+
+		return fuel.rateOfSpread * 20;
 	}
 
 	/**
@@ -216,7 +231,7 @@ class Cell {
 	 * to be too close if it is within @param buffer tiles of the edge of its extent
 	 * @param buffer | Number of tiles to use as buffer
 	 */
-	checkDistanceToEdge(buffer: number = 1) {
+	async checkDistanceToEdge(buffer: number = 1 / 2) {
 		const [x, y] = this.position;
 
 		// Get distances from cell to 4 edges of extent
@@ -226,19 +241,35 @@ class Cell {
 		const dBottom = this._extent.height - y;
 
 		if (dLeft < tileSize * buffer) {
-			this._extent.expandLeft();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandLeft();
 		}
 
 		if (dRight < tileSize * buffer) {
-			this._extent.expandRight();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandRight();
 		}
 
 		if (dTop < tileSize * buffer) {
-			this._extent.expandUp();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandUp();
 		}
 
 		if (dBottom < tileSize * buffer) {
-			this._extent.expandDown();
+			console.log(
+				'Expanding extent at timestep #',
+				this._extent._campaign.timesteps.length
+			);
+			await this._extent.expandDown();
 		}
 	}
 }
@@ -274,13 +305,20 @@ export class NeighborCell extends Cell {
 	 * @param {DistanceCoefficients} distanceCoefficient | What to multiply the average Extent distance by
 	 * @param {Directions} directionFromOrigin | Name to help identify NeighborCell position relative to cell
 	 */
-	constructor(
-		layerPoint: L.Point,
-		extent: Extent,
-		originCell: Cell,
-		distanceCoefficient: DistanceCoefficients,
-		directionFromOrigin: Directions
-	) {
+	constructor(args: {
+		layerPoint: L.Point;
+		extent: Extent;
+		originCell: Cell;
+		distanceCoefficient: DistanceCoefficients;
+		directionFromOrigin: Directions;
+	}) {
+		const {
+			layerPoint,
+			extent,
+			originCell,
+			distanceCoefficient,
+			directionFromOrigin,
+		} = args;
 		super(layerPoint, extent);
 		this.originCell = originCell;
 		this.distanceCoefficient = distanceCoefficient;
@@ -359,32 +397,19 @@ export class NeighborCell extends Cell {
 	}
 
 	/**
-	 * Returns probability of ignition for this NeighborCell, including wind and slope factors
+	 * The rate of spread of fuel in meters/hour, as averaged between an origin Cell and NeighborCell
 	 */
-	get ignitionP() {
-		return probabilityOfIgnition(
-			this.groundcoverIgnitionP,
-			this.alphaWind,
-			this.alphaSlope
-		);
-	}
+	get rateOfSpread(): number {
+		/**
+		 * The RoS of the origin Cell's fuel
+		 */
+		const originCellRoS = this.originCell.fuelRateOfSpreadRaw;
+		/**
+		 * The RoS of this Cell's fuel
+		 */
+		const RoS = this.fuelRateOfSpreadRaw;
 
-	/**
-	 * Calculates the burn status of the cell and sets it
-	 * @param touched Whether or not the cell has already been worked on in a given timestep
-	 * @returns the burn status of the cell after calculation
-	 */
-	calculateBurnStatus(touched: boolean) {
-		/* If cell is unburned: */
-		if (this.burnStatus === 0 && Math.random() <= this.ignitionP) {
-			this.setBurnStatus(1);
-		}
-		/* If cell is already burning: */
-		if (this.burnStatus >= 1 && !touched) {
-			this.setBurnStatus(this.burnStatus + 1);
-		}
-
-		return this.burnStatus;
+		return (originCellRoS + RoS) / 2;
 	}
 
 	/**

@@ -19,6 +19,13 @@ import { CellPosition } from 'typings/firestarter';
 import Extent from './Extent';
 import Cell, { NeighborCell } from './Cell';
 
+/**
+ * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
+ * to burn status values, as well as quickly indexing what cells are currently in a given
+ * burn status.
+ *
+ * ***&#128211; &nbsp; See more in the [BurnMatrix documentation](https://firestarter-io.github.io/node-algorithm/algorithm/burnmatrix/)***
+ */
 class BurnMatrix {
 	/**
 	 * The mathjs matrix at the core of the BurnMatrix instance
@@ -31,19 +38,23 @@ class BurnMatrix {
 	/**
 	 * Cells that are currently burning
 	 */
-	burning: Map<string, Cell>;
+	burningCells: Map<string, Cell> = new Map<string, Cell>();
 	/**
 	 * Cells that are burned out
 	 */
-	burnedOut: Map<string, Cell>;
+	burnedOutCells: Map<string, Cell> = new Map<string, Cell>();
 	/**
 	 * Cells where fire has been supressed
 	 */
-	supressed: Map<string, Cell>;
+	supressedCells: Map<string, Cell> = new Map<string, Cell>();
 	/**
 	 * Array containing all tracked cell arrays
 	 */
-	trackedCells: Map<string, Cell>[];
+	trackedCells: Map<string, Cell>[] = [
+		this.burningCells,
+		this.supressedCells,
+		this.burnedOutCells,
+	];
 
 	/**
 	 * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
@@ -54,10 +65,6 @@ class BurnMatrix {
 	constructor(width: number, height: number, extent: Extent) {
 		this.matrix = math.zeros(height, width, 'sparse') as Matrix;
 		this._extent = extent;
-		this.burning = new Map();
-		this.burnedOut = new Map();
-		this.supressed = new Map();
-		this.trackedCells = [this.burning, this.supressed, this.burnedOut];
 	}
 
 	/**
@@ -76,17 +83,17 @@ class BurnMatrix {
 		switch (true) {
 			// BURNING
 			case burnStatus >= 1:
-				this.burning.set(cell.id, cell);
+				this.burningCells.set(cell.id, cell);
 				break;
 			// BURNED_OUT
 			case burnStatus === -1:
-				this.burnedOut.set(cell.id, cell);
-				this.burning.delete(cell.id);
+				this.burnedOutCells.set(cell.id, cell);
+				this.burningCells.delete(cell.id);
 				break;
 			// SUPRESSED
 			case burnStatus === -2:
-				this.burnedOut.set(cell.id, cell);
-				this.burning.delete(cell.id);
+				this.burnedOutCells.set(cell.id, cell);
+				this.burningCells.delete(cell.id);
 				break;
 			default:
 				break;

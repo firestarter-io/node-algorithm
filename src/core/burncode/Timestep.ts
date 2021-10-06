@@ -12,18 +12,21 @@
  * TimeStep class
  */
 
-import { Matrix } from 'mathjs';
 import { FireStarterEvent } from 'typings/firestarter';
-import { timestepSize } from '@config';
 import { Campaign } from './Campaign';
-import Cell, { NeighborCell } from './Cell';
 import { WeatherForecast } from '@core/getdata/weather';
+import { EventQueueItem } from './PriorityQueue';
+import { roundTime } from '@core/utils/time';
 
 class TimeStep {
 	/**
 	 * The Campaign that the timestep belongs to
 	 */
 	_campaign: Campaign;
+	/**
+	 * The event in the event queue that spawned the timestep
+	 */
+	event: EventQueueItem;
 	/**
 	 * Index of the timestep in a campaign's timestep array
 	 */
@@ -41,17 +44,13 @@ class TimeStep {
 	 */
 	weather: WeatherForecast;
 	/**
-	 * Ids of Cells that have been calculated in this timestep
-	 */
-	touchedCells: Set<string> = new Set<string>();
-	/**
 	 * Array of events that occurred in that timestep, if any
 	 */
 	events: FireStarterEvent[];
 	/**
 	 * Serializable JSON copy of the timestep
 	 */
-	snapshot;
+	snapshot: ReturnType<TimeStep['toJSON']>;
 
 	/**
 	 * A TimeStep produces a snapshot of the state of a Campaign at a given time.
@@ -63,28 +62,27 @@ class TimeStep {
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
 	constructor(campaign: Campaign) {
+		var start = process.hrtime();
 		this._campaign = campaign;
-		this.index = this._campaign.timesteps.length;
-		this.timestamp = this._campaign.startTime + this.index * timestepSize;
-		this.time = new Date(this.timestamp).toLocaleString();
-		this.weather = this.derivedWeather;
-		this._campaign.timesteps.push(this);
-		this.snapshot = this.toJSON();
-		this.burn();
-	}
+		this.event = campaign.eventQueue.next();
+		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
+		if (this.event) {
+			this.index = this._campaign.timesteps.length;
+			this.timestamp = this.event.time;
+			this.time = new Date(this.timestamp).toLocaleString();
+			this.weather = this.derivedWeather;
+			this.burn();
+			this.snapshot = this.toJSON();
+			this._campaign.timesteps.push(this);
+			var stop = process.hrtime(start);
 
-	/**
-	 * Checks whether or not a Cell's burn status has already been calculated in this timestep.
-	 * If not, it adds it to the touchedCells array
-	 * @param cell Cell or NeighborCell
-	 * @returns Boolean - whether or not cell has already been worked on in this timestep
-	 */
-	cellTouched(cell: Cell | NeighborCell) {
-		const touched = this.touchedCells.has(cell.id);
-		if (!touched) {
-			this.touchedCells.add(cell.id);
+			// DEV ▼
+			if (this.index % 100 === 0) {
+				console.log(`\nCalculated Timestep ${this.index}`);
+				console.log(`Time to execute: ${Math.floor(stop[1] / 1000)}μs`);
+			}
+			// DEV ▲
 		}
-		return touched;
 	}
 
 	/**
@@ -117,36 +115,50 @@ class TimeStep {
 	 * Calculates and applies burn statuses for Cells in this Timestep
 	 */
 	burn() {
-		this._campaign.extents.forEach((extent) => {
+		/**
+		 * For each cell in the event queue that is slated to be set to burning:
+		 */
+		new Map(Object.entries(this.event.setToBurning)).forEach((cellToBurn) => {
 			/**
-			 * Cloned Map of currently burning cells
+			 * If cell is ignitable, set it to burning
 			 */
-			const burningCells = new Map(extent.burnMatrix.burning);
+			if (cellToBurn.isIgnitable) {
+				cellToBurn.setBurnStatus(1);
+			}
 
-			burningCells.forEach((burningCell) => {
-				//
-				const touched = this.cellTouched(burningCell);
-				burningCell.calculateBurnStatus(touched);
+			/**
+			 * Determine if/when neighbor cells will be set to burning:
+			 */
+			cellToBurn.neighbors.forEach((neighbor) => {
+				/**
+				 * If the neighbor is currently burnable
+				 */
+				if (neighbor.isIgnitable) {
+					/**
+					 * The amount of time from the current TimeStep until this NeighborCell will ignite, in ms
+					 */
+					const timeToIgnite = // TODO: check this math!
+						neighbor.distanceCoefficient *
+						(cellToBurn._extent.averageDistance / neighbor.rateOfSpread) *
+						60 *
+						60 *
+						1000;
 
-				burningCell.neighbors().forEach((neighbor) => {
-					//
-					const touched = this.cellTouched(neighbor);
-					neighbor.calculateBurnStatus(touched);
-					//
-				});
+					/**
+					 * The timestamp at which the cell will ignite, in ms
+					 */
+					const timestampOfIgnition = this.timestamp + timeToIgnite;
+
+					this._campaign.eventQueue.enqueue({
+						time: roundTime.bySecond(Math.floor(Number(timestampOfIgnition))),
+						origin: this.timestamp,
+						setToBurning: { [neighbor.id]: neighbor.toCell() },
+					});
+				}
 			});
+
+			// cellToBurn.checkDistanceToEdge().then(() => {});
 		});
-
-		if (this.index < 100) {
-			this.next();
-		}
-	}
-
-	/**
-	 * Propagates the Campaign to the next timestep.
-	 */
-	next() {
-		new TimeStep(this._campaign);
 	}
 
 	/**
@@ -155,7 +167,7 @@ class TimeStep {
 	 * or database
 	 */
 	toJSON() {
-		const { _campaign, touchedCells, ...serializedTimestep } = this;
+		const { _campaign, event, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
 			extents: this._campaign.extents.map((extent) =>

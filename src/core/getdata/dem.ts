@@ -75,7 +75,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 	 * If tile image not yet in local disc, download it
 	 */
 	if (!tileInLocalFs) {
-		console.log('here');
+		console.log('Downloading DEM tile');
 		const downloadInstructions = {
 			tilename,
 			tiledir: 'DEM',

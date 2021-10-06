@@ -106,6 +106,16 @@ const firelineIntensity = (H: number, w: number, R: number): number =>
 	H * w * R;
 
 /**
+ * Slope adjustment paramter for rate of spread in rothermel
+ * @param slope Slope of ground (defined as tan(Φ) in Rothermel)
+ * @param packingRatio Unitless packing ratio β, as defined in Rothermel
+ * @returns
+ */
+const alphaSlopeRothermel = (slope: number, packingRatio: number) => {
+	return 5.275 * packingRatio ** -0.3 * slope ** 2;
+};
+
+/**
  * --------------------------- PERSONAL INVENTIONS ------------------------------
  */
 
