@@ -3,4 +3,4 @@ site
 .env
 .DS_Store
 
-src/tileimages
+temp

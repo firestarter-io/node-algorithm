@@ -20,7 +20,7 @@ import fetch from 'node-fetch';
 import * as L from 'leaflet';
 import { Bounds, bounds, Point } from 'leaflet';
 import { loadImage, Image, createCanvas, Canvas } from 'canvas';
-import { saveTile, scale } from '@config';
+import { LEGENDS_DIR, saveTile, scale, TILE_DIR } from '@config';
 import { DataGroups, ImageDataCache, legends, tileCache } from '@data';
 import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
@@ -155,9 +155,9 @@ export class EsriRasterDataSource {
 					.filter((coord: TileCoord) => {
 						const { X, Y, Z } = coord;
 						const tilename = `${Z}.${X}.${Y}`;
-						const filepath = path.resolve(
-							__dirname,
-							`../../tileimages/${this.datagroup}/${tilename}.png`
+						const filepath = path.join(
+							TILE_DIR,
+							`/${this.datagroup}/${tilename}.png`
 						);
 						return !fs.existsSync(filepath);
 					})
@@ -184,10 +184,7 @@ export class EsriRasterDataSource {
 					const { X, Y, Z } = coord;
 					const tilename = `${Z}.${X}.${Y}`;
 
-					const url = path.resolve(
-						__dirname,
-						`../../tileimages/${this.datagroup}/${tilename}.png`
-					);
+					const url = path.join(TILE_DIR, `/${this.datagroup}/${tilename}.png`);
 					return loadImage(url);
 				})
 			)
@@ -383,9 +380,9 @@ export class EsriRasterDataSource {
 	 */
 	public async generateLegend() {
 		let legend;
-		const pathToPreexistingJson = path.resolve(
-			__dirname,
-			`../../tileimages/${this.datagroup}.legend.json`
+		const pathToPreexistingJson = path.join(
+			LEGENDS_DIR,
+			`/${this.datagroup}.legend.json`
 		);
 
 		// If JSON has not yet been downloaded in this user session, download it:
@@ -427,7 +424,7 @@ export class EsriRasterDataSource {
 				rgbvalue: rgbValues[ind],
 			}));
 
-			const filepath = path.resolve(__dirname, `../../tileimages/`);
+			const filepath = path.join(LEGENDS_DIR, `/`);
 
 			await downloadJSON(legend, filepath, `${this.datagroup}.legend`);
 

@@ -11,6 +11,7 @@
 			"@controllers/*": ["controllers/*"],
 			"@typings/*": ["types/*"],
 			"@config": ["config"],
+			"@config/*": ["config/*"],
 			"@data": ["data"],
 			"@core/*": ["core/*"],
 			"@getdata/*": ["core/getdata/*"],

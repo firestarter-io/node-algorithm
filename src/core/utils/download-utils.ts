@@ -15,6 +15,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import axios, { AxiosResponse } from 'axios';
+import { TILE_DIR } from '@config';
 
 /**
  * Function to create an image path to save image to, if none exists yet
@@ -37,10 +38,7 @@ const createDir = async (filepath: string): Promise<void> => {
  * @param requestParameters | Request parameters
  */
 export const downloadImage = async (downloadInstructions) => {
-	const filepath = path.resolve(
-		__dirname,
-		`../../tileimages/${downloadInstructions.tiledir}`
-	);
+	const filepath = path.join(TILE_DIR, `/${downloadInstructions.tiledir}`);
 	await createDir(filepath);
 	const writer = fs.createWriteStream(
 		`${filepath}/${downloadInstructions.tilename}.png`

@@ -19,13 +19,14 @@ import * as bp from 'body-parser';
 import * as cors from 'cors';
 import * as chalk from 'chalk';
 import '@config';
+import { PORT, TILE_DIR } from '@config';
 import router from './router';
 import { purgeTilesOnRestart } from '@config';
 dotenv.config();
 
 // Set up app
 const app = express();
-const port: string = process.env.PORT || '9090';
+const port: string = process.env.PORT ?? PORT;
 
 // Set up middlewares
 app.use(bp.json());
@@ -46,7 +47,7 @@ process.on('SIGINT', function () {
 	server.close(() => {
 		console.log(chalk.blue('\n\nShutting down Firestarter'));
 		if (purgeTilesOnRestart) {
-			fs.rmdirSync('./src/tileimages', { recursive: true });
+			fs.rmdirSync(TILE_DIR, { recursive: true });
 			console.log(chalk.blackBright('🧹 Removing all tile images...'));
 		}
 		console.log(chalk.blue('Goodbye!\n\n'));

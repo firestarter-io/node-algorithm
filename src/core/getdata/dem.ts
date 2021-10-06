@@ -17,7 +17,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Canvas, createCanvas, loadImage } from 'canvas';
 import { getTileCoords } from '@utils/geometry/Bounds';
-import { saveTile, scale } from '@config';
+import { saveTile, scale, TILE_DIR } from '@config';
 import { TileCoord, PointLiteral } from 'typings/gis';
 import { DataGroups, tileCache } from '@data';
 import { downloadImage } from '@core/utils/download-utils';
@@ -61,10 +61,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 
 	const url: string = createMapboxRgbUrl(coord, process.env.MAPBOX_TOKEN);
 
-	const filepath = path.resolve(
-		__dirname,
-		`../../tileimages/DEM/${tilename}.png`
-	);
+	const filepath = path.join(TILE_DIR, `/DEM/${tilename}.png`);
 
 	/**
 	 * Whether or not the tile image was already saved to local disc
@@ -93,10 +90,7 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
 	 * imagedata to memory
 	 */
 	if (!tileCache.DEM[tilename]) {
-		const localUrl = path.resolve(
-			__dirname,
-			`../../tileimages/DEM/${tilename}.png`
-		);
+		const localUrl = path.join(TILE_DIR, `/DEM/${tilename}.png`);
 
 		try {
 			const image: any = await loadImage(localUrl);
