@@ -5,28 +5,12 @@
 	"main": "src/server.ts",
 	"scripts": {
 		"server": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
-		"start:debug": "FORCE_COLOR=3 node --inspect -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
-		"start": "nodemon",
-		"start:pm2": "pm2 start npm --name firestarter --watch -- run start:debug",
-		"launch": "pm2 start --name firestarter npm -- start",
+		"start": "FORCE_COLOR=3 node --inspect -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+		"launch": "pm2 start pm2.config.js",
 		"test": "jest --watch",
 		"build": "tsc",
 		"docs": "opener http://localhost:8000 && mkdocs serve",
-		"docs:deploy": "mkdocs gh-deploy",
-		"unimported": "unimported"
-	},
-	"nodemonConfig": {
-		"ignore": [
-			"**/*.test.ts",
-			"**/*.spec.ts",
-			".git",
-			"node_modules"
-		],
-		"watch": [
-			"src"
-		],
-		"exec": "npm run start:debug",
-		"ext": "ts"
+		"docs:deploy": "mkdocs gh-deploy"
 	},
 	"configurations": [
 		{
@@ -58,7 +42,6 @@
 		"@types/mathjs": "^9.4.2",
 		"@types/node": "^14.14.19",
 		"chalk": "^4.1.2",
-		"nodemon": "^2.0.9",
 		"opener": "^1.5.2",
 		"pm2": "^5.1.0",
 		"ts-node": "^10.0.0",

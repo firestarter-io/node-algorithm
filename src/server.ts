@@ -17,7 +17,6 @@ import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
-import * as chalk from 'chalk';
 import '@config';
 import { PORT, TILE_DIR } from '@config';
 import router from './router';

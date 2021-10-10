@@ -22,7 +22,6 @@ import Extent from './Extent';
 import TimeStep from './Timestep';
 import logger, { emojis, log } from '@core/utils/Logger';
 import Cell from './Cell';
-import chalk = require('chalk');
 import { roundTime } from '@core/utils/time';
 import {
 	fetchWeatherRange,
