@@ -395,6 +395,18 @@
   
 
           
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notes/" class="md-nav__link">
+        Notes
+      </a>
+    </li>
+  
+
+          
         </ul>
       </nav>
     </li>
@@ -504,7 +516,7 @@
 <p>The events in the event queue have an asymetrical, one-to-one relationship with <code>TimeStep</code>s. When a <code>Campaign</code> initializes, an initlal event is pushed into the queue, and then a first <code>TimeStep</code> is initialized. Within the constructor of a <code>TimeStep</code>, it looks for the first event in the queue, and if it finds one, it performs its function based on the next queue event.</p>
 <p>For every event in the queue, a <code>TimeStep</code> will be created. In turn, a <code>TimeStep</code> may spawn more events to be added to the queue. A <code>TimeStep</code> may spawn multiple events to be added, or none at all.</p>
 <figure style="padding: 10px; margin: 0;">
-    <img src="/algorithm/queue/queue-timestep.png" style="width: 400px; margin: auto;"">
+    <img src="../queue-timestep.png" style="width: 400px; margin: auto;"">
     <figcaption>
       An event in the queue, noted by <em>e</em> above, fuels the creation of a <code>TimeStep</code>, which in turn spawns more events to be added to the queue.
     </figcaption>
@@ -513,7 +525,7 @@
 <h2 id="timestep-queue-timestep">TimeStep → Queue → TimeStep</h2>
 <p>When a <code>TimeStep</code> grabs the next item out of the queue, that item is removed from the queue (though for debugging purposes, it is moved to <code>PriorityQueue.history</code>). A <code>TimeStep</code> always ends with a new one being created. The next <code>TimeStep</code> is always processing the next event in the queue, if there is one. And because a <code>TimeStep</code> may spawn new queue events (especially in the first portion of a simulation), the simulation runs in a continuous fashion.</p>
 <figure style="padding: 10px; margin: 0;">
-    <img src="/algorithm/queue/queue-timestep-more.png" style="margin: auto;"">
+    <img src="../queue-timestep-more.png" style="margin: auto;"">
     <figcaption style="margin-top: 20px;">
       TimeSteps spawn more events, which provide the information required in the next Timestep, and so on.
     </figcaption>
