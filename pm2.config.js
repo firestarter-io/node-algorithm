@@ -5,7 +5,8 @@ module.exports = {
 			name: 'firestarter',
 			script: 'npm',
 			args: 'start',
-			watch: true,
+			watch: ['src'],
+			ignore_watch: ['docs'],
 			env_development: {
 				FORCE_COLOR: 3,
 			},

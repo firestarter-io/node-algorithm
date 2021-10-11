@@ -12,16 +12,6 @@
 		"docs": "opener http://localhost:8000 && mkdocs serve",
 		"docs:deploy": "mkdocs gh-deploy"
 	},
-	"configurations": [
-		{
-			"type": "node",
-			"request": "attach",
-			"name": "Node: Nodemon",
-			"processId": "${command:PickProcess}",
-			"restart": true,
-			"protocol": "inspector"
-		}
-	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/firestarter-io/node-algorithm.git"

@@ -25,7 +25,7 @@ The events in the event queue have an asymetrical, one-to-one relationship with 
 For every event in the queue, a `TimeStep` will be created. In turn, a `TimeStep` may spawn more events to be added to the queue. A `TimeStep` may spawn multiple events to be added, or none at all.
 
 <figure style="padding: 10px; margin: 0;">
-    <img src="/algorithm/queue/queue-timestep.png" style="width: 400px; margin: auto;"">
+    <img src="../queue-timestep.png" style="width: 400px; margin: auto;"">
     <figcaption>
       An event in the queue, noted by <em>e</em> above, fuels the creation of a <code>TimeStep</code>, which in turn spawns more events to be added to the queue.
     </figcaption>
@@ -36,7 +36,7 @@ For every event in the queue, a `TimeStep` will be created. In turn, a `TimeStep
 When a `TimeStep` grabs the next item out of the queue, that item is removed from the queue (though for debugging purposes, it is moved to `PriorityQueue.history`). A `TimeStep` always ends with a new one being created. The next `TimeStep` is always processing the next event in the queue, if there is one. And because a `TimeStep` may spawn new queue events (especially in the first portion of a simulation), the simulation runs in a continuous fashion.
 
 <figure style="padding: 10px; margin: 0;">
-    <img src="/algorithm/queue/queue-timestep-more.png" style="margin: auto;"">
+    <img src="../queue-timestep-more.png" style="margin: auto;"">
     <figcaption style="margin-top: 20px;">
       TimeSteps spawn more events, which provide the information required in the next Timestep, and so on.
     </figcaption>

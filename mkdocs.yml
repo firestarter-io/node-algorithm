@@ -10,6 +10,7 @@ nav:
   - Algorithm:
       - Overview: algorithm/overview.md
       - Data: algorithm/data.md
+      - Notes: algorithm/notes.md
 theme:
   name: material
   logo: assets/flame.png
