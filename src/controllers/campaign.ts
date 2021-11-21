@@ -17,10 +17,12 @@
 import * as L from 'leaflet';
 import { createDEM } from '@getdata/dem';
 import Campaign from '@core/burncode/Campaign';
+import { Response } from 'express';
+import logger from '@core/utils/Logger';
 
 let camp: Campaign;
 
-export const campaign = async (req, res) => {
+export const campaign = async (req, res: Response) => {
 	const { mapBounds } = req.body;
 	const latlng: L.LatLngLiteral = req.body.latlng;
 
@@ -34,6 +36,9 @@ export const campaign = async (req, res) => {
 			// Adding to global scope for quick value checking and debugging:
 			// @ts-ignore
 			globalThis.camp = camp;
+			res.on('finish', () => {
+				logger.log('server', '📤 Sent campaign response');
+			});
 			res.send(camp.toJSON());
 		} else {
 			const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
