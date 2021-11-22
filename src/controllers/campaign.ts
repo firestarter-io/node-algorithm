@@ -21,7 +21,9 @@ import Campaign from '@core/burncode/Campaign';
 import logger from '@core/utils/Logger';
 import Profiler from '@core/utils/Profiler';
 
-const profiler = new Profiler({ active: true });
+const profiler = new Profiler({
+	active: JSON.parse(process.env.CAMPAIGN_PROFILER),
+});
 
 let camp: Campaign;
 
