@@ -22,7 +22,7 @@ import logger from '@core/utils/Logger';
 import Profiler from '@core/utils/Profiler';
 
 const profiler = new Profiler({
-	active: JSON.parse(process.env.CAMPAIGN_PROFILER),
+	active: !!process.env.CAMPAIGN_PROFILER,
 });
 
 let camp: Campaign;
