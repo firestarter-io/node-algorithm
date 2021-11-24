@@ -48,6 +48,15 @@ export interface FuelModel13 {
 	 */
 	moistureOfExtinction: number;
 	/**
+	 * Relative packing ratio is a unitless ratio
+	 * From "The Rothermel surface fire spread model and associated developments: A comprehensive explanation, 2018"
+	 */
+	relativePackingRatio: number;
+	/**
+	 * Bulk density, in lb/ft^2
+	 */
+	bulkDensity: number;
+	/**
 	 * Rate of spread, in chains / hour, assuming windspeed of 5 mi/h (8 km/h)
 	 * and moisture content of 8%.  1 chain per hour ~= 1.1 foot per minute or ~ 18 meters/hour
 	 */
@@ -60,7 +69,9 @@ export interface FuelModel13 {
 
 /**
  * Based on the 13 Fire Behavior Fuel Models as defined in LANDFIRE
- * Definitions from "Aids to Determining Fuel Models For Estimating Fire Behavior", Hal E. Anderson, 1982
+ * Definitions from "Aids to Determining Fuel Models For Estimating Fire Behavior", Hal E. Anderson, 1982.
+ *
+ * Data also pulled from the very comprehensive [The Rothermel surface fire spread model and associated developments: A comprehensive explanation, 2018](https://www.fs.usda.gov/treesearch/pubs/55928) - fuel model tables begin on page 31 (39 of pdf)
  */
 export const FBFM13: { [key: string]: FuelModel13 } = {
 	/** Grass and grass-dominated */
@@ -73,6 +84,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 1,
+		relativePackingRatio: 0.25,
+		bulkDensity: 0.03,
 		moistureOfExtinction: 12,
 		rateOfSpread: 78,
 	},
@@ -85,6 +98,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0.5,
 		},
 		fuelBedDepth: 1,
+		relativePackingRatio: 1.14,
+		bulkDensity: 0.18,
 		moistureOfExtinction: 15,
 		rateOfSpread: 35,
 	},
@@ -97,6 +112,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 2.5,
+		relativePackingRatio: 0.21,
+		bulkDensity: 0.06,
 		moistureOfExtinction: 25,
 		rateOfSpread: 104,
 	},
@@ -110,6 +127,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 5.01,
 		},
 		fuelBedDepth: 6,
+		relativePackingRatio: 0.52,
+		bulkDensity: 0.12,
 		moistureOfExtinction: 20,
 		rateOfSpread: 75,
 	},
@@ -122,6 +141,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 2,
 		},
 		fuelBedDepth: 2,
+		relativePackingRatio: 0.33,
+		bulkDensity: 0.08,
 		moistureOfExtinction: 20,
 		rateOfSpread: 18,
 	},
@@ -134,6 +155,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 2.5,
+		relativePackingRatio: 0.43,
+		bulkDensity: 0.11,
 		moistureOfExtinction: 25,
 		rateOfSpread: 32,
 	},
@@ -146,6 +169,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0.37,
 		},
 		fuelBedDepth: 2.5,
+		relativePackingRatio: 0.34,
+		bulkDensity: 0.09,
 		moistureOfExtinction: 40,
 		rateOfSpread: 20,
 	},
@@ -159,6 +184,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0.2,
+		relativePackingRatio: 5.17,
+		bulkDensity: 1.15,
 		moistureOfExtinction: 30,
 		rateOfSpread: 1.6,
 	},
@@ -171,6 +198,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0.2,
+		relativePackingRatio: 4.5,
+		bulkDensity: 0.8,
 		moistureOfExtinction: 25,
 		rateOfSpread: 7.5,
 	},
@@ -183,6 +212,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 2,
 		},
 		fuelBedDepth: 1,
+		relativePackingRatio: 2.35,
+		bulkDensity: 0.55,
 		moistureOfExtinction: 25,
 		rateOfSpread: 7.9,
 	},
@@ -196,6 +227,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 1,
+		relativePackingRatio: 1.62,
+		bulkDensity: 0.53,
 		moistureOfExtinction: 15,
 		rateOfSpread: 6,
 	},
@@ -208,6 +241,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 2.3,
+		relativePackingRatio: 2.06,
+		bulkDensity: 0.69,
 		moistureOfExtinction: 20,
 		rateOfSpread: 13,
 	},
@@ -220,6 +255,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 3,
+		relativePackingRatio: 2.68,
+		bulkDensity: 0.89,
 		moistureOfExtinction: 25,
 		rateOfSpread: 13.5,
 	},
@@ -234,6 +271,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 	'Snow/Ice': {
@@ -246,6 +285,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 	Agriculture: {
@@ -258,6 +299,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 	Water: {
@@ -270,6 +313,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 	Barren: {
@@ -282,6 +327,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 	NoData: {
@@ -294,6 +341,8 @@ export const FBFM13: { [key: string]: FuelModel13 } = {
 			live: 0,
 		},
 		fuelBedDepth: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
 		moistureOfExtinction: 0,
 	},
 };

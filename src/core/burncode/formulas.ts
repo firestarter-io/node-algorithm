@@ -107,6 +107,7 @@ const firelineIntensity = (H: number, w: number, R: number): number =>
 
 /**
  * Slope adjustment paramter for rate of spread in rothermel
+ * "As packing ratio increases, slope factor decreases. More tightly packed fuels have lower slope factors"
  * @param slope Slope of ground (defined as tan(Φ) in Rothermel)
  * @param packingRatio Unitless packing ratio β, as defined in Rothermel
  * @returns
@@ -114,6 +115,15 @@ const firelineIntensity = (H: number, w: number, R: number): number =>
 const alphaSlopeRothermel = (slope: number, packingRatio: number) => {
 	return 5.275 * packingRatio ** -0.3 * slope ** 2;
 };
+
+/**
+ * Rate of Spread of fire, with slope factored in
+ * @param rateOfSpread0 Rate of spread in the presence of no wind or slope
+ * @param alphaSlope Alpha slope as defined by Rothermel's alpha slope function
+ * @returns Rate of Spread with slope factored in
+ */
+const rosWithSlope = (rateOfSpread0: number, alphaSlope: number) =>
+	rateOfSpread0 * alphaSlope + 1;
 
 /**
  * --------------------------- PERSONAL INVENTIONS ------------------------------
