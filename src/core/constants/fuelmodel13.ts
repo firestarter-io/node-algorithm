@@ -8,68 +8,25 @@
  *
  */
 
+import { FuelModel } from './FuelModel';
+
 /**
- * Constants assocaited with LANDFIRE's fueld model layers
+ * Constants assocaited with LANDFIRE's fuel model layers
  */
 
-export interface FuelModel13 {
-	/**
-	 * String description of the fuel model
-	 */
-	description?: string;
-	/**
-	 * Fuel loading in tons / acre
-	 */
-	fuelLoading: {
-		/**
-		 * In 1 hour period
-		 */
-		oneHour: number;
-		/**
-		 * In 10 hour period
-		 */
-		tenHour: number;
-		/**
-		 * In 100 hour period
-		 */
-		hundredHour: number;
-		/**
-		 * Live
-		 */
-		live: number;
-	};
-	/**
-	 * Depth of fuel bed, in feet
-	 */
-	fuelBedDepth: number;
-	/**
-	 * The fuel moisture content, as a percent, weighed over all the fuel classes,
-	 * at which the fire will not spread. Also called extinction moisture content
-	 */
-	moistureOfExtinction: number;
-	/**
-	 * Relative packing ratio is a unitless ratio
-	 * From "The Rothermel surface fire spread model and associated developments: A comprehensive explanation, 2018"
-	 */
-	relativePackingRatio: number;
-	/**
-	 * Bulk density, in lb/ft^2
-	 */
-	bulkDensity: number;
+export interface FuelModel13 extends FuelModel {
 	/**
 	 * Rate of spread, in chains / hour, assuming windspeed of 5 mi/h (8 km/h)
 	 * and moisture content of 8%.  1 chain per hour ~= 1.1 foot per minute or ~ 18 meters/hour
+	 *
+	 * Drawn directly from [Aids to Determining Fuel Models For Estimating Fire Behavior, Hal E. Anderson, 1982](https://www.fs.fed.us/rm/pubs_int/int_gtr122.pdf).
 	 */
 	rateOfSpread: number;
-	/**
-	 * Nonburnable status for nonburnable fuel types
-	 */
-	nonBurnable?: true;
 }
 
 /**
  * Based on the 13 Fire Behavior Fuel Models as defined in LANDFIRE
- * Definitions from "Aids to Determining Fuel Models For Estimating Fire Behavior", Hal E. Anderson, 1982.
+ * Definitions from [Aids to Determining Fuel Models For Estimating Fire Behavior, Hal E. Anderson, 1982](https://www.fs.fed.us/rm/pubs_int/int_gtr122.pdf).
  *
  * Data also pulled from the very comprehensive [The Rothermel surface fire spread model and associated developments: A comprehensive explanation, 2018](https://www.fs.usda.gov/treesearch/pubs/55928) - fuel model tables begin on page 31 (39 of pdf)
  */
