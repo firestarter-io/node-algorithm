@@ -55,4 +55,32 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 0.05,
 		moistureOfExtinction: 15,
 	},
+	GR3: {
+		description: 'Low load, very coarse, humid climate grass',
+		fuelLoading: {
+			oneHour: 0.1,
+			tenHour: 0.4,
+			hundredHour: 0,
+			live: 1.5,
+		},
+		fuelBedDepth: 2.0,
+		packingRatio: 0.00143,
+		relativePackingRatio: 0.15,
+		bulkDensity: 0.05,
+		moistureOfExtinction: 30,
+	},
+	GR4: {
+		description: 'Moderate load, dry climate grass',
+		fuelLoading: {
+			oneHour: 0.25,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 1.9,
+		},
+		fuelBedDepth: 2.0,
+		packingRatio: 0.00154,
+		relativePackingRatio: 0.22,
+		bulkDensity: 0.05,
+		moistureOfExtinction: 15,
+	},
 };
