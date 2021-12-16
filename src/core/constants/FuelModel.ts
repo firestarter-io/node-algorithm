@@ -13,6 +13,14 @@
  */
 export interface FuelModel {
 	/**
+	 * The code label for the fuel type, matches value for the key referencing the FuelModel
+	 */
+	label: string;
+	/**
+	 * The name / title of the fuel type
+	 */
+	name?: string;
+	/**
 	 * String description of the fuel model
 	 */
 	description?: string;

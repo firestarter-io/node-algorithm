@@ -27,8 +27,12 @@ export interface FuelModel40 extends FuelModel {
  * Data also pulled from the very comprehensive [The Rothermel surface fire spread model and associated developments: A comprehensive explanation, 2018](https://www.fs.usda.gov/treesearch/pubs/55928) - fuel model tables begin on page 31 (39 of pdf)
  */
 export const FBFM40: { [key: string]: FuelModel40 } = {
+	/** Grass Fuel Type Models (GR) */
 	GR1: {
-		description: 'Short, sparse, dry climate grass',
+		label: 'GR1',
+		name: 'Short, sparse, dry climate grass',
+		description:
+			'The primary carrier of fire in GR1 is sparse grass, though small amounts of fine dead fuel may be present. The grass in GR1 is generally short, either naturally or by grazing, and may be sparse or discontinuous. The moisture of extinction of GR1 is indicative of a dry climate fuelbed, but GR1 may also be applied in high-extinction moisture fuelbeds because in both cases predicted spread rate and flame length are low compared to other GR models.',
 		fuelLoading: {
 			oneHour: 0.1,
 			tenHour: 0,
@@ -42,7 +46,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GR2: {
-		description: 'Low load, dry climate grass',
+		label: 'GR2',
+		name: 'Low load, dry climate grass',
+		description:
+			'The primary carrier of fire in GR2 is grass, though small amounts of fine dead fuel may be present. Load is greater than GR1, and fuelbed may be more continuous. Shrubs, if present, do not affect fire behavior.',
 		fuelLoading: {
 			oneHour: 0.1,
 			tenHour: 0,
@@ -56,7 +63,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GR3: {
-		description: 'Low load, very coarse, humid climate grass',
+		label: 'GR3',
+		name: 'Low load, very coarse, humid climate grass',
+		description:
+			'The primary carrier of fire in GR3 is continuous, coarse, humid-climate grass. Grass and herb fuel load is relatively light; fuelbed depth is about 2 feet. Shrubs are not present in significant quantity to affect fire behavior.',
 		fuelLoading: {
 			oneHour: 0.1,
 			tenHour: 0.4,
@@ -70,7 +80,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	GR4: {
-		description: 'Moderate load, dry climate grass',
+		label: 'GR4',
+		name: 'Moderate load, dry climate grass',
+		description:
+			'The primary carrier of fire in GR4 is continuous, dry-climate grass. Load and depth are greater than GR2; fuelbed depth is about 2 feet.',
 		fuelLoading: {
 			oneHour: 0.25,
 			tenHour: 0,
@@ -84,7 +97,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GR5: {
-		description: 'Low load, humid climate grass',
+		label: 'GR5',
+		name: 'Low load, humid climate grass',
+		description:
+			'The primary carrier of fire in GR5 is humid-climate grass. Load is greater than GR3 but depth is lower, about 1 to 2 feet.',
 		fuelLoading: {
 			oneHour: 0.4,
 			tenHour: 0,
@@ -98,7 +114,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 40,
 	},
 	GR6: {
-		description: 'Moderate load, humid climate grass',
+		label: 'GR6',
+		name: 'Moderate load, humid climate grass',
+		description:
+			'The primary carrier of fire in GR6 is continuous humid-climate grass. Load is greater than GR5 but depth is about the same. Grass is less coarse than GR5.',
 		fuelLoading: {
 			oneHour: 0.1,
 			tenHour: 0,
@@ -112,7 +131,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 40,
 	},
 	GR7: {
-		description: 'High load, dry climate grass',
+		label: 'GR7',
+		name: 'High load, dry climate grass',
+		description:
+			'The primary carrier of fire in GR7 is continuous dry-climate grass. Load and depth are greater than GR4. Grass is about 3 feet tall.',
 		fuelLoading: {
 			oneHour: 1.0,
 			tenHour: 0,
@@ -126,7 +148,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GR8: {
-		description: 'High load, very coarse, humid climate grass',
+		label: 'GR8',
+		name: 'High load, very coarse, humid climate grass',
+		description:
+			'The primary carrier of fire in GR8 is continuous, very coarse, humidclimate grass. Load and depth are greater than GR6. Spread rate and flame length can be extreme if grass is fully cured.',
 		fuelLoading: {
 			oneHour: 0.5,
 			tenHour: 1.0,
@@ -140,7 +165,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	GR9: {
-		description: 'Very high load, humid climate grass',
+		label: 'GR9',
+		name: 'Very high load, humid climate grass',
+		description:
+			'The primary carrier of fire in GR9 is dense, tall, humid-climate grass. Load and depth are greater than GR8, about 6 feet tall. Spread rate and flame length can be extreme if grass is fully or mostly cured.',
 		fuelLoading: {
 			oneHour: 1.0,
 			tenHour: 1.0,
@@ -153,8 +181,12 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 0.1,
 		moistureOfExtinction: 40,
 	},
+	/** Grass-Shrub Fuel Type Models (GS) */
 	GS1: {
-		description: 'Low load, dry climate grass-shrub',
+		label: 'GS1',
+		name: 'Low load, dry climate grass-shrub',
+		description:
+			'The primary carrier of fire in GS1 is grass and shrubs combined. Shrubs are about 1 foot high, grass load is low. Spread rate is moderate; flame length low. Moisture of extinction is low.',
 		fuelLoading: {
 			oneHour: 0.2,
 			tenHour: 0,
@@ -168,7 +200,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GS2: {
-		description: 'Moderate load, dry climate grass-shrub',
+		label: 'GS2',
+		name: 'Moderate load, dry climate grass-shrub',
+		description:
+			'The primary carrier of fire in GS2 is grass and shrubs combined. Shrubs are 1 to 3 feet high, grass load is moderate. Spread rate is high; flame length moderate. Moisture of extinction is low.',
 		fuelLoading: {
 			oneHour: 0.5,
 			tenHour: 0.5,
@@ -182,7 +217,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GS3: {
-		description: 'Moderate load, humid climate grass-shrub',
+		label: 'GS3',
+		name: 'Moderate load, humid climate grass-shrub',
+		description:
+			'The primary carrier of fire in GS3 is grass and shrubs combined. Moderate grass/shrub load, average grass/shrub depth less than 2 feet. Spread rate is high; flame length moderate. Moisture of extinction is high.',
 		fuelLoading: {
 			oneHour: 0.3,
 			tenHour: 0.25,
@@ -196,7 +234,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	GS4: {
-		description: 'High load, humid climate grass-shrub',
+		label: 'GS4',
+		name: 'High load, humid climate grass-shrub',
+		description:
+			'The primary carrier of fire in GS4 is grass and shrubs combined. Heavy grass/shrub load, depth greater than 2 feet. Spread rate high; flame length very high. Moisture of extinction is high.',
 		fuelLoading: {
 			oneHour: 1.9,
 			tenHour: 0.3,
@@ -209,8 +250,12 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 0.28,
 		moistureOfExtinction: 40,
 	},
+	/** Shrub Fuel Type Models (SH) */
 	SH1: {
-		description: 'Low load, dry climate shrub',
+		label: 'SH1',
+		name: 'Low load, dry climate shrub',
+		description:
+			'The primary carrier of fire in SH1 is woody shrubs and shrub litter. Low shrub fuel load, fuelbed depth about 1 foot; some grass may be present. Spread rate is very low; flame length very low.',
 		fuelLoading: {
 			oneHour: 0.25,
 			tenHour: 0.25,
@@ -224,7 +269,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	SH2: {
-		description: 'Moderate load, dry climate shrub',
+		label: 'SH2',
+		name: 'Moderate load, dry climate shrub',
+		description:
+			'The primary carrier of fire in SH2 is woody shrubs and shrub litter. Moderate fuel load (higher than SH1), depth about 1 foot, no grass fuel present. Spread rate is low; flame length low.',
 		fuelLoading: {
 			oneHour: 1.35,
 			tenHour: 2.4,
@@ -238,7 +286,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	SH3: {
-		description: 'Moderate load, humid climate shrub',
+		label: 'SH3',
+		name: 'Moderate load, humid climate shrub',
+		description:
+			'The primary carrier of fire in SH3 is woody shrubs and shrub litter. Moderate shrub load, possibly with pine overstory or herbaceous fuel, fuel bed depth 2 to 3 feet. Spread rate is low; flame length low.',
 		fuelLoading: {
 			oneHour: 0.45,
 			tenHour: 3.0,
@@ -252,7 +303,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 40,
 	},
 	SH4: {
-		description: 'Low load, humid climate timber-shrub',
+		label: 'SH4',
+		name: 'Low load, humid climate timber-shrub',
+		description:
+			'The primary carrier of fire in SH4 is woody shrubs and shrub litter. Low to moderate shrub and litter load, possibly with pine overstory, fuel bed depth about 3 feet. Spread rate is high; flame length moderate.',
 		fuelLoading: {
 			oneHour: 0.85,
 			tenHour: 1.15,
@@ -266,7 +320,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	SH5: {
-		description: 'High load, dry climate shrub',
+		label: 'SH5',
+		name: 'High load, dry climate shrub',
+		description:
+			'The primary carrier of fire in SH5 is woody shrubs and shrub litter. Heavy shrub load, depth 4-6 feet. Spread rate very high; flame length very high. Moisture of extinction is high.',
 		fuelLoading: {
 			oneHour: 3.6,
 			tenHour: 2.1,
@@ -280,7 +337,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	SH6: {
-		description: 'Low load, humid climate shrub',
+		label: 'SH6',
+		name: 'Low load, humid climate shrub',
+		description:
+			'The primary carrier of fire in SH6 is woody shrubs and shrub litter. Dense shrubs, little or no herbaceous fuel, fuelbed depth about 2 feet. Spread rate is high; flame length high.',
 		fuelLoading: {
 			oneHour: 2.9,
 			tenHour: 1.45,
@@ -294,7 +354,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	SH7: {
-		description: 'Very high load, dry climate shrub',
+		label: 'SH7',
+		name: 'Very high load, dry climate shrub',
+		description:
+			'The primary carrier of fire in SH7 is woody shrubs and shrub litter. Very heavy shrub load, depth 4 to 6 feet. Spread rate lower than SH7, but flame length similar. Spread rate is high; flame length very high.',
 		fuelLoading: {
 			oneHour: 3.5,
 			tenHour: 5.3,
@@ -308,7 +371,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 15,
 	},
 	SH8: {
-		description: 'High load, humid climate shrub',
+		label: 'SH8',
+		name: 'High load, humid climate shrub',
+		description:
+			'The primary carrier of fire in SH8 is woody shrubs and shrub litter. Dense shrubs, little or no herbaceous fuel, fuelbed depth about 3 feet. Spread rate is high; flame length high.',
 		fuelLoading: {
 			oneHour: 2.05,
 			tenHour: 3.4,
@@ -322,7 +388,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 40,
 	},
 	SH9: {
-		description: 'Very high load, humid climate shrub',
+		label: 'SH9',
+		name: 'Very high load, humid climate shrub',
+		description:
+			'The primary carrier of fire in SH9 is woody shrubs and shrub litter. Dense, finely branched shrubs with significant fine dead fuel, about 4 to 6 feet tall; some herbaceous fuel may be present. Spread rate is high, flame length very high.',
 		fuelLoading: {
 			oneHour: 4.5,
 			tenHour: 2.45,
@@ -335,8 +404,12 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 0.16,
 		moistureOfExtinction: 40,
 	},
+	/** Timber-Understory Fuel Type Models (TU) */
 	TU1: {
-		description: 'Light load, dry climate timber-grass-shrub',
+		label: 'TU1',
+		name: 'Light load, dry climate timber-grass-shrub',
+		description:
+			'The primary carrier of fire in TU1 is low load of grass and/or shrub with litter. Spread rate is low; flame length low.',
 		fuelLoading: {
 			oneHour: 0.2,
 			tenHour: 0.9,
@@ -350,7 +423,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 20,
 	},
 	TU2: {
-		description: 'Moderate load, humid climate timber-shrub',
+		label: 'TU2',
+		name: 'Moderate load, humid climate timber-shrub',
+		description:
+			'The primary carrier of fire in TU2 is moderate litter load with shrub component. High extinction moisture. Spread rate is moderate; flame length low.',
 		fuelLoading: {
 			oneHour: 0.95,
 			tenHour: 1.8,
@@ -364,7 +440,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	TU3: {
-		description: 'Moderate load, humid climate timber-grass-shrub',
+		label: 'TU3',
+		name: 'Moderate load, humid climate timber-grass-shrub',
+		description:
+			'The primary carrier of fire in TU3 is moderate forest litter with grass and shrub components. Extinction moisture is high. Spread rate is high; flame length moderate.',
 		fuelLoading: {
 			oneHour: 1.1,
 			tenHour: 0.15,
@@ -378,7 +457,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	TU4: {
-		description: 'Dwarf conifer understory',
+		label: 'TU4',
+		name: 'Dwarf conifer understory',
+		description:
+			'The primary carrier of fire in TU4 is short conifer trees with grass or moss understory. Spread rate is moderate; flame length moderate.',
 		fuelLoading: {
 			oneHour: 4.5,
 			tenHour: 0,
@@ -392,7 +474,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 12,
 	},
 	TU5: {
-		description: 'Very high load, dry climate timber-shrub',
+		label: 'TU5',
+		name: 'Very high load, dry climate timber-shrub',
+		description:
+			'The primary carrier of fire in TU5 is heavy forest litter with a shrub or small tree understory. Spread rate is moderate; flame length moderate.',
 		fuelLoading: {
 			oneHour: 4.0,
 			tenHour: 4.0,
@@ -405,8 +490,12 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 0.64,
 		moistureOfExtinction: 25,
 	},
+	/** Timber Litter Fuel Type Models (TL) */
 	TL1: {
-		description: 'Low load, compact conifer litter',
+		label: 'TL1',
+		name: 'Low load, compact conifer litter',
+		description:
+			'The primary carrier of fire in TL1 is compact forest litter. Light to moderate load, fuels 1 to 2 inches deep. May be used to represent a recently burned forest. Spread rate is very low; flame length very low.',
 		fuelLoading: {
 			oneHour: 1.0,
 			tenHour: 2.2,
@@ -420,7 +509,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 30,
 	},
 	TL2: {
-		description: 'Low broadleaf litter',
+		label: 'TL2',
+		name: 'Low broadleaf litter',
+		description:
+			'The primary carrier of fire in TL2 is broadleaf (hardwood) litter. Low load, compact broadleaf litter. Spread rate is very low; flame length very low.',
 		fuelLoading: {
 			oneHour: 1.4,
 			tenHour: 2.3,
@@ -434,7 +526,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	TL3: {
-		description: 'Moderate load conifer litter',
+		label: 'TL3',
+		name: 'Moderate load conifer litter',
+		description:
+			'The primary carrier of fire in TL3 is moderate load conifer litter, light load of coarse fuels. Spread rate is very low; flame length low.',
 		fuelLoading: {
 			oneHour: 0.5,
 			tenHour: 2.2,
@@ -448,7 +543,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 20,
 	},
 	TL4: {
-		description: 'Small downed logs',
+		label: 'TL4',
+		name: 'Small downed logs',
+		description:
+			'The primary carrier of fire in TL4 is moderate load of fine litter and coarse fuels. Includes small diameter downed logs. Spread rate is low; flame length low.',
 		fuelLoading: {
 			oneHour: 0.5,
 			tenHour: 1.5,
@@ -462,7 +560,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	TL5: {
-		description: 'High load conifer litter',
+		label: 'TL5',
+		name: 'High load conifer litter',
+		description:
+			'The primary carrier of fire in TL5 is high load conifer litter; light slash or mortality fuel. Spread rate is low; flame length low.',
 		fuelLoading: {
 			oneHour: 1.15,
 			tenHour: 2.5,
@@ -476,7 +577,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	TL6: {
-		description: 'Moderate load broadleaf litter',
+		label: 'TL6',
+		name: 'Moderate load broadleaf litter',
+		description:
+			'The primary carrier of fire in TL6 is moderate load broadleaf litter, less compact than TL2. Spread rate is moderate; flame length low.',
 		fuelLoading: {
 			oneHour: 2.4,
 			tenHour: 1.2,
@@ -490,7 +594,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	TL7: {
-		description: 'Large downed logs',
+		label: 'TL7',
+		name: 'Large downed logs',
+		description:
+			'The primary carrier of fire in TL7 is heavy load forest litter, includes larger diameter downed logs. Spread rate low; flame length low.',
 		fuelLoading: {
 			oneHour: 0.3,
 			tenHour: 1.4,
@@ -504,7 +611,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	TL8: {
-		description: 'Long-needle litter',
+		label: 'TL8',
+		name: 'Long-needle litter',
+		description:
+			'The primary carrier of fire in TL8 is moderate load long-needle pine litter, may include small amount of herbaceous load. Spread rate is moderate; flame length low.',
 		fuelLoading: {
 			oneHour: 5.8,
 			tenHour: 1.4,
@@ -518,7 +628,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 35,
 	},
 	TL9: {
-		description: 'Very high load broadleaf litter',
+		label: 'TL9',
+		name: 'Very high load broadleaf litter',
+		description:
+			'The primary carrier of fire in TL9 is very high load, fluffy broadleaf litter. TL9 can also be used to represent heavy needle-drape. Spread rate is moderate; flame length moderate.',
 		fuelLoading: {
 			oneHour: 6.65,
 			tenHour: 3.3,
@@ -531,8 +644,12 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		bulkDensity: 1.08,
 		moistureOfExtinction: 35,
 	},
+	/** Slash-Blowdown Fuel Type Models (SB) */
 	SB1: {
-		description: 'Low load activity fuel',
+		label: 'SB1',
+		name: 'Low load activity fuel',
+		description:
+			'The primary carrier of fire in SB1 is light dead and down activity fuel. Fine fuel load is 10 to 20 t/ac, weighted toward fuels 1 to 3 inches diameter class, depth is less than 1 foot. Spread rate is moderate; flame length low.',
 		fuelLoading: {
 			oneHour: 1.5,
 			tenHour: 3.0,
@@ -546,7 +663,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	SB2: {
-		description: 'Moderate load activity or low load blowdown',
+		label: 'SB2',
+		name: 'Moderate load activity or low load blowdown',
+		description:
+			'The primary carrier of fire in SB2 is moderate dead and down activity fuel or light blowdown. Fine fuel load is 7 to 12 t/ac, evenly distributed across 0 to 0.25, 0.25 to 1, and 1 to 3 inch diameter classes, depth is about 1 foot. Blowdown is scattered, with many trees still standing. Spread rate is moderate; flame length moderate.',
 		fuelLoading: {
 			oneHour: 4.5,
 			tenHour: 4.25,
@@ -560,7 +680,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	SB3: {
-		description: 'High load activity fuel or moderate low blowdown',
+		label: 'SB3',
+		name: 'High load activity fuel or moderate low blowdown',
+		description:
+			'The primary carrier of fire in SB3 is heavy dead and down activity fuel or moderate blowdown. Fine fuel load is 7 to 12 t/ac, weighted toward 0 to 0.25 inch diameter class, depth is more than 1 foot. Blowdown is moderate, trees compacted to near the ground. Spread rate is high; flame length high.',
 		fuelLoading: {
 			oneHour: 5.5,
 			tenHour: 2.75,
@@ -574,7 +697,10 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		moistureOfExtinction: 25,
 	},
 	SB4: {
-		description: 'High load blowdown',
+		label: 'SB4',
+		name: 'High load blowdown',
+		description:
+			'The primary carrier of fire in SB4 is heavy blowdown fuel. Blowdown istotal, fuelbed not compacted, most foliage and fine fuel still attached to blowdown.Spread rate very high; flame length very high.',
 		fuelLoading: {
 			oneHour: 5.25,
 			tenHour: 3.5,
@@ -586,5 +712,96 @@ export const FBFM40: { [key: string]: FuelModel40 } = {
 		relativePackingRatio: 1.08,
 		bulkDensity: 0.24,
 		moistureOfExtinction: 25,
+	},
+	/** Nonburnables */
+	NB1: {
+		label: 'NB1',
+		name: 'Urban/Developed',
+		description:
+			'Fuel model NB1 consists of land covered by urban and suburban development. To be called NB1, the area under consideration must not support wildland fire spread. In some cases, areas mapped as NB1 may experience structural fire losses during a wildland fire incident; however, structure ignition in those cases is either house-to-house or by firebrands, neither of which is directly modeled using fire behavior fuel models. If sufficient fuel vegetation surrounds structures such that wildland fire spread is possible, then choose a fuel model appropriate for the wildland vegetation rather than NB1.',
+		nonBurnable: true,
+		fuelLoading: {
+			oneHour: 0,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 0,
+		},
+		fuelBedDepth: 0,
+		packingRatio: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
+		moistureOfExtinction: 0,
+	},
+	NB2: {
+		label: 'NB2',
+		name: 'Snow/Ice',
+		description:
+			'Land covered by permanent snow or ice is included in NB2. Areas covered by seasonal snow can be mapped to two different fuel models: NB2 for use when snow-covered and another for use in the fire season.',
+		nonBurnable: true,
+		fuelLoading: {
+			oneHour: 0,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 0,
+		},
+		fuelBedDepth: 0,
+		packingRatio: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
+		moistureOfExtinction: 0,
+	},
+	NB3: {
+		label: 'NB3',
+		name: 'Agricultural',
+		description:
+			'Fuel model NB3 is agricultural land maintained in a nonburnable condition; examples include irrigated annual crops, mowed or tilled orchards, and so forth. However, there are many agricultural areas that are not kept in a nonburnable condition. For example, grass is often allowed to grow beneath vines or orchard trees, and wheat or similar crops are allowed to cure before harvest; in those cases use a fuel model other than NB3.',
+		nonBurnable: true,
+		fuelLoading: {
+			oneHour: 0,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 0,
+		},
+		fuelBedDepth: 0,
+		packingRatio: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
+		moistureOfExtinction: 0,
+	},
+	NB8: {
+		label: 'NB8',
+		name: 'Open Water',
+		description:
+			'Land covered by open bodies of water such as lakes, rivers and oceans comprises NB8.',
+		nonBurnable: true,
+		fuelLoading: {
+			oneHour: 0,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 0,
+		},
+		fuelBedDepth: 0,
+		packingRatio: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
+		moistureOfExtinction: 0,
+	},
+	NB9: {
+		label: 'NB9',
+		name: 'Bare Ground',
+		description:
+			'Land devoid of enough fuel to support wildland fire spread is covered by fuel model NB9. Such areas may include gravel pits, arid deserts with little vegetation, sand dunes, rock outcroppings, beaches, and so forth.',
+		nonBurnable: true,
+		fuelLoading: {
+			oneHour: 0,
+			tenHour: 0,
+			hundredHour: 0,
+			live: 0,
+		},
+		fuelBedDepth: 0,
+		packingRatio: 0,
+		relativePackingRatio: 0,
+		bulkDensity: 0,
+		moistureOfExtinction: 0,
 	},
 };
