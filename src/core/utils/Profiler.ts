@@ -27,7 +27,17 @@ const simpleDateTitle = new Date()
 	.replaceAll(':', '-');
 
 interface ProfilerOptions {
+	/**
+	 * Title of the <title>.cpuprofile file that is output from the profiler
+	 */
 	title?: string;
+	/**
+	 * Path to the <title>.cpuprofile file
+	 */
+	outputDir?: string;
+	/**
+	 * Whether or not the profiler is active, typically determined by environment variable
+	 */
 	active: boolean;
 }
 
@@ -46,12 +56,16 @@ interface ProfilerOptions {
  */
 export class Profiler {
 	title: string = simpleDateTitle;
-	active: boolean;
+	active: boolean = false;
+	outputDir: string = process.env.OUTPUT_DIR ?? `temp/profiles/${this.title}}`;
 
 	constructor(options: ProfilerOptions) {
-		const { title, active } = options;
+		const { title, active, outputDir } = options;
 		if (title) {
 			this.title = title;
+		}
+		if (outputDir) {
+			this.outputDir = outputDir;
 		}
 		this.active = active;
 	}
@@ -77,7 +91,7 @@ export class Profiler {
 					logger.log('error', error);
 				} else {
 					fs.writeFileSync(
-						`${process.cwd()}/temp/profiles/${this.title}.cpuprofile`,
+						`${process.cwd()}/${this.outputDir}/${this.title}.cpuprofile`,
 						result
 					);
 				}
