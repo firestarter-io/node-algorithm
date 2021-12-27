@@ -19,8 +19,13 @@ import BurnMatrix from './BurnMatrix';
 import Extent from './Extent';
 import { CellPosition } from 'typings/firestarter';
 import { ROOT2 } from '@core/utils/math';
-import { FBFuelModels13 } from '@core/getdata/rasterSources';
-import { FBFM13, FuelModel13 } from '@core/constants/fuelmodel13';
+import { FBFuelModels13, FBFuelModels40 } from '@core/getdata/rasterSources';
+import {
+	FBFM13,
+	FBFM40,
+	FuelModel13,
+	FuelModel40,
+} from '@firestarter.io/fuelmodels';
 import { alphaSlope, alphaWind } from './formulas';
 
 export enum Directions {
@@ -110,11 +115,15 @@ class Cell {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
 						new NeighborCell({
-							layerPoint: this.matrixPositionToProjectedPoint([x + i, y + j]),
+							layerPoint: this.matrixPositionToProjectedPoint([
+								x + i,
+								y + j,
+							]),
 							extent: this._extent,
 							originCell: this,
 							distanceCoefficient: distanceTo,
-							directionFromOrigin: Cell.neighborsMap[JSON.stringify([i, j])],
+							directionFromOrigin:
+								Cell.neighborsMap[JSON.stringify([i, j])],
 						})
 					);
 				}
@@ -168,7 +177,7 @@ class Cell {
 		/**
 		 * If the cell has a nonburnable fuel:
 		 */
-		if (this.fuelModel13.nonBurnable) {
+		if (this.fuelmodels.fuelModel13.nonBurnable) {
 			return false;
 		}
 
@@ -207,22 +216,26 @@ class Cell {
 	/**
 	 * Returns Andersen Fuel Model data for this cell
 	 */
-	get fuelModel13(): FuelModel13 {
-		const fuelModel = FBFuelModels13.getValueAt(this.layerPoint);
-		return FBFM13[fuelModel];
+	get fuelmodels(): { fuelModel13: FuelModel13; fuelModel40: FuelModel40 } {
+		const fuelModel13 = FBFuelModels13.getValueAt(this.layerPoint);
+		const fuelModel40 = FBFuelModels40.getValueAt(this.layerPoint);
+
+		return {
+			fuelModel13: FBFM13[fuelModel13],
+			fuelModel40: FBFM40[fuelModel40],
+		};
 	}
 
 	/**
 	 * Returns the RoS of the Cells fuel in meters / hour (chains / hour * ~20)
 	 */
 	get fuelRateOfSpreadRaw(): number {
-		const fuel = this.fuelModel13;
 		// DEV ▼
 		// Constant RoS to test spread behavior
 		// return 50;
 		// DEV ▲
 
-		return fuel.rateOfSpread * 20;
+		return this.fuelmodels.fuelModel13.rateOfSpread * 20;
 	}
 
 	/**

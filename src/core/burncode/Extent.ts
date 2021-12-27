@@ -20,7 +20,7 @@ import {
 	refitBoundsToMapTiles,
 } from '@utils/geometry/bounds';
 import { createDEM } from '@core/getdata/dem';
-import { FBFuelModels13 } from '@core/getdata/rasterSources';
+import { FBFuelModels13, FBFuelModels40 } from '@core/getdata/rasterSources';
 import BurnMatrix from './BurnMatrix';
 import { scale, tileSize, tilesToExpand } from '@config';
 import { math } from '@core/utils/math';
@@ -126,10 +126,19 @@ class Extent {
 			logger.info(`${emojis.errorX}`, e);
 		}
 		/**
-		 *  Get Anderson Ground Cover Fuel Models
+		 *  Get Anderson 13 Fuel Models
 		 */
 		try {
 			await FBFuelModels13.fetchTiles(this.latLngBounds);
+		} catch (e) {
+			throw e;
+		}
+
+		/**
+		 *  Get Scott & Burgen Fuel Models
+		 */
+		try {
+			await FBFuelModels40.fetchTiles(this.latLngBounds);
 		} catch (e) {
 			throw e;
 		}
