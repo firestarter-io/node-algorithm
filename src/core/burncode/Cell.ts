@@ -115,15 +115,11 @@ class Cell {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
 						new NeighborCell({
-							layerPoint: this.matrixPositionToProjectedPoint([
-								x + i,
-								y + j,
-							]),
+							layerPoint: this.matrixPositionToProjectedPoint([x + i, y + j]),
 							extent: this._extent,
 							originCell: this,
 							distanceCoefficient: distanceTo,
-							directionFromOrigin:
-								Cell.neighborsMap[JSON.stringify([i, j])],
+							directionFromOrigin: Cell.neighborsMap[JSON.stringify([i, j])],
 						})
 					);
 				}
