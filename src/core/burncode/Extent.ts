@@ -169,7 +169,7 @@ class Extent {
 	}
 
 	/**
-	 * Returns data values f
+	 * Returns data values for a point in the extent
 	 */
 	getPixelValuesAt(coord: L.LatLng | L.Point) {
 		let point: L.Point;
@@ -183,7 +183,8 @@ class Extent {
 			);
 		}
 
-		const fuelModel = FBFuelModels13.getValueAt(coord);
+		const fuelModel13 = FBFuelModels13.getValueAt(coord);
+		const fuelModel40 = FBFuelModels40.getValueAt(coord);
 
 		const { slope, aspect, elevation } = getTopography(point);
 
@@ -191,7 +192,8 @@ class Extent {
 			slope,
 			aspect,
 			elevation,
-			fuelModel,
+			fuelModel13,
+			fuelModel40,
 		};
 
 		return data;

@@ -26,7 +26,7 @@ import {
 	FuelModel13,
 	FuelModel40,
 } from '@firestarter.io/fuelmodels';
-import { alphaSlope, alphaWind } from './formulas';
+import { alphaWind } from './formulas';
 
 export enum Directions {
 	N = 'N',
@@ -350,14 +350,6 @@ export class NeighborCell extends Cell {
 		const deg = (arctan * 180) / Math.PI;
 
 		return (deg / 90) * 100;
-	}
-
-	/**
-	 * Function to get slope alpha multiplier factor for this NeighborCell
-	 * @returns alphaSlope number
-	 */
-	get alphaSlope() {
-		return alphaSlope(this.slopeFromOriginCell);
 	}
 
 	/**
