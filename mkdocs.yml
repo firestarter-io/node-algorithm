@@ -1,16 +1,18 @@
 site_name: FireStarter Algorithm Docs
 nav:
   - About: index.md
+  - Algorithm:
+      - Overview: algorithm/overview.md
+      - Data:
+          - Types: algorithm/data/types.md
+      - Notes: algorithm/notes.md
   - Components:
       - Campaign: components/campaign.md
       - Extent: components/extent/extent.md
       - BurnMatrix: components/burnmatrix.md
       - Cell: components/cell/cell.md
       - Priority Queue: components/queue/queue.md
-  - Algorithm:
-      - Overview: algorithm/overview.md
-      - Data: algorithm/data.md
-      - Notes: algorithm/notes.md
+
 theme:
   name: material
   logo: assets/flame.png
