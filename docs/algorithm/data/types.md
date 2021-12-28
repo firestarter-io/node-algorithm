@@ -1,8 +1,4 @@
-# Data
-
-This section discusses data specific to the fire prediction algorithm (as opposed to Firestarter's app database which holds data about user accounts, campaigns, etc).
-
-## Data Types
+# Data Types
 
 Firestarter requires a myriad of GIS data, readily available via web sources for the areas where simulations are being run. The subject content of data can generally be divided into two classes: environmental data, and human-oriented data. Here are a few examples of each:
 
