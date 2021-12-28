@@ -2,11 +2,11 @@ site_name: FireStarter Algorithm Docs
 nav:
   - About: index.md
   - Components:
-      - Campaign: algorithm/campaign.md
-      - Extent: algorithm/extent/extent.md
-      - BurnMatrix: algorithm/burnmatrix.md
-      - Cell: algorithm/cell/cell.md
-      - Priority Queue: algorithm/queue/queue.md
+      - Campaign: components/campaign.md
+      - Extent: components/extent/extent.md
+      - BurnMatrix: components/burnmatrix.md
+      - Cell: components/cell/cell.md
+      - Priority Queue: components/queue/queue.md
   - Algorithm:
       - Overview: algorithm/overview.md
       - Data: algorithm/data.md
