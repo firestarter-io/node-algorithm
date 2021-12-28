@@ -39,11 +39,12 @@ export const campaign = async (req, res: Response) => {
 			profiler.start();
 
 			camp = new Campaign(L.latLng(latlng), 1624950000000);
-			await camp.initialize();
 
 			// Adding to global scope for quick value checking and debugging:
 			// @ts-ignore
 			globalThis.camp = camp;
+
+			await camp.initialize();
 
 			res.on('finish', () => {
 				logger.log('server', '📤 Sent campaign response');

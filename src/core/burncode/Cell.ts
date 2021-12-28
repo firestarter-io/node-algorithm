@@ -26,7 +26,11 @@ import {
 	FuelModel13,
 	FuelModel40,
 } from '@firestarter.io/fuelmodels';
-import { alphaWind } from './formulas';
+import {
+	alphaSlopeRothermel,
+	alphaWind,
+	rosWithSlopeRothermel,
+} from './formulas';
 
 export enum Directions {
 	N = 'N',
@@ -243,7 +247,7 @@ class Cell {
 	async checkDistanceToEdge(buffer: number = 1 / 2) {
 		const [x, y] = this.position;
 
-		// Get distances from cell to 4 edges of extent
+		/* Get distances from cell to 4 edges of extent */
 		const dLeft = x;
 		const dRight = this._extent.width - x;
 		const dTop = y;
@@ -401,16 +405,27 @@ export class NeighborCell extends Cell {
 	 * The rate of spread of fuel in meters/hour, as averaged between an origin Cell and NeighborCell
 	 */
 	get rateOfSpread(): number {
-		/**
-		 * The RoS of the origin Cell's fuel
-		 */
-		const originCellRoS = this.originCell.fuelRateOfSpreadRaw;
-		/**
-		 * The RoS of this Cell's fuel
-		 */
-		const RoS = this.fuelRateOfSpreadRaw;
+		/* Get the slope-adjusted RoS for the rigin Cell */
+		const originCellAlphaSlope = alphaSlopeRothermel(
+			this.slopeFromOriginCell,
+			this.originCell.fuelmodels.fuelModel40.packingRatio
+		);
+		const originCellRosWithSlope = rosWithSlopeRothermel(
+			this.originCell.fuelRateOfSpreadRaw,
+			originCellAlphaSlope
+		);
 
-		return (originCellRoS + RoS) / 2;
+		/* Get the slope-adjusted RoS for this NeighborCell */
+		const destinationCellAlphaSlope = alphaSlopeRothermel(
+			this.slopeFromOriginCell,
+			this.fuelmodels.fuelModel40.packingRatio
+		);
+		const destinationCellRosWithSlope = rosWithSlopeRothermel(
+			this.fuelRateOfSpreadRaw,
+			destinationCellAlphaSlope
+		);
+
+		return (originCellRosWithSlope + destinationCellRosWithSlope) / 2;
 	}
 
 	/**

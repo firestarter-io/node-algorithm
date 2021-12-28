@@ -113,7 +113,7 @@ const firelineIntensity = (H: number, w: number, R: number): number =>
  * @param packingRatio Unitless packing ratio β, as defined in Rothermel
  * @returns
  */
-const alphaSlopeRothermel = (slope: number, packingRatio: number) => {
+export const alphaSlopeRothermel = (slope: number, packingRatio: number) => {
 	return 5.275 * packingRatio ** -0.3 * slope ** 2;
 };
 
@@ -124,8 +124,10 @@ const alphaSlopeRothermel = (slope: number, packingRatio: number) => {
  * @param alphaSlope Alpha slope as defined by Rothermel's alpha slope function
  * @returns Rate of Spread with slope factored in
  */
-const rosWithSlope = (rateOfSpread0: number, alphaSlope: number) =>
-	rateOfSpread0 * alphaSlope + 1;
+export const rosWithSlopeRothermel = (
+	rateOfSpread0: number,
+	alphaSlope: number
+) => rateOfSpread0 * alphaSlope + 1;
 
 /**
  * --------------------------- PERSONAL INVENTIONS ------------------------------

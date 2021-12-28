@@ -140,7 +140,9 @@ export class Campaign {
 
 		const firstBurningCell = await this.startFire(this.seedLatLng);
 
-		this.start(firstBurningCell);
+		if (firstBurningCell) {
+			this.start(firstBurningCell);
+		}
 	}
 
 	/**
@@ -148,10 +150,8 @@ export class Campaign {
 	 * or grows an existing one if necessary
 	 * @param latLng | The latlng location to start the fire
 	 */
-	async startFire(latLng: L.LatLng) {
-		/**
-		 * Transform a latlng to a layer point, extrapolate to bounds, and create an extent
-		 */
+	async startFire(latLng: L.LatLng): Promise<Cell | undefined> {
+		/* Transform a latlng to a layer point, extrapolate to bounds, and create an extent */
 		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
@@ -164,15 +164,23 @@ export class Campaign {
 			this.extents.push(extent);
 		}
 
-		const burningCell = new Cell(point, extent);
+		const startCell = new Cell(point, extent);
 
-		burningCell.setBurnStatus(1);
+		if (startCell.isIgnitable) {
+			startCell.setBurnStatus(1);
 
-		logger.info(
-			`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
-		);
+			logger.info(
+				`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
+			);
 
-		return burningCell;
+			return startCell;
+		} else {
+			logger.info(
+				`${log.emojis.fire}${log.emojis.errorX} Fire cannot be started at [${latLng.lat}, ${latLng.lng}], cell is not ignitable`
+			);
+		}
+
+		return undefined;
 	}
 
 	/**

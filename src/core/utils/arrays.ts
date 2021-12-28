@@ -44,6 +44,7 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	 */
 	transformationFunction?: (item: T, sampleTime?: number) => any
 ): Array<T> {
+	if (!originalArray.length) return originalArray;
 	/**
 	 * Copy array
 	 */
