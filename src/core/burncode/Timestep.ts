@@ -159,6 +159,22 @@ class TimeStep {
 
 			// cellToBurn.checkDistanceToEdge().then(() => {});
 		});
+
+		/**
+		 * Iterate over all burning cells and detect perimeter
+		 */
+		this._campaign.extents.forEach((extent) => {
+			extent.burnMatrix.burningCells.forEach((cell) => {
+				const perimeterCell = cell.neighbors.some(
+					(neighbor) => neighbor.burnStatus === 0
+				);
+				if (perimeterCell) {
+					cell.setBurnStatus(1001); // Temporary burn perimeter code
+				} else {
+					cell.setBurnStatus(1);
+				}
+			});
+		});
 	}
 
 	/**
