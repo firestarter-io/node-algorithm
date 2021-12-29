@@ -18,4 +18,4 @@ How data is retrieved depends on the type of data and available sources. Data mu
 
 - **Scalar**: A singular numerical value. For example, elevation is numerical value in meters
 
-- **Vector**: A value with magnitude and direction. For example, wind has both speed and direction, or topography has both slope (magnitued) and aspet (direction)
+- **Vector**: A value with magnitude and direction. For example, wind has both speed and direction, or topography has both slope (magnitude) and aspect (direction). Often times, vector data types will need to be separated into two separate data sets so that magnitude and direction can be accessed individually for a certain $x y$ coordinate.

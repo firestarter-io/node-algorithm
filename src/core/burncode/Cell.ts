@@ -350,10 +350,7 @@ export class NeighborCell extends Cell {
 		const dElev = elevation - originCellElevation;
 		const distance = this._extent.averageDistance * this.distanceCoefficient;
 
-		const arctan = Math.atan(dElev / distance);
-		const deg = (arctan * 180) / Math.PI;
-
-		return (deg / 90) * 100;
+		return dElev / distance;
 	}
 
 	/**

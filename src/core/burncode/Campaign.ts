@@ -202,7 +202,7 @@ export class Campaign {
 	 * Calculates timesteps in succession, propagating the simulation forward through time
 	 */
 	continue() {
-		while (this.timesteps.length < 5000) {
+		while (this.timesteps.length < 1000) {
 			new TimeStep(this);
 		}
 	}

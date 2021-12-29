@@ -5,6 +5,8 @@ nav:
       - Overview: algorithm/overview.md
       - Data:
           - Types: algorithm/data/types.md
+      - Fire Spread:
+          - Slope: algorithm/firespread/slope.md
       - Notes: algorithm/notes.md
   - Components:
       - Campaign: components/campaign.md
