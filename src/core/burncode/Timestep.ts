@@ -17,6 +17,7 @@ import { Campaign } from './Campaign';
 import { WeatherForecast } from '@core/getdata/weather';
 import { EventQueueItem } from './PriorityQueue';
 import { roundTime } from '@core/utils/time';
+import { BURN_PERIMETER } from './BurnMatrix';
 
 class TimeStep {
 	/**
@@ -164,16 +165,37 @@ class TimeStep {
 		 * Iterate over all burning cells and detect perimeter
 		 */
 		this._campaign.extents.forEach((extent) => {
-			extent.burnMatrix.burningCells.forEach((cell) => {
+			const potentialPerimeterCells = new Map();
+			for (const [cellId, cell] of extent.burnMatrix.burningCells) {
+				if (!extent.burnMatrix.exBurningPerimeterCells.has(cellId)) {
+					potentialPerimeterCells.set(cellId, cell);
+				}
+			}
+
+			potentialPerimeterCells.forEach((cell) => {
 				const perimeterCell = cell.neighbors.some(
 					(neighbor) => neighbor.burnStatus === 0
 				);
 				if (perimeterCell) {
-					cell.setBurnStatus(1001); // Temporary burn perimeter code
+					cell.setBurnStatus(BURN_PERIMETER);
 				} else {
 					cell.setBurnStatus(1);
 				}
 			});
+
+			// Better to do this? :
+			// extent.burnMatrix.burningCells.forEach(cell => {
+			// 	if (!cell._burnMatrix.exBurningPerimeterCells.has(cell.id)) {
+			// 		const perimeterCell = cell.neighbors.some(
+			// 			(neighbor) => neighbor.burnStatus === 0
+			// 		);
+			// 		if (perimeterCell) {
+			// 			cell.setBurnStatus(BURN_PERIMETER);
+			// 		} else {
+			// 			cell.setBurnStatus(1);
+			// 		}
+			// 	}
+			// })
 		});
 	}
 

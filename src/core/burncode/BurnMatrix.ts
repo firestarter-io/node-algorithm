@@ -19,6 +19,8 @@ import { CellPosition } from 'typings/firestarter';
 import Extent from './Extent';
 import Cell, { NeighborCell } from './Cell';
 
+export const BURN_PERIMETER = 1001;
+
 /**
  * Creates a specialized matrix based on a MathJS matrix capable of setting its own cells
  * to burn status values, as well as quickly indexing what cells are currently in a given
@@ -39,6 +41,14 @@ class BurnMatrix {
 	 * Cells that are currently burning
 	 */
 	burningCells: Map<string, Cell> = new Map<string, Cell>();
+	/**
+	 * Cells are on the perimeter of the burning area
+	 */
+	burningPerimeterCells: Map<string, Cell> = new Map<string, Cell>();
+	/**
+	 * Cells are were once on the perimeter of the burning area
+	 */
+	exBurningPerimeterCells: Map<string, Cell> = new Map<string, Cell>();
 	/**
 	 * Cells that are burned out
 	 */
@@ -82,8 +92,15 @@ class BurnMatrix {
 
 		switch (true) {
 			// BURNING
-			case burnStatus >= 1:
+			case burnStatus >= 1 && burnStatus !== BURN_PERIMETER:
 				this.burningCells.set(cell.id, cell);
+				if (this.burningPerimeterCells.has(cell.id)) {
+					this.burningPerimeterCells.delete(cell.id);
+					this.exBurningPerimeterCells.set(cell.id, cell);
+				}
+				break;
+			case burnStatus === BURN_PERIMETER:
+				this.burningPerimeterCells.set(cell.id, cell);
 				break;
 			// BURNED_OUT
 			case burnStatus === -1:
