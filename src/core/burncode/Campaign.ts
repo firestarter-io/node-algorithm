@@ -205,18 +205,16 @@ export class Campaign {
 	 * or database
 	 */
 	toJSON() {
-		const clone = lodash.cloneDeep(this);
-
 		const simplifiedCampaign = {
-			id: clone.id,
-			startTime: clone.startTime,
-			extents: clone.extents.map((extent) => ({
+			id: this.id,
+			startTime: this.startTime,
+			extents: this.extents.map((extent) => ({
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
 			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 			timesteps: resample(
-				clone.timesteps.map((timestep) => timestep.snapshot),
+				this.timesteps.map((timestep) => timestep.snapshot),
 				'timestamp',
 				10 * 60 * 1000,
 				(timestep, resampledTime) => {
