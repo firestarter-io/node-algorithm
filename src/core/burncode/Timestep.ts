@@ -12,10 +12,12 @@
  * TimeStep class
  */
 
+import * as L from 'leaflet';
+import { scale } from '@config';
 import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
-import { WeatherForecast } from '@core/getdata/weather';
 import { EventQueueItem } from './PriorityQueue';
+import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
 
@@ -208,9 +210,15 @@ class TimeStep {
 		const { _campaign, event, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
-			extents: this._campaign.extents.map((extent) =>
-				extent.burnMatrix.toJSON()
-			),
+			extents: this._campaign.extents.map((extent) => ({
+				id: extent.id,
+				// ...extent.burnMatrix.toJSON(),
+				perimeters: {
+					burning: [...extent.burnMatrix.burningPerimeterCells].map(
+						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
+					),
+				},
+			})),
 		};
 	}
 }
