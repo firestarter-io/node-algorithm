@@ -212,7 +212,7 @@ class TimeStep {
 			...serializedTimestep,
 			extents: this._campaign.extents.map((extent) => ({
 				id: extent.id,
-				// ...extent.burnMatrix.toJSON(),
+				...extent.burnMatrix.toJSON(),
 				perimeters: {
 					burning: [...extent.burnMatrix.burningPerimeterCells].map(
 						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
