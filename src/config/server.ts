@@ -35,9 +35,23 @@ export const LEGENDS_DIR = path.join(TEMP_DIR, 'legends');
  */
 export const purgeTilesOnRestart = false;
 
+/**
+ * Whether or not we are running the server in profiler mode
+ */
+export const PROFILER = !!process.env.CAMPAIGN_PROFILER;
+
+/**
+ * Number of timesteps to run when running the profiler
+ */
+export const PROFILER_TIMESTEPS = process.env.PROFILER_TIMESTEPS
+	? Number(process.env.PROFILER_TIMESTEPS)
+	: undefined;
+
 export default {
 	PORT,
 	TEMP_DIR,
 	TILE_DIR,
 	LEGENDS_DIR,
+	PROFILER,
+	PROFILER_TIMESTEPS,
 };

@@ -8,6 +8,7 @@
 export PORT=4000 
 export CAMPAIGN_PROFILER=true 
 export OUTPUT_DIR="temp/profiles/$(date +%s)"
+export PROFILER_TIMESTEPS=5000
 
 # Create directory for results
 mkdir -p $OUTPUT_DIR

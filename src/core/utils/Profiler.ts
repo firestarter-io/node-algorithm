@@ -55,19 +55,17 @@ interface ProfilerOptions {
  * campaignProfiler.finish() // finish profiling and write to file
  */
 export class Profiler {
-	title: string = simpleDateTitle;
-	active: boolean = false;
-	outputDir: string = process.env.OUTPUT_DIR ?? `temp/profiles/${this.title}}`;
+	title: string;
+	active: boolean;
+	outputDir: string;
 
 	constructor(options: ProfilerOptions) {
-		const { title, active, outputDir } = options;
-		if (title) {
-			this.title = title;
-		}
-		if (outputDir) {
-			this.outputDir = outputDir;
-		}
-		this.active = active;
+		this.active = options.active;
+		this.title = options.title ?? simpleDateTitle;
+		this.outputDir =
+			options.outputDir ??
+			process.env.OUTPUT_DIR ??
+			`temp/profiles/${this.title}}`;
 	}
 
 	/**
@@ -101,3 +99,19 @@ export class Profiler {
 }
 
 export default Profiler;
+
+class TimestepProfiler {
+	title: string;
+	active: boolean;
+	outputDir: string;
+	times: number[];
+
+	constructor(options: ProfilerOptions) {
+		this.active = options.active;
+		this.title = options.title ?? simpleDateTitle;
+		this.outputDir =
+			options.outputDir ??
+			process.env.OUTPUT_DIR ??
+			`temp/profiles/${this.title}}`;
+	}
+}

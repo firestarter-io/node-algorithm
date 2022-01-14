@@ -15,9 +15,8 @@
 
 import * as L from 'leaflet';
 import { v4 as uuid } from 'uuid';
-import * as lodash from 'lodash';
 import * as data from '@data';
-import { scale, extentSize } from '@config';
+import { scale, extentSize, PROFILER_TIMESTEPS } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
 import logger, { emojis, log } from '@core/utils/Logger';
@@ -194,7 +193,7 @@ export class Campaign {
 	 * Calculates timesteps in succession, propagating the simulation forward through time
 	 */
 	continue() {
-		while (this.timesteps.length < 3000) {
+		while (this.timesteps.length < (PROFILER_TIMESTEPS ?? 3000)) {
 			new TimeStep(this);
 		}
 	}

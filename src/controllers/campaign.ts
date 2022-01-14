@@ -20,9 +20,10 @@ import { createDEM } from '@getdata/dem';
 import Campaign from '@core/burncode/Campaign';
 import logger from '@core/utils/Logger';
 import Profiler from '@core/utils/Profiler';
+import { PROFILER } from '@config';
 
 const profiler = new Profiler({
-	active: !!process.env.CAMPAIGN_PROFILER,
+	active: PROFILER,
 });
 
 let camp: Campaign;
