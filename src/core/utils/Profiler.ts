@@ -152,7 +152,7 @@ export class TimestepProfiler {
 
 	export() {
 		if (this.active) {
-			const graph = plot(this.times, { height: 35 });
+			const graph = plot(this.times, { height: 30 });
 			fs.writeFileSync(`${this.outputDir}/Timestep Graph.txt`, graph);
 		}
 	}

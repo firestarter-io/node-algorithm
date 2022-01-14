@@ -24,7 +24,7 @@ import { TimestepProfiler } from '@core/utils/Profiler';
 
 export const tsprofiler = new TimestepProfiler({
 	active: PROFILER,
-	spacing: 10,
+	spacing: 25,
 });
 
 class TimeStep {
