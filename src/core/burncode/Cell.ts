@@ -83,27 +83,30 @@ class Cell {
 	 */
 	_extent: Extent;
 	/**
-	 * Internally maintained list of Cell's NeighborCells
+	 * List of Cell's NeighborCells
 	 */
-	_neighbors: NeighborCell[];
+	neighbors: NeighborCell[];
 
 	/**
 	 * A Cell represents a single pixel in a burn matrix
 	 * @param layerPoint | layer point of the Cell's position
 	 * @param extent | The Extent that the Cell belongs to
 	 */
-	constructor(layerPoint: L.Point, extent: Extent) {
+	constructor(layerPoint: L.Point, extent: Extent, neighbors: boolean = true) {
 		this.layerPoint = layerPoint;
 		this.id = JSON.stringify(layerPoint);
 		this._extent = extent;
 		this._burnMatrix = extent.burnMatrix;
 		this.position = this.projectedPointToMatrixPosition(layerPoint);
+		if (neighbors) {
+			this.neighbors = this.getNeighbors();
+		}
 		this.fuelmodels = this.getFuelmodels();
 		this.fuelRateOfSpreadRaw = this.getFuelRateOfSpreadRaw();
 	}
 
 	/**
-	 * Mapping of NeighborCell position in generation loop tp its cardinal direction name
+	 * Mapping of NeighborCell position in generation loop to its cardinal direction name
 	 */
 	static neighborsMap = {
 		'[-1,-1]': Directions.NW,
@@ -120,9 +123,7 @@ class Cell {
 	 * Returns the positions of the 8 neighbors of a cell in the burn matrix
 	 * @param position | [x, y] position of cell in matrix
 	 */
-	get neighbors(): NeighborCell[] {
-		if (this._neighbors) return this._neighbors;
-
+	getNeighbors(): NeighborCell[] {
 		const [x, y] = this.position;
 		let neighbors = [];
 		for (let j = -1; j <= 1; j++) {
@@ -131,18 +132,21 @@ class Cell {
 					const distanceTo = i * j === 0 ? 1 : ROOT2;
 					neighbors.push(
 						new NeighborCell({
-							layerPoint: this.matrixPositionToProjectedPoint([x + i, y + j]),
+							layerPoint: this.matrixPositionToProjectedPoint([
+								x + i,
+								y + j,
+							]),
 							extent: this._extent,
 							originCell: this,
 							distanceCoefficient: distanceTo,
-							directionFromOrigin: Cell.neighborsMap[JSON.stringify([i, j])],
+							directionFromOrigin:
+								Cell.neighborsMap[JSON.stringify([i, j])],
 						})
 					);
 				}
 			}
 		}
 
-		this._neighbors = neighbors;
 		return neighbors;
 	}
 
@@ -350,7 +354,7 @@ export class NeighborCell extends Cell {
 			distanceCoefficient,
 			directionFromOrigin,
 		} = args;
-		super(layerPoint, extent);
+		super(layerPoint, extent, false);
 		this.originCell = originCell;
 		this.distanceCoefficient = distanceCoefficient;
 		this.directionFromOrigin = directionFromOrigin;
