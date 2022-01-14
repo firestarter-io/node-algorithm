@@ -48,12 +48,18 @@ export class IterationProfiler {
 		this.spacing = options.spacing ?? 100;
 	}
 
+	/**
+	 * Starts the clock to measure the time taken to execute an iteration
+	 */
 	start(index: number) {
 		if (this.active && index % this.spacing === 0) {
 			this.timer = process.hrtime();
 		}
 	}
 
+	/**
+	 * Stops the clock and records the time taken to execute an iteration
+	 */
 	stop(index: number) {
 		if (this.timer && index % this.spacing === 0) {
 			const time = process.hrtime(this.timer);
@@ -64,6 +70,9 @@ export class IterationProfiler {
 		return undefined;
 	}
 
+	/**
+	 * Exports the values recorded to an ascii plot text file
+	 */
 	export() {
 		if (this.active) {
 			const graph = plot(this.times, { height: 30 });
