@@ -71,22 +71,22 @@ class TimeStep {
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
 	constructor(campaign: Campaign) {
-		this._campaign = campaign;
-		this.event = campaign.eventQueue.next();
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
-		if (this.event) {
-			this.index = this._campaign.timesteps.length;
+		if (campaign.eventQueue.peek()) {
+			this.index = campaign.timesteps.length;
 			tsprofiler.start(this.index);
+			this._campaign = campaign;
+			this.event = campaign.eventQueue.next();
 			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this.burn();
 			this.snapshot = this.toJSON();
+			campaign.timesteps.push(this);
 			const tte = tsprofiler.stop(this.index);
-			this._campaign.timesteps.push(this);
 
 			// DEV ▼
-			if (this.index % 100 === 0) {
+			if (tte) {
 				console.log(`\nCalculated Timestep ${this.index}`);
 				console.log(`Time to execute: ${Math.floor(tte[1] / 1000)}μs`);
 			}

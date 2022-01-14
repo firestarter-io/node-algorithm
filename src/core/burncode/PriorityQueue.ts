@@ -162,6 +162,13 @@ class PriorityQueue {
 	}
 
 	/**
+	 * Returns the next item in the priority queue without removing it, if one exists
+	 */
+	peek() {
+		return this.items[0];
+	}
+
+	/**
 	 * Removes a cell from an item in the queue, and removes that queue item if it becomes empty
 	 * @param cell The Cell to remove
 	 * @param originTime The timestamp of the EventQueueItem to remove the Cell from

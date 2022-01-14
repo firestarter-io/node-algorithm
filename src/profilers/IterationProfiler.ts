@@ -24,8 +24,8 @@ interface IterationProfilerOptions extends ProfilerOptions {
 /**
  * The IterationProfiler measures the time to execute any iteration in a loop.  It is designed to wrap
  * around the the inner logic within any looping procedure.  It will measure the time to execute the
- * iteration at a given spacing, and output an ascii graph the the given profile's output dir. Can also
- * be configured to only run when certain environment variables are true.
+ * iteration at a given interval (every x iterations), and output an ascii graph to the output dir.
+ * Can also be configured to only run when certain environment variables are true.
  */
 export class IterationProfiler {
 	title: string;
@@ -38,8 +38,8 @@ export class IterationProfiler {
 	/**
 	 * The IterationProfiler measures the time to execute any iteration in a loop.  It is designed to wrap
 	 * around the the inner logic within any looping procedure.  It will measure the time to execute the
-	 * iteration at a given spacing, and output an ascii graph the the given profile's output dir. Can also
-	 * be configured to only run when certain environment variables are true.
+	 * iteration at a given interval (every x iterations), and output an ascii graph to the output dir.
+	 * Can also be configured to only run when certain environment variables are true.
 	 */
 	constructor(options: IterationProfilerOptions) {
 		this.active = options.active;
@@ -60,7 +60,7 @@ export class IterationProfiler {
 	/**
 	 * Stops the clock and records the time taken to execute an iteration
 	 */
-	stop(index: number) {
+	stop(index: number): [number, number] | undefined {
 		if (this.timer && index % this.spacing === 0) {
 			const time = process.hrtime(this.timer);
 			this.times.push(time[1] / 1_000_000);
