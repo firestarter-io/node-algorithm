@@ -21,6 +21,7 @@ import Campaign from '@core/burncode/Campaign';
 import logger from '@core/utils/Logger';
 import Profiler from '@core/utils/Profiler';
 import { PROFILER } from '@config';
+import { tsprofiler } from '@core/burncode/Timestep';
 
 const profiler = new Profiler({
 	active: PROFILER,
@@ -49,6 +50,7 @@ export const campaign = async (req, res: Response) => {
 			res.on('finish', () => {
 				logger.log('server', '📤 Sent campaign response');
 				profiler.finish();
+				tsprofiler.export();
 			});
 
 			res.send(camp.toJSON());

@@ -13,13 +13,19 @@
  */
 
 import * as L from 'leaflet';
-import { scale } from '@config';
+import { PROFILER, scale } from '@config';
 import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
 import { EventQueueItem } from './PriorityQueue';
 import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
+import { TimestepProfiler } from '@core/utils/Profiler';
+
+export const tsprofiler = new TimestepProfiler({
+	active: PROFILER,
+	spacing: 10,
+});
 
 class TimeStep {
 	/**
@@ -65,24 +71,24 @@ class TimeStep {
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
 	constructor(campaign: Campaign) {
-		var start = process.hrtime();
 		this._campaign = campaign;
 		this.event = campaign.eventQueue.next();
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
 		if (this.event) {
 			this.index = this._campaign.timesteps.length;
+			tsprofiler.start(this.index);
 			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this.burn();
 			this.snapshot = this.toJSON();
+			const tte = tsprofiler.stop(this.index);
 			this._campaign.timesteps.push(this);
-			var stop = process.hrtime(start);
 
 			// DEV ▼
 			if (this.index % 100 === 0) {
 				console.log(`\nCalculated Timestep ${this.index}`);
-				console.log(`Time to execute: ${Math.floor(stop[1] / 1000)}μs`);
+				console.log(`Time to execute: ${Math.floor(tte[1] / 1000)}μs`);
 			}
 			// DEV ▲
 		}
