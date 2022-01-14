@@ -19,7 +19,7 @@ import { Response } from 'express';
 import { createDEM } from '@getdata/dem';
 import Campaign from '@core/burncode/Campaign';
 import logger from '@core/utils/Logger';
-import Profiler from '@core/utils/Profiler';
+import { Profiler } from 'profilers/Profiler';
 import { PROFILER } from '@config';
 import { tsprofiler } from '@core/burncode/Timestep';
 

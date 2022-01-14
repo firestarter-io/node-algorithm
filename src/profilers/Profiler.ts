@@ -14,12 +14,11 @@
 
 import * as fs from 'fs';
 import * as v8profiler from 'v8-profiler-next';
-import { plot } from 'asciichart';
 import logger from '@core/utils/Logger';
 
 v8profiler.setGenerateType(1);
 
-const simpleDateTitle = new Date()
+export const simpleDateTitle = new Date()
 	.toLocaleString()
 	.replaceAll('/', '-')
 	.replaceAll(',', '')
@@ -27,7 +26,7 @@ const simpleDateTitle = new Date()
 	.replace(' ', '')
 	.replaceAll(':', '-');
 
-interface ProfilerOptions {
+export interface ProfilerOptions {
 	/**
 	 * Title of the <title>.cpuprofile file that is output from the profiler
 	 */
@@ -63,10 +62,7 @@ export class Profiler {
 	constructor(options: ProfilerOptions) {
 		this.active = options.active;
 		this.title = options.title ?? simpleDateTitle;
-		this.outputDir =
-			options.outputDir ??
-			process.env.OUTPUT_DIR ??
-			`temp/profiles/${this.title}}`;
+		this.outputDir = options.outputDir ?? process.env.OUTPUT_DIR;
 	}
 
 	/**
@@ -95,65 +91,6 @@ export class Profiler {
 					);
 				}
 			});
-		}
-	}
-}
-
-export default Profiler;
-
-interface TimestepProfilerOptions extends ProfilerOptions {
-	/**
-	 * How often a Timestep's time-to-execute should be measured,
-	 * i.e. spacing of 10 measures every 10 Timesteps,
-	 * spacing of 100 measures every 100 Timesteps
-	 */
-	spacing?: number;
-}
-
-/**
- * The TimestepProfiler measured the time to execute each Timestep iteration.  It is designed to wrap
- * around the Timestep procedure.  It will measure the time to execute Timesteps at a given spacing,
- * and output an ascii graph the the given profile's output dir. Can also be configured to only
- * run when certain environment variables are true.
- */
-export class TimestepProfiler {
-	title: string;
-	active: boolean;
-	outputDir: string;
-	spacing: number;
-	times: number[] = [];
-	timer;
-
-	constructor(options: TimestepProfilerOptions) {
-		this.active = options.active;
-		this.title = options.title ?? simpleDateTitle;
-		this.outputDir =
-			options.outputDir ??
-			process.env.OUTPUT_DIR ??
-			`temp/profiles/${this.title}}`;
-		this.spacing = options.spacing ?? 100;
-	}
-
-	start(index: number) {
-		if (this.active && index % this.spacing === 0) {
-			this.timer = process.hrtime();
-		}
-	}
-
-	stop(index: number) {
-		if (this.timer && index % this.spacing === 0) {
-			const time = process.hrtime(this.timer);
-			this.times.push(time[1] / 1_000_000);
-			this.timer = undefined;
-			return time;
-		}
-		return undefined;
-	}
-
-	export() {
-		if (this.active) {
-			const graph = plot(this.times, { height: 30 });
-			fs.writeFileSync(`${this.outputDir}/Timestep Graph.txt`, graph);
 		}
 	}
 }

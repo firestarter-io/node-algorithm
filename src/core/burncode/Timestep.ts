@@ -20,9 +20,9 @@ import { EventQueueItem } from './PriorityQueue';
 import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
-import { TimestepProfiler } from '@core/utils/Profiler';
+import { IterationProfiler } from 'profilers';
 
-export const tsprofiler = new TimestepProfiler({
+export const tsprofiler = new IterationProfiler({
 	active: PROFILER,
 	spacing: 25,
 });
