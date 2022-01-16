@@ -9,6 +9,10 @@ module.exports = {
 			ignore_watch: ['docs'],
 			env_development: {
 				FORCE_COLOR: 3,
+				NODE_ENV: 'development',
+			},
+			env_production: {
+				NODE_ENV: 'production',
 			},
 		},
 	],

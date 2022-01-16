@@ -18,9 +18,8 @@ import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
 import '@config';
-import { PORT, TILE_DIR } from '@config';
+import { DEVMODE, PORT, PURGE_TILES, TILE_DIR } from '@config';
 import router from './router';
-import { purgeTilesOnRestart } from '@config';
 import logger from '@core/utils/Logger';
 dotenv.config();
 
@@ -36,6 +35,10 @@ app.use(cors());
 // Set up routes
 app.use('/', router);
 
+if (DEVMODE) {
+	console.log('dev mode');
+}
+
 // Start server
 const server = app.listen(port, () => {
 	logger.log('server', `Firestarter is listening on port ${port} 🎧\n`);
@@ -45,7 +48,7 @@ const server = app.listen(port, () => {
 process.on('SIGINT', function () {
 	server.close(() => {
 		logger.log('server', 'Shutting down Firestarter');
-		if (purgeTilesOnRestart) {
+		if (PURGE_TILES) {
 			fs.rmdirSync(TILE_DIR, { recursive: true });
 			logger.log('server', '🧹 Removing all tile images...');
 		}

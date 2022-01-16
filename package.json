@@ -5,8 +5,8 @@
 	"main": "src/server.ts",
 	"scripts": {
 		"server": "node -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
-		"start": "FORCE_COLOR=3 node --inspect -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
-		"launch": "pm2 start pm2.config.js",
+		"start": "node --inspect -r tsconfig-paths/register -r ts-node/register ./src/server.ts",
+		"dev": "pm2 start pm2.config.js --env development",
 		"test": "jest --watch",
 		"build": "tsc",
 		"profile": "sh ./scripts/profile.sh",
