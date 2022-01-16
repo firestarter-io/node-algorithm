@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -48,6 +48,7 @@ export const campaign = async (req, res: Response) => {
 			globalThis.camp = camp;
 
 			res.on('finish', () => {
+				process.stdout.write('\n');
 				logger.log('server', '📤 Sent campaign response');
 				profiler.finish();
 				tsprofiler.export();

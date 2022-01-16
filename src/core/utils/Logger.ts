@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -56,27 +56,8 @@ Winston.addColors(levels.colors);
 function supportNodeInspect(winstonTransportsConsoleInstance) {
 	// Override log fn to support log to node --inspect
 	winstonTransportsConsoleInstance.log = (info, callback) => {
-		const { level, message, stack } = info;
+		const { level, message } = info;
 		console.log(level, message);
-
-		// Bending over backwards to get things to look nice in chrome node inspector
-		// switch (true) {
-		// 	case level.includes(Levels.info.toUpperCase()):
-		// 		console.log(chalk.green(level), message);
-		// 		break;
-		// 	case level.includes(Levels.warn.toUpperCase()):
-		// 		console.log(chalk.green(level), message);
-		// 		break;
-		// 	case level.includes(Levels.success.toUpperCase()):
-		// 		console.log(chalk.green(level), message);
-		// 		break;
-		// 	case level.includes(Levels.error.toUpperCase()):
-		// 		console.log(chalk.green(level), message);
-		// 		break;
-		// 	case level.includes(Levels.header.toUpperCase()):
-		// 		console.log(chalk.bold(message));
-		// 		break;
-		// }
 
 		callback();
 	};

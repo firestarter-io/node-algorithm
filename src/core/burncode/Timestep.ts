@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -13,7 +13,7 @@
  */
 
 import * as L from 'leaflet';
-import { PROFILER, scale } from '@config';
+import { DEVMODE, PROFILER, scale } from '@config';
 import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
 import { EventQueueItem } from './PriorityQueue';
@@ -21,6 +21,7 @@ import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
 import { IterationProfiler } from 'profilers';
+import chalk = require('chalk');
 
 export const tsprofiler = new IterationProfiler({
 	active: PROFILER,
@@ -85,12 +86,12 @@ class TimeStep {
 			campaign.timesteps.push(this);
 			const tte = tsprofiler.stop(this.index);
 
-			// DEV ▼
-			if (tte) {
-				console.log(`\nCalculated Timestep ${this.index}`);
-				console.log(`Time to execute: ${Math.floor(tte[1] / 1000)}μs`);
+			if (DEVMODE && !(this.index % 100)) {
+				process.stdout.write(
+					chalk.green('INFO    ') +
+						`⌛ Calculated Timestep ${this.index}\r`
+				);
 			}
-			// DEV ▲
 		}
 	}
 
@@ -159,7 +160,9 @@ class TimeStep {
 					const timestampOfIgnition = this.timestamp + timeToIgnite;
 
 					this._campaign.eventQueue.enqueue({
-						time: roundTime.bySecond(Math.floor(Number(timestampOfIgnition))),
+						time: roundTime.bySecond(
+							Math.floor(Number(timestampOfIgnition))
+						),
 						origin: this.timestamp,
 						setToBurning: { [neighbor.id]: neighbor.toCell() },
 					});
@@ -221,7 +224,8 @@ class TimeStep {
 				...extent.burnMatrix.toJSON(),
 				perimeters: {
 					burning: [...extent.burnMatrix.burningPerimeterCells].map(
-						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
+						([id, cell]) =>
+							L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
 					),
 				},
 			})),
