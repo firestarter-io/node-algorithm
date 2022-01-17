@@ -13,7 +13,7 @@
  */
 
 import * as L from 'leaflet';
-import { DEVMODE, PROFILER, scale } from '@config';
+import { PROFILER, scale } from '@config';
 import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
 import { EventQueueItem } from './PriorityQueue';
@@ -21,7 +21,6 @@ import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
 import { IterationProfiler } from 'profilers';
-import chalk = require('chalk');
 import logger from '@core/utils/Logger';
 
 export const tsprofiler = new IterationProfiler({
@@ -158,9 +157,7 @@ class TimeStep {
 					const timestampOfIgnition = this.timestamp + timeToIgnite;
 
 					this._campaign.eventQueue.enqueue({
-						time: roundTime.bySecond(
-							Math.floor(Number(timestampOfIgnition))
-						),
+						time: roundTime.bySecond(Math.floor(Number(timestampOfIgnition))),
 						origin: this.timestamp,
 						setToBurning: { [neighbor.id]: neighbor.toCell() },
 					});
@@ -222,8 +219,7 @@ class TimeStep {
 				...extent.burnMatrix.toJSON(),
 				perimeters: {
 					burning: [...extent.burnMatrix.burningPerimeterCells].map(
-						([id, cell]) =>
-							L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
+						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
 					),
 				},
 			})),

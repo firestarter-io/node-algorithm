@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -184,10 +184,7 @@ export class EsriRasterDataSource {
 					const { X, Y, Z } = coord;
 					const tilename = `${Z}.${X}.${Y}`;
 
-					const url = path.join(
-						TILE_DIR,
-						`/${this.datagroup}/${tilename}.png`
-					);
+					const url = path.join(TILE_DIR, `/${this.datagroup}/${tilename}.png`);
 					return loadImage(url);
 				})
 			)
@@ -217,11 +214,7 @@ export class EsriRasterDataSource {
 
 			logger.info(`${emojis.successCheck} ${this.name} Tiles Loaded`);
 		} catch (e) {
-			logger.error(
-				`${emojis.errorX}`,
-				`Problem fetching ${this.name}:\n`,
-				e
-			);
+			logger.error(`${emojis.errorX}`, `Problem fetching ${this.name}:\n`, e);
 		}
 	}
 
@@ -405,9 +398,7 @@ export class EsriRasterDataSource {
 				.then((res) => res.json())
 				.then((data) => {
 					const layerId = this.options.sublayer || 0;
-					layerJSON = data.layers.find(
-						(layer) => layer.layerId == layerId
-					);
+					layerJSON = data.layers.find((layer) => layer.layerId == layerId);
 				});
 
 			// Transform legend array images into rgbValues
