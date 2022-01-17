@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -15,12 +15,11 @@
 
 import * as L from 'leaflet';
 import { v4 as uuid } from 'uuid';
-import * as lodash from 'lodash';
 import * as data from '@data';
-import { scale, extentSize } from '@config';
+import { scale, extentSize, PROFILER_TIMESTEPS } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
-import logger, { emojis, log } from '@core/utils/Logger';
+import logger, { emojis } from '@core/utils/Logger';
 import Cell from './Cell';
 import { roundTime } from '@core/utils/time';
 import {
@@ -36,7 +35,7 @@ import { resample } from '@core/utils/arrays';
  * A campaign manages its own configuration, user inputs, map extents and their associated data,
  * timesteps, and writing campaign data to the database
  *
- * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/algorithm/campaign/)***
+ * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/components/campaign/)***
  */
 export class Campaign {
 	/**
@@ -170,13 +169,7 @@ export class Campaign {
 			startCell.setBurnStatus(1);
 
 			logger.info(
-				`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
-			);
-
-			return startCell;
-		} else {
-			logger.info(
-				`${log.emojis.fire}${log.emojis.errorX} Fire cannot be started at [${latLng.lat}, ${latLng.lng}], cell is not ignitable`
+				`${emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
 			);
 		}
 
@@ -202,7 +195,7 @@ export class Campaign {
 	 * Calculates timesteps in succession, propagating the simulation forward through time
 	 */
 	continue() {
-		while (this.timesteps.length < 1000) {
+		while (this.timesteps.length < (PROFILER_TIMESTEPS ?? 3000)) {
 			new TimeStep(this);
 		}
 	}
@@ -213,18 +206,16 @@ export class Campaign {
 	 * or database
 	 */
 	toJSON() {
-		const clone = lodash.cloneDeep(this);
-
 		const simplifiedCampaign = {
-			id: clone.id,
-			startTime: clone.startTime,
-			extents: clone.extents.map((extent) => ({
+			id: this.id,
+			startTime: this.startTime,
+			extents: this.extents.map((extent) => ({
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
 			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 			timesteps: resample(
-				clone.timesteps.map((timestep) => timestep.snapshot),
+				this.timesteps.map((timestep) => timestep.snapshot),
 				'timestamp',
 				10 * 60 * 1000,
 				(timestep, resampledTime) => {

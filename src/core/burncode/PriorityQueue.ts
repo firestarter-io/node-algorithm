@@ -1,13 +1,14 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
  *
  */
 
+import { DEVMODE } from '@config';
 import * as lodash from 'lodash';
 import Cell from './Cell';
 
@@ -45,9 +46,9 @@ export interface EventQueueItem {
  * [Priority queue](https://en.wikipedia.org/wiki/Priority_queue) class customized for
  * FireStarter.
  *
- * Adapted from ["Implementation ofPriority Queue in Javascript"](https://www.geeksforgeeks.org/implementation-priority-queue-javascript/)
+ * Adapted from ["Implementation of Priority Queue in Javascript"](https://www.geeksforgeeks.org/implementation-priority-queue-javascript/)
  *
- * ***&#128211; &nbsp; See more in the [PriorityQueue Documentation](https://firestarter-io.github.io/node-algorithm/algorithm/queue/queue/)***
+ * ***&#128211; &nbsp; See more in the [PriorityQueue Documentation](https://firestarter-io.github.io/node-algorithm/components/queue/queue/)***
  */
 class PriorityQueue {
 	/**
@@ -157,8 +158,15 @@ class PriorityQueue {
 	 */
 	next() {
 		const nextItem = this.items.shift();
-		this.history.push(nextItem);
+		if (DEVMODE) this.history.push(nextItem);
 		return nextItem;
+	}
+
+	/**
+	 * Returns the next item in the priority queue without removing it, if one exists
+	 */
+	peek() {
+		return this.items[0];
 	}
 
 	/**

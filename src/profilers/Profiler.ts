@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -18,7 +18,7 @@ import logger from '@core/utils/Logger';
 
 v8profiler.setGenerateType(1);
 
-const simpleDateTitle = new Date()
+export const simpleDateTitle = new Date()
 	.toLocaleString()
 	.replaceAll('/', '-')
 	.replaceAll(',', '')
@@ -26,7 +26,7 @@ const simpleDateTitle = new Date()
 	.replace(' ', '')
 	.replaceAll(':', '-');
 
-interface ProfilerOptions {
+export interface ProfilerOptions {
 	/**
 	 * Title of the <title>.cpuprofile file that is output from the profiler
 	 */
@@ -55,19 +55,14 @@ interface ProfilerOptions {
  * campaignProfiler.finish() // finish profiling and write to file
  */
 export class Profiler {
-	title: string = simpleDateTitle;
-	active: boolean = false;
-	outputDir: string = process.env.OUTPUT_DIR ?? `temp/profiles/${this.title}}`;
+	title: string;
+	active: boolean;
+	outputDir: string;
 
 	constructor(options: ProfilerOptions) {
-		const { title, active, outputDir } = options;
-		if (title) {
-			this.title = title;
-		}
-		if (outputDir) {
-			this.outputDir = outputDir;
-		}
-		this.active = active;
+		this.active = options.active;
+		this.title = options.title ?? simpleDateTitle;
+		this.outputDir = options.outputDir ?? process.env.OUTPUT_DIR;
 	}
 
 	/**
@@ -99,5 +94,3 @@ export class Profiler {
 		}
 	}
 }
-
-export default Profiler;

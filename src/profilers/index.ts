@@ -8,14 +8,5 @@
  *
  */
 
-import algorithm from './algorithm';
-import server from './server';
-
-export * from './language';
-export * from './server';
-export * from './algorithm';
-
-export default {
-	algorithm,
-	server,
-};
+export * from './Profiler';
+export * from './IterationProfiler';

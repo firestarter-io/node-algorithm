@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -34,7 +34,7 @@ import Campaign from './Campaign';
  * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
  * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds.
  *
- * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/algorithm/extent/extent/)***
+ * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/components/extent/extent/)***
  */
 class Extent {
 	/**

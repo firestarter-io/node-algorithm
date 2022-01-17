@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -26,7 +26,7 @@ import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
 import { ImageRequestOptions } from 'typings/esri';
-import logger, { log } from './Logger';
+import logger, { emojis } from './Logger';
 import { getTileCoord } from '@core/getdata/dem';
 import { downloadImage, downloadJSON } from '@core/utils/download-utils';
 
@@ -127,13 +127,13 @@ export class EsriRasterDataSource {
 		if (!legends[this.datagroup]) {
 			try {
 				await this.generateLegend();
-				logger.info(`${log.emojis.notepad} Legend for ${this.name} ready`);
+				logger.info(`${emojis.notepad} Legend for ${this.name} ready`);
 			} catch (e) {
-				logger.error(`${log.emojis.errorX} Legend failed to fetch`, e);
+				logger.error(`${emojis.errorX} Legend failed to fetch`, e);
 			}
 		}
 
-		logger.info(`${log.emojis.fetch} Fetching ${this.name} Tiles . . .`);
+		logger.info(`${emojis.fetch} Fetching ${this.name} Tiles . . .`);
 
 		try {
 			let tileCoords = getTileCoords(latLngBounds, scale);
@@ -212,13 +212,9 @@ export class EsriRasterDataSource {
 					throw e;
 				});
 
-			logger.info(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
+			logger.info(`${emojis.successCheck} ${this.name} Tiles Loaded`);
 		} catch (e) {
-			logger.error(
-				`${log.emojis.errorX}`,
-				`Problem fetching ${this.name}:\n`,
-				e
-			);
+			logger.error(`${emojis.errorX}`, `Problem fetching ${this.name}:\n`, e);
 		}
 	}
 
@@ -388,7 +384,7 @@ export class EsriRasterDataSource {
 		// If JSON has not yet been downloaded in this user session, download it:
 		if (!fs.existsSync(pathToPreexistingJson)) {
 			logger.info(
-				`${log.emojis.fetch} Fetching ${this.name} legend from remote . . .`
+				`${emojis.fetch} Fetching ${this.name} legend from remote . . .`
 			);
 
 			const legendUrl = `${this.url}/legend?f=pjson`;
@@ -431,7 +427,7 @@ export class EsriRasterDataSource {
 			// If Legend JSON is already downloaded in this user session, use it instead of fetching it
 		} else {
 			logger.info(
-				`${log.emojis.fetch} Reading ${this.name} legend from local . . .`
+				`${emojis.fetch} Reading ${this.name} legend from local . . .`
 			);
 
 			const rawdata = fs.readFileSync(pathToPreexistingJson, 'utf-8');

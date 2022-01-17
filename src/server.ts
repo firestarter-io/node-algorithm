@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -18,9 +18,8 @@ import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
 import '@config';
-import { PORT, TILE_DIR } from '@config';
+import { DEVMODE, PORT, PURGE_TILES, TILE_DIR } from '@config';
 import router from './router';
-import { purgeTilesOnRestart } from '@config';
 import logger from '@core/utils/Logger';
 dotenv.config();
 
@@ -38,18 +37,18 @@ app.use('/', router);
 
 // Start server
 const server = app.listen(port, () => {
-	logger.log('server', `Firestarter is listening on port ${port} 🎧\n`);
+	logger.server(`Firestarter is listening on port ${port} 🎧\n`);
 });
 
 // Perform cleanup
 process.on('SIGINT', function () {
 	server.close(() => {
-		logger.log('server', 'Shutting down Firestarter');
-		if (purgeTilesOnRestart) {
+		logger.server('Shutting down Firestarter');
+		if (PURGE_TILES) {
 			fs.rmdirSync(TILE_DIR, { recursive: true });
-			logger.log('server', '🧹 Removing all tile images...');
+			logger.server('🧹 Removing all tile images...');
 		}
-		logger.log('server', 'Goodbye!\n\n');
+		logger.server('Goodbye!\n\n');
 		process.exit();
 	});
 });

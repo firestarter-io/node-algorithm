@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -32,6 +32,11 @@ import {
 	rosWithSlopeRothermel,
 } from './formulas';
 
+interface CellFuelModels {
+	fuelModel13: FuelModel13;
+	fuelModel40: FuelModel40;
+}
+
 export enum Directions {
 	N = 'N',
 	S = 'S',
@@ -50,7 +55,7 @@ export type DistanceCoefficients = 1 | typeof ROOT2;
  * for interaction with values in the burn matrix, as well as for retrieving data from
  * an Extent.
  *
- * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/algorithm/cell/cell/)***
+ * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/components/cell/cell/)***
  */
 class Cell {
 	/**
@@ -66,9 +71,13 @@ class Cell {
 	 */
 	position: CellPosition;
 	/**
-	 * The position of the cell, stringified.  Used for cell tracking within an Extent
+	 * Fuel model values at the cell's position
 	 */
-	pstring: string;
+	fuelmodels: CellFuelModels;
+	/**
+	 * The cell's raw Rate of Spread, based on Anderson's 13 fuel models
+	 */
+	fuelRateOfSpreadRaw: number;
 	/**
 	 * The BurnMatrix that the Cell belongs to
 	 */
@@ -77,6 +86,10 @@ class Cell {
 	 * The Extent that the Cell belongs to
 	 */
 	_extent: Extent;
+	/**
+	 * Internally maintained list of Cell's NeighborCells
+	 */
+	_neighbors: NeighborCell[];
 
 	/**
 	 * A Cell represents a single pixel in a burn matrix
@@ -89,7 +102,8 @@ class Cell {
 		this._extent = extent;
 		this._burnMatrix = extent.burnMatrix;
 		this.position = this.projectedPointToMatrixPosition(layerPoint);
-		this.pstring = JSON.stringify(this.position);
+		this.fuelmodels = this.getFuelmodels();
+		this.fuelRateOfSpreadRaw = this.getFuelRateOfSpreadRaw();
 	}
 
 	/**
@@ -111,6 +125,8 @@ class Cell {
 	 * @param position | [x, y] position of cell in matrix
 	 */
 	get neighbors(): NeighborCell[] {
+		if (this._neighbors) return this._neighbors;
+
 		const [x, y] = this.position;
 		let neighbors = [];
 		for (let j = -1; j <= 1; j++) {
@@ -129,6 +145,8 @@ class Cell {
 				}
 			}
 		}
+
+		this._neighbors = neighbors;
 		return neighbors;
 	}
 
@@ -216,7 +234,7 @@ class Cell {
 	/**
 	 * Returns Andersen Fuel Model data for this cell
 	 */
-	get fuelmodels(): { fuelModel13: FuelModel13; fuelModel40: FuelModel40 } {
+	getFuelmodels(): CellFuelModels {
 		const fuelModel13 = FBFuelModels13.getValueAt(this.layerPoint);
 		const fuelModel40 = FBFuelModels40.getValueAt(this.layerPoint);
 
@@ -229,7 +247,7 @@ class Cell {
 	/**
 	 * Returns the RoS of the Cells fuel in meters / hour (chains / hour * ~20)
 	 */
-	get fuelRateOfSpreadRaw(): number {
+	getFuelRateOfSpreadRaw(): number {
 		// DEV ▼
 		// Constant RoS to test spread behavior
 		// return 50;
@@ -308,6 +326,10 @@ export class NeighborCell extends Cell {
 	 * Direction of neighbor relative to origin cell
 	 */
 	directionFromOrigin: Directions;
+	/**
+	 * Slope from origin cell to this neighbor cell
+	 */
+	slopeFromOriginCell: number;
 
 	/**
 	 * NeighCell is a specialized Cell type when referring to a Cell's neighbors.  It has additional properties
@@ -336,6 +358,7 @@ export class NeighborCell extends Cell {
 		this.originCell = originCell;
 		this.distanceCoefficient = distanceCoefficient;
 		this.directionFromOrigin = directionFromOrigin;
+		this.slopeFromOriginCell = this.getSlopeFromOriginCell();
 	}
 
 	/**
@@ -343,7 +366,7 @@ export class NeighborCell extends Cell {
 	 * and this NeighborCell in that neighborhood
 	 * @returns Slope between origin Cell to this NeighborCell, in percent grade (0 - 100)
 	 */
-	get slopeFromOriginCell() {
+	getSlopeFromOriginCell() {
 		const elevation = getElevation(this.layerPoint);
 		const originCellElevation = getElevation(this.originCell.layerPoint);
 

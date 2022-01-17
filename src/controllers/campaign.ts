@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -19,10 +19,12 @@ import { Response } from 'express';
 import { createDEM } from '@getdata/dem';
 import Campaign from '@core/burncode/Campaign';
 import logger from '@core/utils/Logger';
-import Profiler from '@core/utils/Profiler';
+import { Profiler } from 'profilers/Profiler';
+import { PROFILER } from '@config';
+import { tsprofiler } from '@core/burncode/Timestep';
 
 const profiler = new Profiler({
-	active: !!process.env.CAMPAIGN_PROFILER,
+	active: PROFILER,
 });
 
 let camp: Campaign;
@@ -47,8 +49,10 @@ export const campaign = async (req, res: Response) => {
 			await camp.initialize();
 
 			res.on('finish', () => {
+				process.stdout.write('\n');
 				logger.log('server', '📤 Sent campaign response');
 				profiler.finish();
+				tsprofiler.export();
 			});
 
 			res.send(camp.toJSON());

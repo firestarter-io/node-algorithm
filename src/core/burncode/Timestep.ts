@@ -1,7 +1,7 @@
 /*
  * Firestarter.io
  *
- * Copyright (C) 2021 Blue Ohana, Inc.
+ * Copyright (C) 2022 Blue Ohana, Inc.
  * All rights reserved.
  * The information in this software is subject to change without notice and
  * should not be construed as a commitment by Blue Ohana, Inc.
@@ -12,11 +12,21 @@
  * TimeStep class
  */
 
+import * as L from 'leaflet';
+import { PROFILER, scale } from '@config';
 import { FireStarterEvent } from 'typings/firestarter';
 import { Campaign } from './Campaign';
-import { WeatherForecast } from '@core/getdata/weather';
 import { EventQueueItem } from './PriorityQueue';
+import { WeatherForecast } from '@core/getdata/weather';
 import { roundTime } from '@core/utils/time';
+import { BURN_PERIMETER } from './BurnMatrix';
+import { IterationProfiler } from 'profilers';
+import logger from '@core/utils/Logger';
+
+export const tsprofiler = new IterationProfiler({
+	active: PROFILER,
+	spacing: 25,
+});
 
 class TimeStep {
 	/**
@@ -62,26 +72,23 @@ class TimeStep {
 	 * @param campaign | The Campaign that the timestep belongs to
 	 */
 	constructor(campaign: Campaign) {
-		var start = process.hrtime();
-		this._campaign = campaign;
-		this.event = campaign.eventQueue.next();
 		/** If there is a next event in the eventQueue (we are not at the end of the queue) */
-		if (this.event) {
-			this.index = this._campaign.timesteps.length;
+		if (campaign.eventQueue.peek()) {
+			this.index = campaign.timesteps.length;
+			tsprofiler.start(this.index);
+			this._campaign = campaign;
+			this.event = campaign.eventQueue.next();
 			this.timestamp = this.event.time;
 			this.time = new Date(this.timestamp).toLocaleString();
 			this.weather = this.derivedWeather;
 			this.burn();
 			this.snapshot = this.toJSON();
-			this._campaign.timesteps.push(this);
-			var stop = process.hrtime(start);
+			campaign.timesteps.push(this);
+			const tte = tsprofiler.stop(this.index);
 
-			// DEV ▼
-			if (this.index % 100 === 0) {
-				console.log(`\nCalculated Timestep ${this.index}`);
-				console.log(`Time to execute: ${Math.floor(stop[1] / 1000)}μs`);
+			if (!(this.index % 500)) {
+				logger.info(`⌛ Calculated Timestep ${this.index}\r`);
 			}
-			// DEV ▲
 		}
 	}
 
@@ -159,6 +166,43 @@ class TimeStep {
 
 			// cellToBurn.checkDistanceToEdge().then(() => {});
 		});
+
+		/**
+		 * Iterate over all burning cells and detect perimeter
+		 */
+		this._campaign.extents.forEach((extent) => {
+			const potentialPerimeterCells = new Map();
+			for (const [cellId, cell] of extent.burnMatrix.burningCells) {
+				if (!extent.burnMatrix.exBurningPerimeterCells.has(cellId)) {
+					potentialPerimeterCells.set(cellId, cell);
+				}
+			}
+
+			potentialPerimeterCells.forEach((cell) => {
+				const perimeterCell = cell.neighbors.some(
+					(neighbor) => neighbor.burnStatus === 0
+				);
+				if (perimeterCell) {
+					cell.setBurnStatus(BURN_PERIMETER);
+				} else {
+					cell.setBurnStatus(1);
+				}
+			});
+
+			// Better to do this? :
+			// extent.burnMatrix.burningCells.forEach(cell => {
+			// 	if (!cell._burnMatrix.exBurningPerimeterCells.has(cell.id)) {
+			// 		const perimeterCell = cell.neighbors.some(
+			// 			(neighbor) => neighbor.burnStatus === 0
+			// 		);
+			// 		if (perimeterCell) {
+			// 			cell.setBurnStatus(BURN_PERIMETER);
+			// 		} else {
+			// 			cell.setBurnStatus(1);
+			// 		}
+			// 	}
+			// })
+		});
 	}
 
 	/**
@@ -170,9 +214,15 @@ class TimeStep {
 		const { _campaign, event, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
-			extents: this._campaign.extents.map((extent) =>
-				extent.burnMatrix.toJSON()
-			),
+			extents: this._campaign.extents.map((extent) => ({
+				id: extent.id,
+				...extent.burnMatrix.toJSON(),
+				perimeters: {
+					burning: [...extent.burnMatrix.burningPerimeterCells].map(
+						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
+					),
+				},
+			})),
 		};
 	}
 }
