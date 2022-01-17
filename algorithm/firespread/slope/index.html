@@ -8,9 +8,8 @@
       
       
       
-      
-      <link rel="shortcut icon" href="../../../assets/flame-docs.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.4">
+      <link rel="icon" href="../../../assets/flame-docs.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -18,10 +17,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.77f3fd56.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.7fa14f5b.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
         
       
     
@@ -31,15 +30,16 @@
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
-    
     
     
       <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
+
     
     
   </head>
@@ -51,8 +51,8 @@
     
     
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
-      
   
+    
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -69,11 +69,12 @@
       
     </div>
     
+    
       
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="FireStarter Algorithm Docs" class="md-header__button md-logo" aria-label="FireStarter Algorithm Docs">
+    <a href="../../.." title="FireStarter Algorithm Docs" class="md-header__button md-logo" aria-label="FireStarter Algorithm Docs" data-md-component="logo">
       
   <img src="../../../assets/flame.png" alt="logo">
 
@@ -97,26 +98,28 @@
         </div>
       </div>
     </div>
-    <div class="md-header__options">
-      
-    </div>
+    
+    
     
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
+      <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-      </button>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -133,11 +136,14 @@
     
     
   </nav>
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
+        
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -151,11 +157,9 @@
                     
 
 
-
-
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="FireStarter Algorithm Docs" class="md-nav__button md-logo" aria-label="FireStarter Algorithm Docs">
+    <a href="../../.." title="FireStarter Algorithm Docs" class="md-nav__button md-logo" aria-label="FireStarter Algorithm Docs" data-md-component="logo">
       
   <img src="../../../assets/flame.png" alt="logo">
 
@@ -195,10 +199,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
       
-      <label class="md-nav__link" for="__nav_2">
-        Algorithm
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Algorithm
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Algorithm" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
@@ -207,6 +215,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -217,8 +226,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -228,10 +239,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
       
-      <label class="md-nav__link" for="__nav_2_2">
-        Data
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Data" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_2">
           <span class="md-nav__icon md-icon"></span>
@@ -240,6 +255,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -250,14 +266,17 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
     </li>
   
 
+            
           
             
+              
   
   
     
@@ -269,10 +288,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
       
-      <label class="md-nav__link" for="__nav_2_3">
-        Fire Spread
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Fire Spread
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Fire Spread" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_3">
           <span class="md-nav__icon md-icon"></span>
@@ -281,6 +304,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
     
@@ -289,6 +313,7 @@
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
       
         
       
@@ -303,7 +328,9 @@
       </a>
       
         
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -322,6 +349,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#propagator" class="md-nav__link">
+    PROPAGATOR
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -329,14 +363,17 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -347,6 +384,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -367,10 +405,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
       
-      <label class="md-nav__link" for="__nav_3">
-        Components
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Components" data-md-level="1">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
@@ -379,6 +421,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -389,8 +432,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -401,8 +446,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -413,8 +460,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -425,8 +474,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -437,6 +488,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -456,7 +508,9 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
     
@@ -475,6 +529,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#propagator" class="md-nav__link">
+    PROPAGATOR
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -487,8 +548,8 @@
             <article class="md-content__inner md-typeset">
               
                 
-                
-                <h1 id="slopes-effect-on-rate-of-spread">Slope's Effect on Rate of Spread</h1>
+
+<h1 id="slopes-effect-on-rate-of-spread">Slope's Effect on Rate of Spread</h1>
 <p>All competent simulations of fire spread must consider the effect of local topography on a fire's local rate of spread (<span class="arithmatex">\(RoS\)</span>). </p>
 <h2 id="rothermel">Rothermel</h2>
 <p>The most classic consideration comes from <a href="https://www.fs.usda.gov/treesearch/pubs/32533">Rothermel, 1972</a>, eq 46:</p>
@@ -497,25 +558,34 @@
 <div class="arithmatex">\[ R_S = R_0 * \phi_S + 1 \]</div>
 <p>This equation becomes useful, as <span class="arithmatex">\(R_0\)</span> is empirically available for Andersen's 13 fuel types. The equation for <span class="arithmatex">\(\phi_S\)</span> is given by Rothermel equation 51:</p>
 <div class="arithmatex">\[ \phi_S = 5.275 * \beta^{-0.3} * tan(\theta)^{2} \]</div>
-<p>where <span class="arithmatex">\(tan(\theta)\)</span> is the slope of the fuel bed.  <span class="arithmatex">\(tan(\theta)\)</span> can also be computed simply as the rise over run between points <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>.  This is especially convenient, as computing <span class="arithmatex">\(x/y\)</span> is orders of magnitude more computationally efficient than using the <span class="arithmatex">\(tan\)</span> function.</p>
-                
-              
-              
-                
+<p>where <span class="arithmatex">\(tan(\theta)\)</span> is the slope of the fuel bed <em>in the direction of spread</em>.  <span class="arithmatex">\(tan(\theta)\)</span> can also be computed simply as the rise over run between points <span class="arithmatex">\(a\)</span> and <span class="arithmatex">\(b\)</span>.  This is especially convenient, as computing <span class="arithmatex">\(x/y\)</span> is orders of magnitude more computationally efficient than using the <span class="arithmatex">\(tan\)</span> function. As <a href="https://www.fs.usda.gov/treesearch/pubs/55928">Andrews, 2018</a> points out, "The fire model itself applies only to upslope spread."  For this reason, Firestarter adapts this equation to also account for downhill slope.  For simplicity, the equation becomes:</p>
+<div class="arithmatex">\[ \phi_S = 5.275 * \beta^{-0.3} * tan(\theta)^{3} \]</div>
+<p>This means that a effects of positive and negative slope on <span class="arithmatex">\(RoS\)</span> are exactly opposite of one another. <a href="https://www.fs.usda.gov/treesearch/pubs/55928">Andrews, 2018</a> offers a more involved exposition on the interaction between uphill and downhill slope and wind, and the combinations thereof.</p>
+<h2 id="propagator">PROPAGATOR</h2>
+<p>A newer approach towards slope's affect on <span class="arithmatex">\(RoS\)</span> comes from <a href="https://www.mdpi.com/2571-6255/3/3/26">PROPAGATOR, 2020</a>.  Similar to Firestarter, Propagator takes a cellular automata approach to fire spread modeling.  But rather than use <span class="arithmatex">\(RoS\)</span> directly, it checks the probability that fire will spread from one cell to another.  The baseline probability <span class="arithmatex">\(\rho_0\)</span> is derived from the fuel type.  The effect of wind and slope on <span class="arithmatex">\(\rho\)</span> is given by</p>
+<div class="arithmatex">\[ \rho_{ws} = 1 - (1 - \rho_0)^{\alpha_{ws}} * e_m \]</div>
+<p>where <span class="arithmatex">\(e_m\)</span> is a constant related to fine fuel moisture content, and <span class="arithmatex">\(\alpha_{ws}\)</span> is simply <span class="arithmatex">\(\alpha_{s} * \alpha_{s}\)</span>.  <span class="arithmatex">\(\alpha_{s}\)</span> as a function of <span class="arithmatex">\(s\)</span> is not given, but its graph is present:</p>
+<p align="center">
+  <img src="../alphaslopegraph.png" style="width: 400px"/>
+</p>
 
+<p>The equation is not given, but some careful experimentation </p>
+<div class="arithmatex">\[ 0.5 + 0.75 * \frac{1}{e^{\frac{-x^{3}}{30000}} + 0.5} \]</div>
+<p><a href="https://www.google.com/search?q=plot+0.5+%2B+0.75*1%2F%28e%5E%28-%28x%5E3%29%2F30000%29%2B+0.5%29+from+-100+to+100&amp;safe=off&amp;sxsrf=ALeKk03_bceVJ_j5vxf7srrPhi8dvpf1RA%3A1623269507605&amp;ei=gyDBYM6pJIml-wTk9IbACg&amp;oq=plot+0.5+%2B+0.75*1%2F%28e%5E%28-%28x%5E3%29%2F30000%29%2B+0.5%29+from+-100+to+100&amp;gs_lcp=Cgdnd3Mtd2l6EAM6BwgAEEcQsANQmipY7TtghD9oAXACeACAAYIBiAHaBJIBAzYuMZgBAKABAaoBB2d3cy13aXrIAQjAAQE&amp;sclient=gws-wiz&amp;ved=0ahUKEwiO9_-SrovxAhWJ0p4KHWS6AagQ4dUDCA8&amp;uact=5">(Google graph here.)</a>  In this case, the effect of negative slope on probability of spread is not simply the negative of the effect of that same positive slope.  This model is probably more realistic an application of slope.  However, as this is a probability based model, adapting this to an <span class="arithmatex">\(RoS\)</span> based model must still be done.</p>
 
               
             </article>
           </div>
         </div>
+        
       </main>
       
-        
-<footer class="md-footer">
+        <footer class="md-footer">
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../data/types/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="../../data/types/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Types" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -530,7 +600,8 @@
         </a>
       
       
-        <a href="../../notes/" class="md-footer__link md-footer__link--next" rel="next">
+        
+        <a href="../../notes/" class="md-footer__link md-footer__link--next" aria-label="Next: Notes" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
@@ -548,13 +619,15 @@
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        Made with
-        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-          Material for MkDocs
-        </a>
-      </div>
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
       
     </div>
   </div>
@@ -564,10 +637,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.9b151c6a.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
         <script src="../../../javascripts/config.js"></script>
       

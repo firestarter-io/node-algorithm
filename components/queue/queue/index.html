@@ -8,9 +8,8 @@
       
       
       
-      
-      <link rel="shortcut icon" href="../../../assets/flame-docs.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.4">
+      <link rel="icon" href="../../../assets/flame-docs.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.1.7">
     
     
       
@@ -18,10 +17,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.77f3fd56.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.cd566b2a.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.7fa14f5b.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
         
       
     
@@ -31,15 +30,16 @@
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
-    
     
     
       <link rel="stylesheet" href="../../../stylesheets/extra.css">
     
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
+
     
     
   </head>
@@ -51,8 +51,8 @@
     
     
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
-      
   
+    
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
@@ -69,11 +69,12 @@
       
     </div>
     
+    
       
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="FireStarter Algorithm Docs" class="md-header__button md-logo" aria-label="FireStarter Algorithm Docs">
+    <a href="../../.." title="FireStarter Algorithm Docs" class="md-header__button md-logo" aria-label="FireStarter Algorithm Docs" data-md-component="logo">
       
   <img src="../../../assets/flame.png" alt="logo">
 
@@ -97,26 +98,28 @@
         </div>
       </div>
     </div>
-    <div class="md-header__options">
-      
-    </div>
+    
+    
     
       <label class="md-header__button md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
-      
-<div class="md-search" data-md-component="search" role="dialog">
+      <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
-      </button>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" data-md-scrollfix>
@@ -133,11 +136,14 @@
     
     
   </nav>
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
+        
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -151,11 +157,9 @@
                     
 
 
-
-
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="FireStarter Algorithm Docs" class="md-nav__button md-logo" aria-label="FireStarter Algorithm Docs">
+    <a href="../../.." title="FireStarter Algorithm Docs" class="md-nav__button md-logo" aria-label="FireStarter Algorithm Docs" data-md-component="logo">
       
   <img src="../../../assets/flame.png" alt="logo">
 
@@ -193,10 +197,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
       
-      <label class="md-nav__link" for="__nav_2">
-        Algorithm
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Algorithm
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Algorithm" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
@@ -205,6 +213,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -215,8 +224,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -226,10 +237,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
       
-      <label class="md-nav__link" for="__nav_2_2">
-        Data
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Data
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Data" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_2">
           <span class="md-nav__icon md-icon"></span>
@@ -238,6 +253,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -248,14 +264,17 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -265,10 +284,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" >
       
-      <label class="md-nav__link" for="__nav_2_3">
-        Fire Spread
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Fire Spread
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Fire Spread" data-md-level="2">
         <label class="md-nav__title" for="__nav_2_3">
           <span class="md-nav__icon md-icon"></span>
@@ -277,6 +300,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -287,14 +311,17 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -305,6 +332,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -327,10 +355,14 @@
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
       
-      <label class="md-nav__link" for="__nav_3">
-        Components
-        <span class="md-nav__icon md-icon"></span>
-      </label>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Components
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <nav class="md-nav" aria-label="Components" data-md-level="1">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
@@ -339,6 +371,7 @@
         <ul class="md-nav__list" data-md-scrollfix>
           
             
+              
   
   
   
@@ -349,8 +382,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -361,8 +396,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -373,8 +410,10 @@
     </li>
   
 
+            
           
             
+              
   
   
   
@@ -385,8 +424,10 @@
     </li>
   
 
+            
           
             
+              
   
   
     
@@ -395,6 +436,7 @@
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -407,7 +449,9 @@
       </a>
       
         
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
   
@@ -472,6 +516,7 @@
     </li>
   
 
+            
           
         </ul>
       </nav>
@@ -491,7 +536,9 @@
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
+
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
   
   
   
@@ -561,10 +608,10 @@
             <article class="md-content__inner md-typeset">
               
                 
-                
-                  <h1>Priority Queue</h1>
-                
-                <p>The <code>PriorityQueue</code> class in a TypeScript implementation of the <a href="https://en.wikipedia.org/wiki/Priority_queue">priority queue data structure</a>. Every campaign will have an <code>eventQueue</code> property, which is an instance of a <code>PriorityQueue</code>.</p>
+
+  <h1>Priority Queue</h1>
+
+<p>The <code>PriorityQueue</code> class is a TypeScript implementation of the <a href="https://en.wikipedia.org/wiki/Priority_queue">priority queue data structure</a>. Every campaign will have an <code>eventQueue</code> property, which is an instance of a <code>PriorityQueue</code>.</p>
 <h2 id="events">Events</h2>
 <p>The event queue is composed of <code>EventQueueItem</code>s. Each <code>EventQueueItem</code> provides information about some future event. An <code>EventQueueItem</code> takes this shape:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">interface</span> <span class="nx">EventQueueItem</span> <span class="p">{</span>
@@ -577,9 +624,9 @@
     <span class="p">};</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Detailed information can be found in the codebase for each entry.</p>
+<p>Detailed information on <code>EventQueueItem</code> properties can be found in the codebase comments.</p>
 <h2 id="event-creation">Event creation</h2>
-<p>The events in the event queue have an asymetrical, one-to-one relationship with <code>TimeStep</code>s. When a <code>Campaign</code> initializes, an initlal event is pushed into the queue, and then a first <code>TimeStep</code> is initialized. Within the constructor of a <code>TimeStep</code>, it looks for the first event in the queue, and if it finds one, it performs its function based on the next queue event.</p>
+<p>The events in the event queue have an asymetrical, one-to-one relationship with <code>TimeStep</code>s. When a <code>Campaign</code> initializes, an initlal event is pushed into the queue with the first cell to be set to burning, and then a first <code>TimeStep</code> is initialized. Within the constructor of a <code>TimeStep</code>, it looks for the next event in the queue, and if it finds one, it performs its function based on the next queue event.</p>
 <p>For every event in the queue, a <code>TimeStep</code> will be created. In turn, a <code>TimeStep</code> may spawn more events to be added to the queue. A <code>TimeStep</code> may spawn multiple events to be added, or none at all.</p>
 <figure style="padding: 10px; margin: 0;">
     <img src="../queue-timestep.png" style="width: 400px; margin: auto;"">
@@ -589,7 +636,7 @@
 </figure>
 
 <h2 id="timestep-queue-timestep">TimeStep → Queue → TimeStep</h2>
-<p>When a <code>TimeStep</code> grabs the next item out of the queue, that item is removed from the queue (though for debugging purposes, it is moved to <code>PriorityQueue.history</code>). A <code>TimeStep</code> always ends with a new one being created. The next <code>TimeStep</code> is always processing the next event in the queue, if there is one. And because a <code>TimeStep</code> may spawn new queue events (especially in the first portion of a simulation), the simulation runs in a continuous fashion.</p>
+<p>When a <code>TimeStep</code> retrieves the next item out of the queue, that item is removed from the queue (though for development environments, it is moved to <code>PriorityQueue.history</code> for debugging purposes). A <code>TimeStep</code> always ends with a new one being created. The next <code>TimeStep</code> is always processing the next event in the queue, if there is one. And because a <code>TimeStep</code> may spawn new queue events (especially in the first portion of a simulation), the simulation runs in a continuous fashion. When there are no more events in the queue, the simulation ends.</p>
 <figure style="padding: 10px; margin: 0;">
     <img src="../queue-timestep-more.png" style="margin: auto;"">
     <figcaption style="margin-top: 20px;">
@@ -598,36 +645,32 @@
 </figure>
 
 <h2 id="separation-of-concerns">Separation of Concerns</h2>
-<p>At first, the existence of a <code>TimeStep</code> in this pattern may seem unnecessary. Why not simply perform all functions of the <code>TimeStep</code> within a queue event? The answer is that <code>TimeStep</code>s and queue events are kept as separate entities to maintain <strong><em>separation of concerns</em></strong>. Each has its own concerns:</p>
+<p><code>TimeStep</code>s and queue events are kept as separate entities to maintain <strong><em>separation of concerns</em></strong>. Each has its own concerns:</p>
 <h3 id="timestep"><code>TimeStep</code></h3>
 <ul>
-<li>Record the current state of the simulation and affect changes in the <code>Campaign</code>'s various components (<code>Extents</code>, <code>BurnMatrices</code>, <code>Cells</code>, etc.)</li>
-<li>Perform calculations and <em>make decisions</em> about what should happen in the future, and records those decisions in the queue</li>
+<li>Record the <em>current state</em> of the simulation and affect changes in the <code>Campaign</code>'s various components (<code>Extents</code>, <code>BurnMatrices</code>, <code>Cells</code>, etc.)</li>
+<li>Perform calculations to <em>make decisions</em> about what should happen in the future, and pushes those decisions in the queue</li>
 <li>Create snapshots of the <code>Campaign's</code> state at a given time that can be serialized, sent, and used in a client application</li>
 </ul>
 <h3 id="eventqueueitem"><code>EventQueueItem</code></h3>
 <ul>
 <li>Store information about what should happen <em>in the future</em></li>
 </ul>
-<p>For example, an item <span class="arithmatex">\(I\)</span> sitting in the queue determines that at time <span class="arithmatex">\(t_x\)</span>, Cells <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, and <span class="arithmatex">\(C\)</span> should ignite, while Cells <span class="arithmatex">\(D\)</span>, <span class="arithmatex">\(E\)</span>, and <span class="arithmatex">\(F\)</span> should burn out, and Cells <span class="arithmatex">\(G\)</span> and <span class="arithmatex">\(H\)</span> should be supressed. However it is not until a <code>TimeStep</code> <span class="arithmatex">\(T\)</span> is generated and retrieves <span class="arithmatex">\(I\)</span> from the queue, that the program iterates over the specified Cells, and changes their state within their respective <code>BurnMatrix</code>. While iterating over a <code>Cell</code>, <span class="arithmatex">\(T\)</span> will determine what should happen to that <code>Cell's</code> neighbors, and generate new items to add to the queue, if any.</p>
-                
-              
-              
-                
-
+<p>For example, an item <span class="arithmatex">\(I\)</span> sitting in the queue determines that at time <span class="arithmatex">\(t_x\)</span>, Cells <span class="arithmatex">\(A\)</span>, <span class="arithmatex">\(B\)</span>, and <span class="arithmatex">\(C\)</span> should ignite, while Cells <span class="arithmatex">\(D\)</span>, <span class="arithmatex">\(E\)</span>, and <span class="arithmatex">\(F\)</span> should burn out, and Cells <span class="arithmatex">\(G\)</span> and <span class="arithmatex">\(H\)</span> should be supressed. However it is not until a <code>TimeStep</code> <span class="arithmatex">\(T\)</span> is generated and retrieves <span class="arithmatex">\(I\)</span> from the queue, that the program iterates over the specified Cells, and changes their state within their respective <code>BurnMatrix</code>. While iterating over a <code>Cell</code>, <span class="arithmatex">\(T\)</span> will determine what should happen to that <code>Cell</code>'s neighbors, and generate new items to add to the queue, if any.</p>
 
               
             </article>
           </div>
         </div>
+        
       </main>
       
-        
-<footer class="md-footer">
+        <footer class="md-footer">
   
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
-        <a href="../../cell/cell/" class="md-footer__link md-footer__link--prev" rel="prev">
+        
+        <a href="../../cell/cell/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Cell" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -646,13 +689,15 @@
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
-      <div class="md-footer-copyright">
-        
-        Made with
-        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
-          Material for MkDocs
-        </a>
-      </div>
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
       
     </div>
   </div>
@@ -662,10 +707,10 @@
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "../../../assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.9b151c6a.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
       
         <script src="../../../javascripts/config.js"></script>
       

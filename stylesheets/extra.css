@@ -30,3 +30,7 @@ figure {
 	font-style: normal;
 	font-size: 0.7rem;
 }
+
+.MathJax.CtxtMenu_Attached_0 mjx-container[jax='CHTML'][display='true'] {
+	margin: 0 !important;
+}
