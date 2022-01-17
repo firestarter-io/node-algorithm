@@ -35,24 +35,20 @@ app.use(cors());
 // Set up routes
 app.use('/', router);
 
-if (DEVMODE) {
-	console.log('dev mode');
-}
-
 // Start server
 const server = app.listen(port, () => {
-	logger.log('server', `Firestarter is listening on port ${port} 🎧\n`);
+	logger.server(`Firestarter is listening on port ${port} 🎧\n`);
 });
 
 // Perform cleanup
 process.on('SIGINT', function () {
 	server.close(() => {
-		logger.log('server', 'Shutting down Firestarter');
+		logger.server('Shutting down Firestarter');
 		if (PURGE_TILES) {
 			fs.rmdirSync(TILE_DIR, { recursive: true });
-			logger.log('server', '🧹 Removing all tile images...');
+			logger.server('🧹 Removing all tile images...');
 		}
-		logger.log('server', 'Goodbye!\n\n');
+		logger.server('Goodbye!\n\n');
 		process.exit();
 	});
 });

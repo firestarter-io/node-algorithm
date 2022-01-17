@@ -22,6 +22,7 @@ import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
 import { IterationProfiler } from 'profilers';
 import chalk = require('chalk');
+import logger from '@core/utils/Logger';
 
 export const tsprofiler = new IterationProfiler({
 	active: PROFILER,
@@ -86,11 +87,8 @@ class TimeStep {
 			campaign.timesteps.push(this);
 			const tte = tsprofiler.stop(this.index);
 
-			if (DEVMODE && !(this.index % 100)) {
-				process.stdout.write(
-					chalk.green('INFO    ') +
-						`⌛ Calculated Timestep ${this.index}\r`
-				);
+			if (!(this.index % 500)) {
+				logger.info(`⌛ Calculated Timestep ${this.index}\r`);
 			}
 		}
 	}

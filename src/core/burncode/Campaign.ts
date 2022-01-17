@@ -19,7 +19,7 @@ import * as data from '@data';
 import { scale, extentSize, PROFILER_TIMESTEPS } from '@config';
 import Extent from './Extent';
 import TimeStep from './Timestep';
-import logger, { emojis, log } from '@core/utils/Logger';
+import logger, { emojis } from '@core/utils/Logger';
 import Cell from './Cell';
 import { roundTime } from '@core/utils/time';
 import {
@@ -107,7 +107,11 @@ export class Campaign {
 	async getWeather(latlng: L.LatLng, startTime: number, endTime: number) {
 		logger.info(`${emojis.fetch} Fetching weather . . .`);
 		try {
-			const rawForecast = await fetchWeatherRange(latlng, startTime, endTime);
+			const rawForecast = await fetchWeatherRange(
+				latlng,
+				startTime,
+				endTime
+			);
 			const newHours = flattenWeatherHours(rawForecast);
 			this.weather = { ...this.weather, ...newHours };
 			logger.info(`${emojis.successCheck} Weather ready`);
@@ -168,7 +172,7 @@ export class Campaign {
 		burningCell.setBurnStatus(1);
 
 		logger.info(
-			`${log.emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
+			`${emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
 		);
 
 		return burningCell;

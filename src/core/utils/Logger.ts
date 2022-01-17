@@ -8,7 +8,7 @@
  *
  */
 
-import * as chalk from 'chalk';
+import { PROFILER } from '@config';
 import * as Winston from 'winston';
 import { createLogger, format, info, transports } from 'winston';
 
@@ -17,7 +17,7 @@ const { printf, errors } = format;
 enum Levels {
 	info = 'info',
 	header = 'header',
-	success = 'success',
+	verbose = 'verbose',
 	server = 'server',
 	warn = 'warn',
 	error = 'error',
@@ -30,7 +30,7 @@ const levels: {
 	levels: {
 		info: 0,
 		header: 1,
-		success: 2,
+		verbose: 2,
 		server: 3,
 		warn: 4,
 		error: 5,
@@ -38,14 +38,19 @@ const levels: {
 	colors: {
 		info: 'green',
 		header: 'bold black',
-		success: 'green',
+		verbose: 'green',
 		server: 'blue',
 		warn: 'yellowBG',
 		error: 'red',
 	},
 };
 
-const logger = createLogger({ levels: levels.levels });
+/**
+ * Logger for firestarter, built on top of Winston
+ */
+const logger = createLogger({ levels: levels.levels }) as Winston.Logger &
+	Record<keyof typeof levels['levels'], Winston.LeveledLogMethod>;
+
 Winston.addColors(levels.colors);
 
 /**
@@ -85,6 +90,27 @@ logger.add(
 	)
 );
 
+if (PROFILER) {
+	logger.add(
+		new transports.File({
+			filename: 'logfile.log',
+			dirname: process.env.OUTPUT_DIR,
+			level: 'error',
+			format: format.combine(
+				errors({ stack: true }),
+				format((info) => {
+					info.level = info.level.toUpperCase();
+					return info;
+				})(),
+				format.align(),
+				printf(({ level, message }) => {
+					return `${level} ${message}`;
+				})
+			),
+		})
+	);
+}
+
 export const emojis = {
 	fetch: '🐕',
 	successCheck: '✅',
@@ -93,16 +119,5 @@ export const emojis = {
 	notepad: '🗒️',
 	explode: '🤯',
 };
-
-interface F {
-	(...args: any[]): any;
-	emojis: typeof emojis;
-}
-
-export const log = <F>function (...args: any[]) {
-	console.log(...args);
-};
-
-log.emojis = emojis;
 
 export default logger;

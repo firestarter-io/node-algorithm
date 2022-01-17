@@ -26,7 +26,7 @@ import { getRGBfromImgData, RGBA } from './rgba';
 import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from 'typings/gis';
 import { ImageRequestOptions } from 'typings/esri';
-import logger, { log } from './Logger';
+import logger, { emojis } from './Logger';
 import { getTileCoord } from '@core/getdata/dem';
 import { downloadImage, downloadJSON } from '@core/utils/download-utils';
 
@@ -127,13 +127,13 @@ export class EsriRasterDataSource {
 		if (!legends[this.datagroup]) {
 			try {
 				await this.generateLegend();
-				logger.info(`${log.emojis.notepad} Legend for ${this.name} ready`);
+				logger.info(`${emojis.notepad} Legend for ${this.name} ready`);
 			} catch (e) {
-				logger.error(`${log.emojis.errorX} Legend failed to fetch`, e);
+				logger.error(`${emojis.errorX} Legend failed to fetch`, e);
 			}
 		}
 
-		logger.info(`${log.emojis.fetch} Fetching ${this.name} Tiles . . .`);
+		logger.info(`${emojis.fetch} Fetching ${this.name} Tiles . . .`);
 
 		try {
 			let tileCoords = getTileCoords(latLngBounds, scale);
@@ -184,7 +184,10 @@ export class EsriRasterDataSource {
 					const { X, Y, Z } = coord;
 					const tilename = `${Z}.${X}.${Y}`;
 
-					const url = path.join(TILE_DIR, `/${this.datagroup}/${tilename}.png`);
+					const url = path.join(
+						TILE_DIR,
+						`/${this.datagroup}/${tilename}.png`
+					);
 					return loadImage(url);
 				})
 			)
@@ -212,10 +215,10 @@ export class EsriRasterDataSource {
 					throw e;
 				});
 
-			logger.info(`${log.emojis.successCheck} ${this.name} Tiles Loaded`);
+			logger.info(`${emojis.successCheck} ${this.name} Tiles Loaded`);
 		} catch (e) {
 			logger.error(
-				`${log.emojis.errorX}`,
+				`${emojis.errorX}`,
 				`Problem fetching ${this.name}:\n`,
 				e
 			);
@@ -388,7 +391,7 @@ export class EsriRasterDataSource {
 		// If JSON has not yet been downloaded in this user session, download it:
 		if (!fs.existsSync(pathToPreexistingJson)) {
 			logger.info(
-				`${log.emojis.fetch} Fetching ${this.name} legend from remote . . .`
+				`${emojis.fetch} Fetching ${this.name} legend from remote . . .`
 			);
 
 			const legendUrl = `${this.url}/legend?f=pjson`;
@@ -402,7 +405,9 @@ export class EsriRasterDataSource {
 				.then((res) => res.json())
 				.then((data) => {
 					const layerId = this.options.sublayer || 0;
-					layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+					layerJSON = data.layers.find(
+						(layer) => layer.layerId == layerId
+					);
 				});
 
 			// Transform legend array images into rgbValues
@@ -431,7 +436,7 @@ export class EsriRasterDataSource {
 			// If Legend JSON is already downloaded in this user session, use it instead of fetching it
 		} else {
 			logger.info(
-				`${log.emojis.fetch} Reading ${this.name} legend from local . . .`
+				`${emojis.fetch} Reading ${this.name} legend from local . . .`
 			);
 
 			const rawdata = fs.readFileSync(pathToPreexistingJson, 'utf-8');
