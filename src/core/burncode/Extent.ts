@@ -34,7 +34,7 @@ import Campaign from './Campaign';
  * Given a LatLngBounds, Extent offers methods to fetch and store all raster data for the bounds
  * and it creates a burn matrix with coordinates corresponding to the extent pixel bounds.
  *
- * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/algorithm/extent/extent/)***
+ * ***&#128211; &nbsp; See more in the  [Extent documentation](https://firestarter-io.github.io/node-algorithm/components/extent/extent/)***
  */
 class Extent {
 	/**

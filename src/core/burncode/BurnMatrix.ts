@@ -26,7 +26,7 @@ export const BURN_PERIMETER = 1001;
  * to burn status values, as well as quickly indexing what cells are currently in a given
  * burn status.
  *
- * ***&#128211; &nbsp; See more in the [BurnMatrix documentation](https://firestarter-io.github.io/node-algorithm/algorithm/burnmatrix/)***
+ * ***&#128211; &nbsp; See more in the [BurnMatrix documentation](https://firestarter-io.github.io/node-algorithm/components/burnmatrix/)***
  */
 class BurnMatrix {
 	/**

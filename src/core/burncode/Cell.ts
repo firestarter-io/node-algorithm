@@ -51,7 +51,7 @@ export type DistanceCoefficients = 1 | typeof ROOT2;
  * for interaction with values in the burn matrix, as well as for retrieving data from
  * an Extent.
  *
- * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/algorithm/cell/cell/)***
+ * ***&#128211; &nbsp; See more in the [Cell documentation](https://firestarter-io.github.io/node-algorithm/components/cell/cell/)***
  */
 class Cell {
 	/**

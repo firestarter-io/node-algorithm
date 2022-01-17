@@ -8,6 +8,7 @@
  *
  */
 
+import { DEVMODE } from '@config';
 import * as lodash from 'lodash';
 import Cell from './Cell';
 
@@ -45,9 +46,9 @@ export interface EventQueueItem {
  * [Priority queue](https://en.wikipedia.org/wiki/Priority_queue) class customized for
  * FireStarter.
  *
- * Adapted from ["Implementation ofPriority Queue in Javascript"](https://www.geeksforgeeks.org/implementation-priority-queue-javascript/)
+ * Adapted from ["Implementation of Priority Queue in Javascript"](https://www.geeksforgeeks.org/implementation-priority-queue-javascript/)
  *
- * ***&#128211; &nbsp; See more in the [PriorityQueue Documentation](https://firestarter-io.github.io/node-algorithm/algorithm/queue/queue/)***
+ * ***&#128211; &nbsp; See more in the [PriorityQueue Documentation](https://firestarter-io.github.io/node-algorithm/components/queue/queue/)***
  */
 class PriorityQueue {
 	/**
@@ -157,7 +158,7 @@ class PriorityQueue {
 	 */
 	next() {
 		const nextItem = this.items.shift();
-		this.history.push(nextItem);
+		if (DEVMODE) this.history.push(nextItem);
 		return nextItem;
 	}
 

@@ -35,7 +35,7 @@ import { resample } from '@core/utils/arrays';
  * A campaign manages its own configuration, user inputs, map extents and their associated data,
  * timesteps, and writing campaign data to the database
  *
- * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/algorithm/campaign/)***
+ * ***&#128211; &nbsp; See more in the [Campaign documentation](https://firestarter-io.github.io/node-algorithm/components/campaign/)***
  */
 export class Campaign {
 	/**
@@ -107,11 +107,7 @@ export class Campaign {
 	async getWeather(latlng: L.LatLng, startTime: number, endTime: number) {
 		logger.info(`${emojis.fetch} Fetching weather . . .`);
 		try {
-			const rawForecast = await fetchWeatherRange(
-				latlng,
-				startTime,
-				endTime
-			);
+			const rawForecast = await fetchWeatherRange(latlng, startTime, endTime);
 			const newHours = flattenWeatherHours(rawForecast);
 			this.weather = { ...this.weather, ...newHours };
 			logger.info(`${emojis.successCheck} Weather ready`);
