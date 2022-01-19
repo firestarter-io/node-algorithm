@@ -9,7 +9,8 @@
  */
 
 import * as fs from 'fs';
-import { plot } from 'asciichart';
+import { plot, blue, green, cyan, magenta, red } from 'asciichart';
+import { Instance as ChalkInstance, Chalk } from 'chalk';
 import { ProfilerOptions, simpleDateTitle } from './CpuProfiler';
 
 interface IterationProfilerOptions extends ProfilerOptions {
@@ -23,36 +24,46 @@ interface IterationProfilerOptions extends ProfilerOptions {
 	 * Whether or not to measure memory usage at the iterations
 	 */
 	memory?: boolean;
+	/**
+	 * Whether or not output files will be in .ansi format or .txt format
+	 */
+	coloredOutput?: boolean;
 }
 
 /**
  * The IterationProfiler measures the time to execute any iteration in a loop.  It is designed to wrap
  * around the the inner logic within any looping procedure.  It will measure the time to execute the
- * iteration at a given interval (every x iterations), and output an ascii graph to the output dir.
+ * iteration at a given interval (every x iterations), and output an ascii graph to the output dir. Note
+ * the output file may be a .ansi file, which can be nicely read in vscode by the ANSI Colors extension.
  * Can also be configured to only run when certain environment variables are true.
  */
 export class IterationProfiler {
 	title: string;
 	active: boolean;
 	outputDir: string;
+	coloredOutput: boolean;
 	spacing: number;
 	times: number[] = [];
 	timer: [number, number];
 	memory: boolean;
 	memoryRecordings: NodeJS.MemoryUsage[] = [];
+	chalk: Chalk;
 
 	/**
 	 * The IterationProfiler measures the time to execute any iteration in a loop.  It is designed to wrap
 	 * around the the inner logic within any looping procedure.  It will measure the time to execute the
-	 * iteration at a given interval (every x iterations), and output an ascii graph to the output dir.
+	 * iteration at a given interval (every x iterations), and output an ascii graph to the output dir. Note
+	 * the output file may be a .ansi file, which can be nicely read in vscode by the ANSI Colors extension.
 	 * Can also be configured to only run when certain environment variables are true.
 	 */
 	constructor(options: IterationProfilerOptions) {
 		this.active = options.active;
 		this.title = options.title ?? simpleDateTitle;
 		this.outputDir = options.outputDir ?? process.env.OUTPUT_DIR;
+		this.coloredOutput = options.coloredOutput ?? true;
 		this.spacing = options.spacing ?? 100;
 		this.memory = options.memory ?? true;
+		this.chalk = new ChalkInstance({ level: this.coloredOutput ? 2 : 0 });
 	}
 
 	/**
@@ -87,25 +98,51 @@ export class IterationProfiler {
 	 */
 	export() {
 		if (this.active) {
-			fs.writeFileSync(
-				`${this.outputDir}/Timestep Graph.txt`,
-				'Timetsteps time-to-calculate:\n\n\n'
-			);
+			const { outputDir, coloredOutput, chalk, memoryRecordings, times } = this;
 
-			const tsgraph = plot(this.times, { height: 30 });
-			fs.appendFileSync(`${this.outputDir}/Timestep Graph.txt`, tsgraph);
+			const filename =
+				outputDir + '/graphs' + `${coloredOutput ? '.ansi' : '.txt'}`;
 
-			if (this.memoryRecordings?.length) {
+			const opening =
+				chalk.bold('Performance Metrics for Firestarter\n\n') +
+				`Recorded ${new Date().toLocaleString()}\n` +
+				(coloredOutput
+					? 'This file written with ANSI enabled, requires ANSI Colors extension to read\n'
+					: '') +
+				`\n\n` +
+				chalk.underline('Timetsteps time-to-calculate:') +
+				`\n\n`;
+
+			fs.writeFileSync(filename, opening);
+
+			const tsgraph = plot(times, {
+				height: 30,
+				colors: coloredOutput ? [blue] : undefined,
+			});
+			fs.appendFileSync(filename, tsgraph);
+
+			if (memoryRecordings?.length) {
 				const memgraph = plot(
-					this.memoryRecordings.map((usage) => usage.heapTotal),
-					{ height: 30 }
+					[
+						memoryRecordings.map((usage) => usage.heapTotal),
+						memoryRecordings.map((usage) => usage.heapUsed),
+						memoryRecordings.map((usage) => usage.arrayBuffers),
+						memoryRecordings.map((usage) => usage.external),
+						memoryRecordings.map((usage) => usage.rss),
+					],
+					{
+						height: 30,
+						colors: coloredOutput
+							? [blue, green, cyan, magenta, red]
+							: undefined,
+					}
 				);
 
 				fs.appendFileSync(
-					`${this.outputDir}/Timestep Graph.txt`,
-					'\n\n\n\n\n\nMemory Usage:\n\n'
+					filename,
+					`\n\n\n\n\n\n${chalk.underline('Memory Usage:')}\n\n`
 				);
-				fs.appendFileSync(`${this.outputDir}/Timestep Graph.txt`, memgraph);
+				fs.appendFileSync(filename, memgraph);
 			}
 		}
 	}

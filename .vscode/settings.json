@@ -1,5 +1,11 @@
 {
 	"editor.formatOnSave": true,
 	"diffEditor.wordWrap": "on",
-	"editor.wordWrap": "on"
+	"editor.wordWrap": "on",
+	"[ansi]": {
+		"editor.wordWrap": "off"
+	},
+	"[plaintext]": {
+		"editor.wordWrap": "off"
+	}
 }
