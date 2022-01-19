@@ -10,7 +10,7 @@
 
 import * as fs from 'fs';
 import { plot } from 'asciichart';
-import { ProfilerOptions, simpleDateTitle } from './Profiler';
+import { ProfilerOptions, simpleDateTitle } from './CpuProfiler';
 
 interface IterationProfilerOptions extends ProfilerOptions {
 	/**
@@ -19,6 +19,10 @@ interface IterationProfilerOptions extends ProfilerOptions {
 	 * spacing of 100 measures every 100 Timesteps
 	 */
 	spacing?: number;
+	/**
+	 * Whether or not to measure memory usage at the iterations
+	 */
+	memory?: boolean;
 }
 
 /**
@@ -34,6 +38,8 @@ export class IterationProfiler {
 	spacing: number;
 	times: number[] = [];
 	timer: [number, number];
+	memory: boolean;
+	memoryRecordings: NodeJS.MemoryUsage[] = [];
 
 	/**
 	 * The IterationProfiler measures the time to execute any iteration in a loop.  It is designed to wrap
@@ -46,6 +52,7 @@ export class IterationProfiler {
 		this.title = options.title ?? simpleDateTitle;
 		this.outputDir = options.outputDir ?? process.env.OUTPUT_DIR;
 		this.spacing = options.spacing ?? 100;
+		this.memory = options.memory ?? true;
 	}
 
 	/**
@@ -65,6 +72,11 @@ export class IterationProfiler {
 			const time = process.hrtime(this.timer);
 			this.times.push(time[1] / 1_000_000);
 			this.timer = undefined;
+
+			if (this.memory) {
+				this.memoryRecordings.push(process.memoryUsage());
+			}
+
 			return time;
 		}
 		return undefined;
@@ -75,8 +87,26 @@ export class IterationProfiler {
 	 */
 	export() {
 		if (this.active) {
-			const graph = plot(this.times, { height: 30 });
-			fs.writeFileSync(`${this.outputDir}/Timestep Graph.txt`, graph);
+			fs.writeFileSync(
+				`${this.outputDir}/Timestep Graph.txt`,
+				'Timetsteps time-to-calculate:\n\n\n'
+			);
+
+			const tsgraph = plot(this.times, { height: 30 });
+			fs.appendFileSync(`${this.outputDir}/Timestep Graph.txt`, tsgraph);
+
+			if (this.memoryRecordings?.length) {
+				const memgraph = plot(
+					this.memoryRecordings.map((usage) => usage.heapTotal),
+					{ height: 30 }
+				);
+
+				fs.appendFileSync(
+					`${this.outputDir}/Timestep Graph.txt`,
+					'\n\n\n\n\n\nMemory Usage:\n\n'
+				);
+				fs.appendFileSync(`${this.outputDir}/Timestep Graph.txt`, memgraph);
+			}
 		}
 	}
 }
