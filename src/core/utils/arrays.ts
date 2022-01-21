@@ -64,7 +64,7 @@ export function resample<T extends Record<K, number>, K extends keyof T>(
 	/**
 	 * The very first item in the original array's time
 	 */
-	let t0: number = array[0][sortKey];
+	const t0: number = array[0][sortKey];
 
 	/**
 	 * The time of the very first item in the original array becomes the time of the first sampled item

@@ -25,7 +25,7 @@ export const math = create(all, {});
  * @param places | Decimal places to round to, defaults to 0
  */
 export function roundValues<T>(object: T, places?: number): T {
-	Object.keys(object).forEach((entry) => {
+	Object.keys(object).forEach(entry => {
 		object[entry] = parseFloat(object[entry].toFixed(places || 0));
 	});
 	return object;
@@ -57,14 +57,14 @@ export function compareObjectWithTolerance<T>(
 	tolerance: number
 ): boolean {
 	const sames: Array<boolean> = [];
-	Object.keys(obj1).forEach((e) => {
+	Object.keys(obj1).forEach(e => {
 		if (compareWithTolerance(obj1[e], obj2[e], tolerance)) {
 			sames.push(true);
 		} else {
 			sames.push(false);
 		}
 	});
-	return !sames.some((c) => !c);
+	return !sames.some(c => !c);
 }
 
 /**
@@ -81,7 +81,7 @@ export function compareObjectWithTolerance<T>(
  * // Returns a value between 12% less than 77 and 12% more than 77
  * noise(77, 12)
  */
-export const noise = (value: number, noiseFactor: number = 10): number => {
+export const noise = (value: number, noiseFactor = 10): number => {
 	const fraction = noiseFactor / 100;
 	const lowValue = value * (1 - fraction);
 	const highValue = value * (1 + fraction);
@@ -98,7 +98,7 @@ export class MooreNeighborhood {
 	 * in an easy-to-ready readout
 	 * @param spec Array of 8 or 9 values to print in Moore formation
 	 */
-	static prettyprint(spec: any[]) {
+	static prettyprint(spec: (number | string)[]) {
 		const row1 = JSON.stringify(spec.slice(0, 3));
 		if (spec.length === 9) {
 			const row2 = JSON.stringify(spec.slice(3, 6));

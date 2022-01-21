@@ -154,7 +154,7 @@ export class Campaign {
 		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
-		let extent = this.extents.find((extent) =>
+		let extent = this.extents.find(extent =>
 			extent.latLngBounds.contains(latLng)
 		);
 
@@ -207,13 +207,13 @@ export class Campaign {
 		const simplifiedCampaign = {
 			id: this.id,
 			startTime: this.startTime,
-			extents: this.extents.map((extent) => ({
+			extents: this.extents.map(extent => ({
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
 			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 			timesteps: resample(
-				this.timesteps.map((timestep) => timestep.snapshot),
+				this.timesteps.map(timestep => timestep.snapshot),
 				'timestamp',
 				10 * 60 * 1000,
 				(timestep, resampledTime) => {

@@ -122,7 +122,7 @@ class BurnMatrix {
 	 * @param position | [x, y] position in array
 	 * @param value | Value to set at that position
 	 */
-	set(position: CellPosition, value: any): void {
+	set(position: CellPosition, value: number): void {
 		this.matrix.set([...position].reverse(), value);
 	}
 

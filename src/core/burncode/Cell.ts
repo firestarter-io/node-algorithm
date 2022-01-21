@@ -124,7 +124,7 @@ class Cell {
 		if (this._neighbors) return this._neighbors;
 
 		const [x, y] = this.position;
-		let neighbors = [];
+		const neighbors = [];
 		for (let j = -1; j <= 1; j++) {
 			for (let i = -1; i <= 1; i++) {
 				if (!(i === 0 && j === 0)) {

@@ -23,7 +23,7 @@ import { TILE_DIR } from '@config';
  * @returns Promise
  */
 const createDir = async (filepath: string): Promise<void> => {
-	return new Promise((resolve, reject) => {
+	return new Promise(resolve => {
 		if (fs.existsSync(filepath)) {
 			resolve();
 		} else {
@@ -37,13 +37,13 @@ const createDir = async (filepath: string): Promise<void> => {
  * Async function to download image
  * @param requestParameters | Request parameters
  */
-export const downloadImage = async (downloadInstructions) => {
+export const downloadImage = async downloadInstructions => {
 	const filepath = path.join(TILE_DIR, `/${downloadInstructions.tiledir}`);
 	await createDir(filepath);
 	const writer = fs.createWriteStream(
 		`${filepath}/${downloadInstructions.tilename}.png`
 	);
-	const streamresponse = (await axios(downloadInstructions.body).catch((e) =>
+	const streamresponse = (await axios(downloadInstructions.body).catch(e =>
 		console.error(e)
 	)) as AxiosResponse;
 	streamresponse.data.pipe(writer);

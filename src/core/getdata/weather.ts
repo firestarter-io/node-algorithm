@@ -110,8 +110,8 @@ export const fetchWeather = async (
 	const url = `${baseurl}/${lat},${lng}?unitGroup=metric&key=${key}`;
 
 	return fetch(url)
-		.then((r) => r.json())
-		.then((r) => console.log(r));
+		.then(r => r.json())
+		.then(r => console.log(r));
 };
 
 /**
@@ -141,8 +141,8 @@ export const fetchWeatherRange = async (
 		// DEV ▲
 
 		return fetch(url)
-			.then((r) => r.json())
-			.then((r) => console.log(r));
+			.then(r => r.json())
+			.then(r => console.log(r));
 	} catch (e) {
 		return mockweather;
 	}
@@ -155,7 +155,7 @@ export const fetchWeatherRange = async (
 export const flattenWeatherHours = (
 	forecast: WeatherForecastResponse
 ): WeatherByTheHour => {
-	const flattened = forecast.days.map((day) => day.hours).flat();
+	const flattened = forecast.days.map(day => day.hours).flat();
 	return flattened.reduce(function (acc, curr) {
 		acc[curr.datetimeEpoch] = curr;
 		return acc;

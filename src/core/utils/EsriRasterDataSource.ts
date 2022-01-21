@@ -208,7 +208,7 @@ export class EsriRasterDataSource {
 						);
 					});
 				})
-				.catch((e) => {
+				.catch(e => {
 					throw e;
 				});
 
@@ -250,7 +250,7 @@ export class EsriRasterDataSource {
 		);
 
 		// this ensures ne/sw are switched in polar maps where north/top bottom/south is inverted
-		var boundsProjected: Bounds = bounds(
+		const boundsProjected: Bounds = bounds(
 			neProjected as any,
 			swProjected as any
 		);
@@ -270,7 +270,7 @@ export class EsriRasterDataSource {
 	private buildImageUrl(latLngBounds: L.LatLngBounds): string {
 		const exportType = this.options?.exportType || 'exportImage';
 		const params = this.buildExportParams(latLngBounds);
-		var fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
+		const fullUrl = this.url + `/${exportType}` + L.Util.getParamString(params);
 		return fullUrl;
 	}
 
@@ -313,7 +313,7 @@ export class EsriRasterDataSource {
 	 */
 	decode(RGBA: RGBA) {
 		const legend = legends[this.datagroup];
-		const symbol = legend.find((symbol) => RGBA.matches(symbol.rgbvalue, 10));
+		const symbol = legend.find(symbol => RGBA.matches(symbol.rgbvalue, 10));
 		return symbol.label;
 	}
 
@@ -395,19 +395,19 @@ export class EsriRasterDataSource {
 
 			// Get JSON of layer / sublayer's legend
 			await fetch(legendUrl)
-				.then((res) => res.json())
-				.then((data) => {
+				.then(res => res.json())
+				.then(data => {
 					const layerId = this.options.sublayer || 0;
-					layerJSON = data.layers.find((layer) => layer.layerId == layerId);
+					layerJSON = data.layers.find(layer => layer.layerId == layerId);
 				});
 
 			// Transform legend array images into rgbValues
 			await Promise.all(
-				layerJSON.legend.map((symbol) =>
+				layerJSON.legend.map(symbol =>
 					loadImage(`data:image/png;base64,${symbol.imageData}`)
 				)
-			).then((symbolImages) => {
-				rgbValues = symbolImages.map((image) => {
+			).then(symbolImages => {
+				rgbValues = symbolImages.map(image => {
 					ctx.drawImage(image, 0, 0);
 					const [R, G, B, A] = ctx.getImageData(10, 10, 1, 1).data;
 					return { R, G, B, A };

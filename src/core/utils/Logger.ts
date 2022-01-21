@@ -10,7 +10,7 @@
 
 import { PROFILER } from '@config';
 import * as Winston from 'winston';
-import { createLogger, format, info, transports } from 'winston';
+import { createLogger, format, transports } from 'winston';
 
 const { printf, errors } = format;
 
@@ -76,7 +76,7 @@ logger.add(
 			level: 'error',
 			format: format.combine(
 				errors({ stack: true }),
-				format((info) => {
+				format(info => {
 					info.level = info.level.toUpperCase();
 					return info;
 				})(),
@@ -98,7 +98,7 @@ if (PROFILER) {
 			level: 'error',
 			format: format.combine(
 				errors({ stack: true }),
-				format((info) => {
+				format(info => {
 					info.level = info.level.toUpperCase();
 					return info;
 				})(),

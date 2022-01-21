@@ -79,13 +79,13 @@ class PriorityQueue {
 		/**
 		 * Whether or not the new element is going to be added to the end of the queue
 		 */
-		var last = true;
+		let last = true;
 
 		/**
 		 * The index of the element that already exists in the queue with the same priority as the new element, if it exists
 		 */
 		const preexistingItemIndex = this.items.findIndex(
-			(item) => item.time === element.time
+			item => item.time === element.time
 		);
 
 		/**
@@ -126,7 +126,7 @@ class PriorityQueue {
 		 * Add all cells to burn in element to the touchedCells
 		 */
 		if (element.setToBurning) {
-			new Map(Object.entries(element.setToBurning)).forEach((cell) => {
+			new Map(Object.entries(element.setToBurning)).forEach(cell => {
 				/**
 				 * If the Cell time to ignite has been calculated before in a previous step,
 				 * but in this iteration, the calculated time is less, move that Cell's time
@@ -146,7 +146,7 @@ class PriorityQueue {
 	 * @param time | The timestamp of the event item
 	 */
 	dequeue(time: number) {
-		const itemIndex = this.items.findIndex((item) => item.time === time);
+		const itemIndex = this.items.findIndex(item => item.time === time);
 		if (itemIndex > -1) {
 			this.items.splice(itemIndex, 1);
 		}
@@ -189,7 +189,7 @@ class PriorityQueue {
 	 * @param time | The timestamp of the queue item to retrieve
 	 */
 	getItem(time: number) {
-		return this.items.find((item) => item.time === time);
+		return this.items.find(item => item.time === time);
 	}
 
 	/**

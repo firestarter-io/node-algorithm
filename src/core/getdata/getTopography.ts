@@ -55,7 +55,7 @@ export function getElevation(point: PointLiteral): number {
 export function getTopography(
 	coord: L.LatLng | L.Point,
 	zoom = scale,
-	spread: number = 4
+	spread = 4
 ): Topography {
 	let point;
 	if (coord instanceof L.LatLng) {

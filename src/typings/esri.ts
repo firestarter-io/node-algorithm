@@ -17,8 +17,8 @@ export interface ImageRequestOptions {
 	token?: string;
 	format?: string;
 	f?: string;
-	renderingRule?: any;
-	mosaicRule?: any;
+	renderingRule?: string | object;
+	mosaicRule?: string | object;
 	sr?: string;
 	sublayer?: string;
 	dpi?: string;

@@ -114,11 +114,8 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
  * @param {Array} latLngBoundsArray | Array of MapBounds objects
  * @param {Number} scale | Zoom level of tiles
  */
-export async function createDEM(
-	latLngBounds: L.LatLngBounds,
-	scale: number = 12
-) {
-	let tileCoords: any = getTileCoords(latLngBounds, scale);
+export async function createDEM(latLngBounds: L.LatLngBounds, scale = 12) {
+	let tileCoords = getTileCoords(latLngBounds, scale);
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
@@ -142,6 +139,6 @@ export async function createDEM(
 			})
 		)
 			// .then(() => console.log('Dem tiles loaded and saved to cache'))
-			.catch((e) => console.log(e));
+			.catch(e => console.log(e));
 	}
 }

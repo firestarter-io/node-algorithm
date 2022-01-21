@@ -56,7 +56,7 @@ export const campaign = async (req, res: Response) => {
 
 			res.send(camp.toJSON());
 		} else {
-			const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			// const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
 			// console.log(values);
 			await camp.startFire(L.latLng(latlng));
 			res.send(camp.toJSON());

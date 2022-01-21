@@ -26,7 +26,7 @@ export function latLngToPoint(
 	latlng: LatLngLiteral,
 	zoom: number
 ): PointLiteral {
-	var projectedPoint = SphericalMercator.project(latlng);
+	const projectedPoint = SphericalMercator.project(latlng);
 
 	// console.log('projectedPoint', projectedPoint);
 

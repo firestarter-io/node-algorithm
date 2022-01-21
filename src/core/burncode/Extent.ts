@@ -91,11 +91,8 @@ class Extent {
 		 * Take in a latlngbounds and refit those bounds to cleaner dimensions
 		 * Height and width of bounds will be multiple of 256
 		 */
-		const {
-			refitBounds: bounds,
-			refitLatLngBounds: llbounds,
-			refitPixelBounds: pixelBounds,
-		} = refitBoundsToMapTiles(latLngBounds);
+		const { refitLatLngBounds: llbounds, refitPixelBounds: pixelBounds } =
+			refitBoundsToMapTiles(latLngBounds);
 
 		/**
 		 * Keep all values available on instance:
@@ -125,30 +122,20 @@ class Extent {
 		} catch (e) {
 			logger.info(`${emojis.errorX}`, e);
 		}
-		/**
-		 *  Get Anderson 13 Fuel Models
-		 */
-		try {
-			await FBFuelModels13.fetchTiles(this.latLngBounds);
-		} catch (e) {
-			throw e;
-		}
+		/** Get Anderson 13 Fuel Models */
+		await FBFuelModels13.fetchTiles(this.latLngBounds);
 
-		/**
-		 *  Get Scott & Burgen Fuel Models
-		 */
-		try {
-			await FBFuelModels40.fetchTiles(this.latLngBounds);
-		} catch (e) {
-			throw e;
-		}
+		/** Get Scott & Burgen Fuel Models */
+		await FBFuelModels40.fetchTiles(this.latLngBounds);
 	}
 
 	/**
 	 * Compare all extents in the campaign and merge them when they overlap,
 	 * called when a new extent is created or when an existing extent grows
 	 */
-	compareExents() {}
+	compareExents() {
+		// TODO
+	}
 
 	/**
 	 * Computed the distance in meters between pixels, as measure from the extent's

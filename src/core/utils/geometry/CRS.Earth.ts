@@ -28,7 +28,7 @@ import { LatLngLiteral } from 'leaflet';
 
 const R = 6371000;
 
-export var Earth = {
+export const Earth = {
 	wrapLng: [-180, 180],
 
 	// Mean Earth Radius, as recommended for use by
@@ -37,7 +37,7 @@ export var Earth = {
 
 	// distance between two geographical points using spherical law of cosines approximation
 	distance: function (latlng1: LatLngLiteral, latlng2: LatLngLiteral): number {
-		var rad = Math.PI / 180,
+		const rad = Math.PI / 180,
 			lat1 = latlng1.lat * rad,
 			lat2 = latlng2.lat * rad,
 			sinDLat = Math.sin(((latlng2.lat - latlng1.lat) * rad) / 2),

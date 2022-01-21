@@ -13,5 +13,13 @@ module.exports = {
 	],
 	rules: {
 		'@typescript-eslint/ban-ts-comment': [0],
+		'@typescript-eslint/no-unused-vars': [
+			'warn',
+			{
+				ignoreRestSiblings: true,
+				argsIgnorePattern: '^_',
+			},
+		],
+		'no-unused-vars': [0],
 	},
 };
