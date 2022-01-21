@@ -143,6 +143,30 @@ export class IterationProfiler {
 					`\n\n\n\n\n\n${chalk.underline('Memory Usage:')}\n\n`
 				);
 				fs.appendFileSync(filename, memgraph);
+				fs.appendFileSync(filename, '\n\n');
+
+				if (coloredOutput) {
+					fs.appendFileSync(
+						filename,
+						`heapTotal     ${chalk.bold.blue('────────────────\n')}`
+					);
+					fs.appendFileSync(
+						filename,
+						`heapUsed      ${chalk.bold.green('────────────────\n')}`
+					);
+					fs.appendFileSync(
+						filename,
+						`arrayBuffers  ${chalk.bold.cyan('────────────────\n')}`
+					);
+					fs.appendFileSync(
+						filename,
+						`external      ${chalk.bold.magenta('────────────────\n')}`
+					);
+					fs.appendFileSync(
+						filename,
+						`rss           ${chalk.bold.red('────────────────\n')}`
+					);
+				}
 			}
 		}
 	}
