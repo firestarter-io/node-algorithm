@@ -124,11 +124,11 @@ export class IterationProfiler {
 			if (memoryRecordings?.length) {
 				const memgraph = plot(
 					[
-						memoryRecordings.map((usage) => usage.heapTotal),
-						memoryRecordings.map((usage) => usage.heapUsed),
-						memoryRecordings.map((usage) => usage.arrayBuffers),
-						memoryRecordings.map((usage) => usage.external),
-						memoryRecordings.map((usage) => usage.rss),
+						memoryRecordings.map(usage => usage.heapTotal),
+						memoryRecordings.map(usage => usage.heapUsed),
+						memoryRecordings.map(usage => usage.arrayBuffers),
+						memoryRecordings.map(usage => usage.external),
+						memoryRecordings.map(usage => usage.rss),
 					],
 					{
 						height: 30,

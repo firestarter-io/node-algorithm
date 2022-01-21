@@ -25,7 +25,7 @@ declare global {
 }
 
 if (!Number.prototype.round) {
-	Number.prototype.round = function (decimals: number = 0) {
+	Number.prototype.round = function (decimals = 0) {
 		return Math.round(this * Math.pow(10, decimals)) / Math.pow(10, decimals);
 	};
 }

@@ -17,7 +17,7 @@ import { DataGroups, tileCache } from '../data';
 /**
  * The map scale to be used in retrieving tiles and performing calculations
  */
-export const scale: number = 12;
+export const scale = 12;
 
 /**
  * Size of tiles used throughout the program
