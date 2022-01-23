@@ -13,15 +13,15 @@
  */
 
 import * as L from 'leaflet';
-import { PROFILER, scale } from '@config';
-import { FireStarterEvent } from 'typings/firestarter';
+import { PROFILER, scale } from '~config';
+import { FireStarterEvent } from '~types/firestarter';
 import { Campaign } from './Campaign';
 import { EventQueueItem } from './PriorityQueue';
-import { WeatherForecast } from '@core/getdata/weather';
-import { roundTime } from '@core/utils/time';
+import { WeatherForecast } from '~core/getdata/weather';
+import { roundTime } from '~core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
 import { IterationProfiler } from 'profilers';
-import logger from '@core/utils/Logger';
+import logger from '~core/utils/Logger';
 
 export const tsprofiler = new IterationProfiler({
 	active: PROFILER,

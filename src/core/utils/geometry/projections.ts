@@ -16,7 +16,7 @@
  */
 
 import { LatLngLiteral } from 'leaflet';
-import { PointLiteral } from 'typings/gis';
+import { PointLiteral } from '~types/gis';
 import { EPSG3857 } from './CRS.EPSG3857';
 import SphericalMercator from './SphericalMercator';
 

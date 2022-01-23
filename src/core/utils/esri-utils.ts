@@ -16,7 +16,7 @@
 
 import fetch from 'node-fetch';
 import { latLng, latLngBounds } from 'leaflet';
-import { MapBounds } from 'typings/gis';
+import { MapBounds } from '~types/gis';
 
 /**
  * Token getter function for ESRI authenticated services

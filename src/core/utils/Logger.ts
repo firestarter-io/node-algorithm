@@ -8,7 +8,7 @@
  *
  */
 
-import { PROFILER } from '@config';
+import { PROFILER } from '~config';
 import * as Winston from 'winston';
 import { createLogger, format, transports } from 'winston';
 

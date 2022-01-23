@@ -14,12 +14,12 @@
 
 import * as L from 'leaflet';
 import { Point } from 'leaflet';
-import { retrieveTile, scale } from '@config';
+import { retrieveTile, scale } from '~config';
 import { getTileCoord } from './dem';
-import { PointLiteral, Topography } from 'typings/gis';
-import { Earth } from '@utils/geometry/CRS.Earth';
-import { getRGBfromImgData } from '@utils/rgba';
-import { DataGroups } from '@data';
+import { PointLiteral, Topography } from '~types/gis';
+import { Earth } from '~utils/geometry/CRS.Earth';
+import { getRGBfromImgData } from '~utils/rgba';
+import { DataGroups } from '~data';
 
 /**
  * Takes in a projected point and returns an elevation

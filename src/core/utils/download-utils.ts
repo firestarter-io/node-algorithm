@@ -15,7 +15,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import axios, { AxiosResponse } from 'axios';
-import { TILE_DIR } from '@config';
+import { TILE_DIR } from '~config';
 
 /**
  * Function to create an image path to save image to, if none exists yet

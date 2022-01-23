@@ -14,8 +14,8 @@
  */
 
 import { Matrix } from 'mathjs';
-import { math } from '@utils/math';
-import { CellPosition } from 'typings/firestarter';
+import { math } from '~utils/math';
+import { CellPosition } from '~types/firestarter';
 import Extent from './Extent';
 import Cell, { NeighborCell } from './Cell';
 

@@ -15,7 +15,7 @@
 
 import { LatLngLiteral } from 'leaflet';
 import fetch from 'node-fetch';
-import mockweather from '@core/constants/mockweather';
+import mockweather from '~core/constants/mockweather';
 
 export interface WeatherForecast {
 	cloudcover: number;

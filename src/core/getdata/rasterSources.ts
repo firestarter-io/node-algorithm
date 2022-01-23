@@ -12,8 +12,8 @@
  * List of raster data sources, excluding Digital Elevation Model
  */
 
-import { DataGroups } from '@data';
-import { EsriRasterDataSource } from '@utils/EsriRasterDataSource';
+import { DataGroups } from '~data';
+import { EsriRasterDataSource } from '~utils/EsriRasterDataSource';
 
 export const FBFuelModels13 = new EsriRasterDataSource({
 	datagroup: DataGroups.FBFuelModels13,

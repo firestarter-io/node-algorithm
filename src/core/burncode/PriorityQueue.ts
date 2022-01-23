@@ -8,7 +8,7 @@
  *
  */
 
-import { DEVMODE } from '@config';
+import { DEVMODE } from '~config';
 import * as lodash from 'lodash';
 import Cell from './Cell';
 

@@ -16,11 +16,11 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Canvas, createCanvas, loadImage } from 'canvas';
-import { getTileCoords } from '@utils/geometry/Bounds';
-import { saveTile, scale, TILE_DIR } from '@config';
-import { TileCoord, PointLiteral } from 'typings/gis';
-import { DataGroups, tileCache } from '@data';
-import { downloadImage } from '@core/utils/download-utils';
+import { getTileCoords } from '~utils/geometry/Bounds';
+import { saveTile, scale, TILE_DIR } from '~config';
+import { TileCoord, PointLiteral } from '~types/gis';
+import { DataGroups, tileCache } from '~data';
+import { downloadImage } from '~core/utils/download-utils';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url

@@ -13,7 +13,7 @@
  */
 
 import * as pm2 from 'pm2';
-import logger from '@core/utils/Logger';
+import logger from '~core/utils/Logger';
 
 export const restart = (req, res) => {
 	console.log('⟳ Restarting firestarter from within code');

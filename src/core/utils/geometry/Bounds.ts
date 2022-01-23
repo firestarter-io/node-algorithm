@@ -15,8 +15,8 @@
 
 import * as L from 'leaflet';
 import * as xyz from 'xyz-affair';
-import { MapBounds, TileCoord } from 'typings/gis';
-import { scale, tileSize } from '@config';
+import { MapBounds, TileCoord } from '~types/gis';
+import { scale, tileSize } from '~config';
 
 /**
  * Takes in array of LatLngBounds objects and returns array of XYZ coordinate objects

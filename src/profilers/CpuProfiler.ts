@@ -14,7 +14,7 @@
 
 import * as fs from 'fs';
 import * as v8profiler from 'v8-profiler-next';
-import logger from '@core/utils/Logger';
+import logger from '~core/utils/Logger';
 
 v8profiler.setGenerateType(1);
 
