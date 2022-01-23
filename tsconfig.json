@@ -13,6 +13,7 @@
 			"~config": ["config"],
 			"~config/*": ["config/*"],
 			"~data": ["data"],
+			"~profilers/*": ["profilers/*"],
 			"~core/*": ["core/*"],
 			"~getdata/*": ["core/getdata/*"],
 			"~burncode/*": ["core/burncode/*"],

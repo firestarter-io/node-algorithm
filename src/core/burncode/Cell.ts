@@ -13,19 +13,19 @@
  */
 
 import * as L from 'leaflet';
-import { tileSize } from '~config';
-import { getElevation } from '~core/getdata/getTopography';
-import BurnMatrix from './BurnMatrix';
-import Extent from './Extent';
-import { CellPosition } from '~types/firestarter';
-import { ROOT2 } from '~core/utils/math';
-import { FBFuelModels13, FBFuelModels40 } from '~core/getdata/rasterSources';
 import {
 	FBFM13,
 	FBFM40,
 	FuelModel13,
 	FuelModel40,
 } from '@firestarter.io/fuelmodels';
+import { tileSize } from '~config';
+import { getElevation } from '~core/getdata/getTopography';
+import { CellPosition } from '~types/firestarter';
+import { ROOT2 } from '~core/utils/math';
+import { FBFuelModels13, FBFuelModels40 } from '~core/getdata/rasterSources';
+import Extent from './Extent';
+import BurnMatrix from './BurnMatrix';
 import { alphaSlope, alphaWind } from './formulas';
 
 interface CellFuelModels {

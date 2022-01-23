@@ -8,9 +8,9 @@
  *
  */
 
-import { PROFILER } from '~config';
 import * as Winston from 'winston';
 import { createLogger, format, transports } from 'winston';
+import { PROFILER } from '~config';
 
 const { printf, errors } = format;
 

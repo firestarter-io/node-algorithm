@@ -14,6 +14,7 @@
  */
 
 import * as L from 'leaflet';
+import { Matrix } from 'mathjs';
 import logger, { emojis } from '~core/utils/Logger';
 import {
 	pixelBoundsToLatLngBounds,
@@ -21,12 +22,11 @@ import {
 } from '~utils/geometry/bounds';
 import { createDEM } from '~core/getdata/dem';
 import { FBFuelModels13, FBFuelModels40 } from '~core/getdata/rasterSources';
-import BurnMatrix from './BurnMatrix';
 import { scale, tileSize, tilesToExpand } from '~config';
 import { math } from '~core/utils/math';
-import { Matrix } from 'mathjs';
-import Cell from './Cell';
 import { getTopography } from '~core/getData/getTopography';
+import Cell from './Cell';
+import BurnMatrix from './BurnMatrix';
 import Campaign from './Campaign';
 
 /**

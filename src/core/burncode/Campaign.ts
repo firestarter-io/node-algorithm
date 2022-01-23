@@ -17,18 +17,18 @@ import * as L from 'leaflet';
 import { v4 as uuid } from 'uuid';
 import * as data from '~data';
 import { scale, extentSize, PROFILER_TIMESTEPS } from '~config';
-import Extent from './Extent';
-import TimeStep from './Timestep';
 import logger, { emojis } from '~core/utils/Logger';
-import Cell from './Cell';
 import { roundTime } from '~core/utils/time';
 import {
 	fetchWeatherRange,
 	flattenWeatherHours,
 	WeatherByTheHour,
 } from '~core/getdata/weather';
-import PriorityQueue from './PriorityQueue';
 import { resample } from '~core/utils/arrays';
+import Extent from './Extent';
+import TimeStep from './Timestep';
+import Cell from './Cell';
+import PriorityQueue from './PriorityQueue';
 
 /**
  * Campaign class creates a new campaign object, which is the central unit of firestarter.

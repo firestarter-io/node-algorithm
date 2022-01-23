@@ -10,6 +10,7 @@ module.exports = {
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
+		'plugin:import/warnings',
 	],
 	rules: {
 		'@typescript-eslint/ban-ts-comment': [0],
@@ -21,5 +22,28 @@ module.exports = {
 			},
 		],
 		'no-unused-vars': [0],
+		'import/order': [
+			'error',
+			{
+				pathGroups: [
+					{
+						pattern: '~/**',
+						group: 'builtin',
+						position: 'after',
+					},
+				],
+				groups: [
+					'builtin',
+					'external',
+					'internal',
+					'unknown',
+					'parent',
+					'sibling',
+					'index',
+					'object',
+					'type',
+				],
+			},
+		],
 	},
 };

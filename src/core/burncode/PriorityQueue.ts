@@ -8,8 +8,8 @@
  *
  */
 
-import { DEVMODE } from '~config';
 import * as lodash from 'lodash';
+import { DEVMODE } from '~config';
 import Cell from './Cell';
 
 export interface EventQueueItem {

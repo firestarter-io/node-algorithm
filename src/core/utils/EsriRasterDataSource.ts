@@ -22,13 +22,13 @@ import { Bounds, bounds, Point } from 'leaflet';
 import { loadImage, Image, createCanvas, Canvas } from 'canvas';
 import { LEGENDS_DIR, saveTile, scale, TILE_DIR } from '~config';
 import { DataGroups, ImageDataCache, legends, tileCache } from '~data';
-import { getRGBfromImgData, RGBA } from './rgba';
-import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
 import { TileCoord } from '~types/gis';
 import { ImageRequestOptions } from '~types/esri';
-import logger, { emojis } from './Logger';
 import { getTileCoord } from '~core/getdata/dem';
 import { downloadImage, downloadJSON } from '~core/utils/download-utils';
+import logger, { emojis } from './Logger';
+import { getTileCoords, tileCoordToBounds } from './geometry/bounds';
+import { getRGBfromImgData, RGBA } from './rgba';
 
 interface NewRequestOptions extends ImageRequestOptions {
 	/**
