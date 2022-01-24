@@ -13,15 +13,15 @@
  */
 
 import * as L from 'leaflet';
-import { PROFILER, scale } from '@config';
-import { FireStarterEvent } from 'typings/firestarter';
+import { IterationProfiler } from 'profilers';
+import { PROFILER, scale } from '~config';
+import { FireStarterEvent } from '~types/firestarter';
+import { WeatherForecast } from '~core/getdata/weather';
+import { roundTime } from '~core/utils/time';
+import logger from '~core/utils/Logger';
 import { Campaign } from './Campaign';
 import { EventQueueItem } from './PriorityQueue';
-import { WeatherForecast } from '@core/getdata/weather';
-import { roundTime } from '@core/utils/time';
 import { BURN_PERIMETER } from './BurnMatrix';
-import { IterationProfiler } from 'profilers';
-import logger from '@core/utils/Logger';
 
 export const tsprofiler = new IterationProfiler({
 	active: PROFILER,
@@ -84,7 +84,7 @@ class TimeStep {
 			this.burn();
 			this.snapshot = this.toJSON();
 			campaign.timesteps.push(this);
-			const tte = tsprofiler.stop(this.index);
+			tsprofiler.stop(this.index);
 
 			if (!(this.index % 500)) {
 				logger.info(`⌛ Calculated Timestep ${this.index}\r`);
@@ -125,7 +125,7 @@ class TimeStep {
 		/**
 		 * For each cell in the event queue that is slated to be set to burning:
 		 */
-		new Map(Object.entries(this.event.setToBurning)).forEach((cellToBurn) => {
+		new Map(Object.entries(this.event.setToBurning)).forEach(cellToBurn => {
 			/**
 			 * If cell is ignitable, set it to burning
 			 */
@@ -136,7 +136,7 @@ class TimeStep {
 			/**
 			 * Determine if/when neighbor cells will be set to burning:
 			 */
-			cellToBurn.neighbors.forEach((neighbor) => {
+			cellToBurn.neighbors.forEach(neighbor => {
 				/**
 				 * If the neighbor is currently burnable
 				 */
@@ -170,7 +170,7 @@ class TimeStep {
 		/**
 		 * Iterate over all burning cells and detect perimeter
 		 */
-		this._campaign.extents.forEach((extent) => {
+		this._campaign.extents.forEach(extent => {
 			const potentialPerimeterCells = new Map();
 			for (const [cellId, cell] of extent.burnMatrix.burningCells) {
 				if (!extent.burnMatrix.exBurningPerimeterCells.has(cellId)) {
@@ -178,9 +178,9 @@ class TimeStep {
 				}
 			}
 
-			potentialPerimeterCells.forEach((cell) => {
+			potentialPerimeterCells.forEach(cell => {
 				const perimeterCell = cell.neighbors.some(
-					(neighbor) => neighbor.burnStatus === 0
+					neighbor => neighbor.burnStatus === 0
 				);
 				if (perimeterCell) {
 					cell.setBurnStatus(BURN_PERIMETER);
@@ -214,12 +214,13 @@ class TimeStep {
 		const { _campaign, event, ...serializedTimestep } = this;
 		return {
 			...serializedTimestep,
-			extents: this._campaign.extents.map((extent) => ({
+			extents: this._campaign.extents.map(extent => ({
 				id: extent.id,
 				...extent.burnMatrix.toJSON(),
 				perimeters: {
 					burning: [...extent.burnMatrix.burningPerimeterCells].map(
-						([id, cell]) => L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
+						([_id, cell]) =>
+							L.CRS.EPSG3857.pointToLatLng(cell.layerPoint, scale)
 					),
 				},
 			})),

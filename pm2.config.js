@@ -6,6 +6,7 @@ module.exports = {
 			script: 'npm',
 			args: 'start',
 			watch: ['src'],
+			autorestart: false,
 			ignore_watch: ['docs'],
 			env_development: {
 				FORCE_COLOR: 3,

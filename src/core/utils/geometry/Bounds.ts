@@ -15,8 +15,8 @@
 
 import * as L from 'leaflet';
 import * as xyz from 'xyz-affair';
-import { MapBounds, TileCoord } from 'typings/gis';
-import { scale, tileSize } from '@config';
+import { MapBounds, TileCoord } from '~types/gis';
+import { scale, tileSize } from '~config';
 
 /**
  * Takes in array of LatLngBounds objects and returns array of XYZ coordinate objects
@@ -28,7 +28,7 @@ export function getTileCoords(
 	latLngBounds: L.LatLngBounds,
 	scale: number
 ): TileCoord[] {
-	var allTileCoordsUnfiltered = [];
+	let allTileCoordsUnfiltered = [];
 	const mod = Math.pow(2, scale);
 
 	const sw = latLngBounds.getSouthWest();
@@ -42,7 +42,7 @@ export function getTileCoords(
 	let tileCoords = xyz(boundsAsArray, scale);
 
 	// correct for any negative coordinate values
-	tileCoords = tileCoords.map((c) => ({
+	tileCoords = tileCoords.map(c => ({
 		x: ((c.x % mod) + mod) % mod,
 		y: ((c.y % mod) + mod) % mod,
 		z: c.z,
@@ -53,12 +53,12 @@ export function getTileCoords(
 	// filter duplicate values
 	const filteredTileCoords = allTileCoordsUnfiltered.filter(
 		(elem, index, self) =>
-			self.findIndex((t) => {
+			self.findIndex(t => {
 				return t.x === elem.x && t.y === elem.y && t.z === elem.z;
 			}) === index
 	);
 
-	return filteredTileCoords.map((c) => ({ X: c.x, Y: c.y, Z: c.z }));
+	return filteredTileCoords.map(c => ({ X: c.x, Y: c.y, Z: c.z }));
 }
 
 /**
@@ -88,17 +88,20 @@ export function tileCoordToBounds(tileCoord: TileCoord): L.LatLngBounds {
  */
 export function simplifyBoundsArray(
 	latLngBoundsArray: MapBounds[],
-	padding: number = 0
+	padding = 0
 ): MapBounds[] {
-	let simplifiedBounds = [];
-	let mergedBoundsIndices = [];
+	const simplifiedBounds = [];
+	const mergedBoundsIndices = [];
 	latLngBoundsArray.forEach((bounds, ind) => {
 		latLngBoundsArray.forEach((b, i) => {
 			if (ind !== i) {
-				let boundsWProto = L.latLngBounds(bounds._southWest, bounds._northEast);
-				let bWProto = L.latLngBounds(b._southWest, b._northEast);
-				let paddedBounds = boundsWProto.pad(padding);
-				let paddedB = bWProto.pad(padding);
+				const boundsWProto = L.latLngBounds(
+					bounds._southWest,
+					bounds._northEast
+				);
+				const bWProto = L.latLngBounds(b._southWest, b._northEast);
+				const paddedBounds = boundsWProto.pad(padding);
+				const paddedB = bWProto.pad(padding);
 
 				if (paddedBounds.intersects(paddedB)) {
 					const mergedBounds = boundsWProto.extend(bWProto);
@@ -109,7 +112,7 @@ export function simplifyBoundsArray(
 			}
 		});
 	});
-	mergedBoundsIndices.forEach((i) => {
+	mergedBoundsIndices.forEach(i => {
 		latLngBoundsArray.splice(i, 1);
 	});
 	latLngBoundsArray.push(...simplifiedBounds);

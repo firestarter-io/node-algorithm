@@ -13,24 +13,24 @@
  */
 
 import * as L from 'leaflet';
-import { tileSize } from '@config';
-import { getElevation } from '@core/getdata/getTopography';
-import BurnMatrix from './BurnMatrix';
-import Extent from './Extent';
-import { CellPosition } from 'typings/firestarter';
-import { ROOT2 } from '@core/utils/math';
-import { FBFuelModels13, FBFuelModels40 } from '@core/getdata/rasterSources';
 import {
 	FBFM13,
 	FBFM40,
 	FuelModel13,
 	FuelModel40,
 } from '@firestarter.io/fuelmodels';
+import { tileSize } from '~config';
+import { getElevation } from '~core/getdata/getTopography';
+import { CellPosition } from '~types/firestarter';
+import { ROOT2 } from '~core/utils/math';
+import { FBFuelModels13, FBFuelModels40 } from '~core/getdata/rasterSources';
 import {
 	alphaSlopeRothermel,
 	alphaWind,
 	rosWithSlopeRothermel,
 } from './formulas';
+import Extent from './Extent';
+import BurnMatrix from './BurnMatrix';
 
 interface CellFuelModels {
 	fuelModel13: FuelModel13;
@@ -128,7 +128,7 @@ class Cell {
 		if (this._neighbors) return this._neighbors;
 
 		const [x, y] = this.position;
-		let neighbors = [];
+		const neighbors = [];
 		for (let j = -1; j <= 1; j++) {
 			for (let i = -1; i <= 1; i++) {
 				if (!(i === 0 && j === 0)) {

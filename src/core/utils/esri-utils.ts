@@ -16,8 +16,7 @@
 
 import fetch from 'node-fetch';
 import { latLng, latLngBounds } from 'leaflet';
-import { MapBounds } from 'typings/gis';
-import { ImageRequestOptions } from '../../typings/esri';
+import { MapBounds } from '~types/gis';
 
 /**
  * Token getter function for ESRI authenticated services
@@ -28,7 +27,7 @@ import { ImageRequestOptions } from '../../typings/esri';
 export async function getEsriToken(
 	client_id: string,
 	client_secret: string,
-	expiration: number = 3.6e6
+	expiration = 3.6e6
 ) {
 	const authservice = 'https://www.arcgis.com/sharing/rest/oauth2/token';
 	const url = `${authservice}?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials&expiration=${expiration}`;
@@ -38,11 +37,11 @@ export async function getEsriToken(
 	await fetch(url, {
 		method: 'POST',
 	})
-		.then((res) => res.json())
-		.then((res) => {
+		.then(res => res.json())
+		.then(res => {
 			token = res.access_token;
 		})
-		.catch((error) => {
+		.catch(error => {
 			console.error(error);
 			return error;
 		});
@@ -59,8 +58,8 @@ export function extentToBounds(extent) {
 		extent.xmax !== 'NaN' &&
 		extent.ymax !== 'NaN'
 	) {
-		var sw = latLng(extent.ymin, extent.xmin);
-		var ne = latLng(extent.ymax, extent.xmax);
+		const sw = latLng(extent.ymin, extent.xmin);
+		const ne = latLng(extent.ymax, extent.xmax);
 		return latLngBounds(sw, ne);
 	} else {
 		return null;
@@ -78,8 +77,4 @@ export function boundsToExtent(bounds: MapBounds) {
 			wkid: 4326,
 		},
 	};
-}
-
-interface NewRequestOptions extends ImageRequestOptions {
-	url: string;
 }

@@ -12,10 +12,13 @@
  * Route to restart server programatically with PM2
  */
 
-var pm2 = require('pm2');
+import * as pm2 from 'pm2';
+import logger from '~core/utils/Logger';
 
 export const restart = (req, res) => {
 	console.log('⟳ Restarting firestarter from within code');
 	res.send('Restarting server');
-	pm2.reload('firestarter');
+	pm2.reload('firestarter', err => {
+		logger.error(err);
+	});
 };

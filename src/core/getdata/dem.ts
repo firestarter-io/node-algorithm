@@ -16,11 +16,11 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { Canvas, createCanvas, loadImage } from 'canvas';
-import { getTileCoords } from '@utils/geometry/Bounds';
-import { saveTile, scale, TILE_DIR } from '@config';
-import { TileCoord, PointLiteral } from 'typings/gis';
-import { DataGroups, tileCache } from '@data';
-import { downloadImage } from '@core/utils/download-utils';
+import { getTileCoords } from '~utils/geometry/Bounds';
+import { saveTile, scale, TILE_DIR } from '~config';
+import { TileCoord, PointLiteral } from '~types/gis';
+import { DataGroups, tileCache } from '~data';
+import { downloadImage } from '~core/utils/download-utils';
 
 /**
  * Takes in tile coordinate and mapbox token, returns mapbox rgb terrain tile url
@@ -114,11 +114,8 @@ export async function fetchDEMTile(coord: TileCoord): Promise<void> {
  * @param {Array} latLngBoundsArray | Array of MapBounds objects
  * @param {Number} scale | Zoom level of tiles
  */
-export async function createDEM(
-	latLngBounds: L.LatLngBounds,
-	scale: number = 12
-) {
-	let tileCoords: any = getTileCoords(latLngBounds, scale);
+export async function createDEM(latLngBounds: L.LatLngBounds, scale = 12) {
+	let tileCoords = getTileCoords(latLngBounds, scale);
 
 	tileCoords = tileCoords.filter((coord: TileCoord) => {
 		const { X, Y, Z } = coord;
@@ -142,6 +139,6 @@ export async function createDEM(
 			})
 		)
 			// .then(() => console.log('Dem tiles loaded and saved to cache'))
-			.catch((e) => console.log(e));
+			.catch(e => console.log(e));
 	}
 }

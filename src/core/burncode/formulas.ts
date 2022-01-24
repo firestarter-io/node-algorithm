@@ -29,7 +29,7 @@ export const probabilityOfIgnition = (
 	nominalSpreadP: number,
 	alphaWind: number,
 	alphaSlope: number,
-	ffmcE: number = 1
+	ffmcE = 1
 ): number => {
 	return (1 - Math.pow(1 - nominalSpreadP, alphaSlope * alphaWind)) * ffmcE;
 };
@@ -159,7 +159,7 @@ export const alternateProbabilityOfIgnition = (
 	nominalSpreadP: number,
 	alphaWind: number,
 	alphaSlope: number,
-	ffmcE: number = 0.3
+	ffmcE = 0.3
 ): number => {
 	return nominalSpreadP * alphaWind * alphaSlope * ffmcE;
 };

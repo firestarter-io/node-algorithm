@@ -13,7 +13,7 @@
  * Will likely need to be redesigned to use an actual database
  */
 
-import Campaign from '@core/burncode/Campaign';
+import Campaign from '~core/burncode/Campaign';
 
 /**
  * Object containing all Campaigns currently in memory

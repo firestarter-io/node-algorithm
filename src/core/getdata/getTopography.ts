@@ -14,12 +14,12 @@
 
 import * as L from 'leaflet';
 import { Point } from 'leaflet';
-import { retrieveTile, scale } from '@config';
+import { retrieveTile, scale } from '~config';
+import { PointLiteral, Topography } from '~types/gis';
+import { Earth } from '~utils/geometry/CRS.Earth';
+import { getRGBfromImgData } from '~utils/rgba';
+import { DataGroups } from '~data';
 import { getTileCoord } from './dem';
-import { PointLiteral, Topography } from 'typings/gis';
-import { Earth } from '@utils/geometry/CRS.Earth';
-import { getRGBfromImgData } from '@utils/rgba';
-import { DataGroups } from '@data';
 
 /**
  * Takes in a projected point and returns an elevation
@@ -55,7 +55,7 @@ export function getElevation(point: PointLiteral): number {
 export function getTopography(
 	coord: L.LatLng | L.Point,
 	zoom = scale,
-	spread: number = 4
+	spread = 4
 ): Topography {
 	let point;
 	if (coord instanceof L.LatLng) {

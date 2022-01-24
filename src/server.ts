@@ -17,10 +17,9 @@ import * as express from 'express';
 import * as dotenv from 'dotenv';
 import * as bp from 'body-parser';
 import * as cors from 'cors';
-import '@config';
-import { DEVMODE, PORT, PURGE_TILES, TILE_DIR } from '@config';
+import { PORT, PURGE_TILES, TILE_DIR } from '~config';
+import logger from '~core/utils/Logger';
 import router from './router';
-import logger from '@core/utils/Logger';
 dotenv.config();
 
 // Set up app

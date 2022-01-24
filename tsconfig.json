@@ -8,15 +8,16 @@
 		"sourceMap": true,
 		"baseUrl": "src",
 		"paths": {
-			"@controllers/*": ["controllers/*"],
-			"@typings/*": ["types/*"],
-			"@config": ["config"],
-			"@config/*": ["config/*"],
-			"@data": ["data"],
-			"@core/*": ["core/*"],
-			"@getdata/*": ["core/getdata/*"],
-			"@burncode/*": ["core/burncode/*"],
-			"@utils/*": ["core/utils/*"]
+			"~controllers/*": ["controllers/*"],
+			"~types/*": ["types/*"],
+			"~config": ["config"],
+			"~config/*": ["config/*"],
+			"~data": ["data"],
+			"~profilers/*": ["profilers/*"],
+			"~core/*": ["core/*"],
+			"~getdata/*": ["core/getdata/*"],
+			"~burncode/*": ["core/burncode/*"],
+			"~utils/*": ["core/utils/*"]
 		}
 	},
 	"include": ["src/**/*.ts"],

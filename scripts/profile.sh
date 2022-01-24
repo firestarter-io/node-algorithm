@@ -8,7 +8,7 @@
 export PORT=4000 
 export CAMPAIGN_PROFILER=true 
 export OUTPUT_DIR="temp/profiles/$(date +%s)"
-export PROFILER_TIMESTEPS=5000
+export PROFILER_TIMESTEPS=3000
 
 # Create directory for results
 mkdir -p $OUTPUT_DIR
@@ -20,7 +20,7 @@ pm2 start npm --name fs-profiler -- run server
 npx wait-on http://localhost:4000
 
 # Use apache benchmark to post request to campaign route with sample JSON
-ab -T 'application/json' -n 1 -p scripts/sample.json http://localhost:4000/api/campaign > "./${OUTPUT_DIR}/ABResults.txt" 2>&1
+ab -T 'application/json' -s 9999 -n 1 -p scripts/sample.json http://localhost:4000/api/campaign > "./${OUTPUT_DIR}/ABResults.txt" 2>&1
 
 # Cleanup running process
 pm2 stop fs-profiler

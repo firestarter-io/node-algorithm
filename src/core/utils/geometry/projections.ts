@@ -16,7 +16,7 @@
  */
 
 import { LatLngLiteral } from 'leaflet';
-import { PointLiteral } from 'typings/gis';
+import { PointLiteral } from '~types/gis';
 import { EPSG3857 } from './CRS.EPSG3857';
 import SphericalMercator from './SphericalMercator';
 
@@ -26,7 +26,7 @@ export function latLngToPoint(
 	latlng: LatLngLiteral,
 	zoom: number
 ): PointLiteral {
-	var projectedPoint = SphericalMercator.project(latlng);
+	const projectedPoint = SphericalMercator.project(latlng);
 
 	// console.log('projectedPoint', projectedPoint);
 

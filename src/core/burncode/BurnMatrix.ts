@@ -14,8 +14,8 @@
  */
 
 import { Matrix } from 'mathjs';
-import { math } from '@utils/math';
-import { CellPosition } from 'typings/firestarter';
+import { math } from '~utils/math';
+import { CellPosition } from '~types/firestarter';
 import Extent from './Extent';
 import Cell, { NeighborCell } from './Cell';
 
@@ -122,7 +122,7 @@ class BurnMatrix {
 	 * @param position | [x, y] position in array
 	 * @param value | Value to set at that position
 	 */
-	set(position: CellPosition, value: any): void {
+	set(position: CellPosition, value: number): void {
 		this.matrix.set([...position].reverse(), value);
 	}
 

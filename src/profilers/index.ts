@@ -8,5 +8,5 @@
  *
  */
 
-export * from './Profiler';
+export * from './CpuProfiler';
 export * from './IterationProfiler';

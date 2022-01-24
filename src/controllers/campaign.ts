@@ -16,14 +16,14 @@
 
 import * as L from 'leaflet';
 import { Response } from 'express';
-import { createDEM } from '@getdata/dem';
-import Campaign from '@core/burncode/Campaign';
-import logger from '@core/utils/Logger';
-import { Profiler } from 'profilers/Profiler';
-import { PROFILER } from '@config';
-import { tsprofiler } from '@core/burncode/Timestep';
+import { createDEM } from '~getdata/dem';
+import Campaign from '~core/burncode/Campaign';
+import logger from '~core/utils/Logger';
+import { CpuProfiler } from '~profilers/CpuProfiler';
+import { PROFILER } from '~config';
+import { tsprofiler } from '~core/burncode/Timestep';
 
-const profiler = new Profiler({
+const profiler = new CpuProfiler({
 	active: PROFILER,
 });
 
@@ -57,8 +57,8 @@ export const campaign = async (req, res: Response) => {
 
 			res.send(camp.toJSON());
 		} else {
-			const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
-			console.log(values);
+			// const values = camp.extents[0].getPixelValuesAt(L.latLng(latlng));
+			// console.log(values);
 			await camp.startFire(L.latLng(latlng));
 			res.send(camp.toJSON());
 		}

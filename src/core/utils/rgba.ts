@@ -30,7 +30,7 @@ export class RGBA {
 		this.A = A;
 	}
 
-	matches(RGBA, tolerance: number = 1): boolean {
+	matches(RGBA, tolerance = 1): boolean {
 		return compareObjectWithTolerance(
 			{ R: this.R, G: this.G, B: this.B, A: this.A },
 			RGBA,
@@ -47,8 +47,8 @@ export class RGBA {
  * @param {Number} y | y position of point on tile
  */
 export function getRGBfromImgData(imgData: ImageData, x: number, y: number) {
-	var index = y * imgData.width + x;
-	var i = index * 4;
-	var d = imgData.data;
+	const index = y * imgData.width + x;
+	const i = index * 4;
+	const d = imgData.data;
 	return new RGBA(d[i], d[i + 1], d[i + 2], d[i + 3]);
 }

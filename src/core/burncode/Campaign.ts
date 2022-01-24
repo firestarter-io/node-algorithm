@@ -15,20 +15,20 @@
 
 import * as L from 'leaflet';
 import { v4 as uuid } from 'uuid';
-import * as data from '@data';
-import { scale, extentSize, PROFILER_TIMESTEPS } from '@config';
-import Extent from './Extent';
-import TimeStep from './Timestep';
-import logger, { emojis } from '@core/utils/Logger';
-import Cell from './Cell';
-import { roundTime } from '@core/utils/time';
+import * as data from '~data';
+import { scale, extentSize, PROFILER_TIMESTEPS } from '~config';
+import logger, { emojis } from '~core/utils/Logger';
+import { roundTime } from '~core/utils/time';
 import {
 	fetchWeatherRange,
 	flattenWeatherHours,
 	WeatherByTheHour,
-} from '@core/getdata/weather';
+} from '~core/getdata/weather';
+import { resample } from '~core/utils/arrays';
+import Extent from './Extent';
+import TimeStep from './Timestep';
+import Cell from './Cell';
 import PriorityQueue from './PriorityQueue';
-import { resample } from '@core/utils/arrays';
 
 /**
  * Campaign class creates a new campaign object, which is the central unit of firestarter.
@@ -154,7 +154,7 @@ export class Campaign {
 		const point = L.CRS.EPSG3857.latLngToPoint(latLng, scale).round();
 		const bounds = this.seedLatLng.toBounds(extentSize);
 
-		let extent = this.extents.find((extent) =>
+		let extent = this.extents.find(extent =>
 			extent.latLngBounds.contains(latLng)
 		);
 
@@ -171,6 +171,8 @@ export class Campaign {
 			logger.info(
 				`${emojis.fire} Fire started at [${latLng.lat}, ${latLng.lng}]`
 			);
+
+			return startCell;
 		}
 
 		return undefined;
@@ -209,13 +211,13 @@ export class Campaign {
 		const simplifiedCampaign = {
 			id: this.id,
 			startTime: this.startTime,
-			extents: this.extents.map((extent) => ({
+			extents: this.extents.map(extent => ({
 				bounds: extent.latLngBounds,
 				averageDistance: extent.averageDistance,
 			})),
 			// timesteps: clone.timesteps.map((timestep) => timestep.snapshot),
 			timesteps: resample(
-				this.timesteps.map((timestep) => timestep.snapshot),
+				this.timesteps.map(timestep => timestep.snapshot),
 				'timestamp',
 				10 * 60 * 1000,
 				(timestep, resampledTime) => {

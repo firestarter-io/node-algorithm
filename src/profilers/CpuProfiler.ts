@@ -14,7 +14,7 @@
 
 import * as fs from 'fs';
 import * as v8profiler from 'v8-profiler-next';
-import logger from '@core/utils/Logger';
+import logger from '~core/utils/Logger';
 
 v8profiler.setGenerateType(1);
 
@@ -54,7 +54,7 @@ export interface ProfilerOptions {
  * await campaign.initialize()
  * campaignProfiler.finish() // finish profiling and write to file
  */
-export class Profiler {
+export class CpuProfiler {
 	title: string;
 	active: boolean;
 	outputDir: string;
